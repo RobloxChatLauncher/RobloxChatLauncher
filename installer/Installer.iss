@@ -1,5 +1,5 @@
 #define AppVersion "1.0.0" ; Do not manually update this version; it is auto-updated by release workflow
-#define DotNetVersion "10.0.6" ; Do not change this variable name; the dependency checker relies on it for auto bump
+#define DotNetVersion "10.0.7" ; Do not change this variable name; the dependency checker relies on it for auto bump
 #define DotNet10Url "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-" + DotNetVersion + "-windows-x64-installer"
 #define Root ".."
 
