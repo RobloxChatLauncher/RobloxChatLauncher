@@ -19,7 +19,7 @@ jobs:
     - name: Get current .NET version from Installer.iss
       id: current
       run: |
-        CURRENT_VER=$(sed -n 's/^#define DotNetVersion "\([^"]*\)"/\1/p' installer/Installer.iss)
+        CURRENT_VER=$(sed -n 's/^#define DotNetVersion "\([^"]*\)".*/\1/p' installer/Installer.iss)
         echo "version=$CURRENT_VER" >> $GITHUB_OUTPUT
 
     - name: Fetch latest .NET 10.0 Runtime version
