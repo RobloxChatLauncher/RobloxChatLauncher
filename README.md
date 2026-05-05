@@ -62,7 +62,7 @@
 <td valign="top">
 
 | Server | Status |
-| :---: | :---:
+| :---: | :---: |
 | US (Oregon) | ![Status](https://img.shields.io/website?url=https%3A%2F%2Frobloxchatlauncher.onrender.com%2Fhealth&up_message=Operational&down_message=Outage&up_color=brightgreen&down_color=red&label=) |
 
 </td>
