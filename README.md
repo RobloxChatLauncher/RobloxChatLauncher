@@ -39,6 +39,11 @@
 
 </div>
 
+<div align="center">
+<table border="0" style="border: none; border-collapse: collapse;">
+<tr>
+<td valign="top">
+    
 <!-- START CI GENERATED LOCALIZATION STATUS TABLE; DO NOT REMOVE COMMENT -->
 
 <div align="center">
@@ -51,6 +56,19 @@
 </div>
 
 <!-- END CI GENERATED LOCALIZATION STATUS TABLE; DO NOT REMOVE COMMENT -->
+
+</td>
+<td width="40"></td>
+<td valign="top">
+
+| Server | Status |
+| :---: | :---:
+| US (Oregon) | ![Status](https://img.shields.io/website?url=https%3A%2F%2Frobloxchatlauncher.onrender.com%2Fhealth&up_message=Operational&down_message=Outage&up_color=brightgreen&down_color=red&label=) |
+
+</td>
+</tr>
+</table>
+</div>
 
 ----
 
