@@ -64,6 +64,8 @@
 | Server | Status |
 | :---: | :---: |
 | US (Oregon) | ![Status](https://img.shields.io/website?url=https%3A%2F%2Frobloxchatlauncher.onrender.com%2Fhealth&up_message=Operational&down_message=Outage&up_color=brightgreen&down_color=red&label=) |
+| DE Pilot (Frankfurt) | ![Status](https://img.shields.io/website?url=https%3A%2F%2Frobloxchatlauncher-de.onrender.com%2Fhealth&up_message=Operational&down_message=Outage&up_color=brightgreen&down_color=red&label=) |
+| SG Pilot (Singapore) | ![Status](https://img.shields.io/website?url=https%3A%2F%2Frobloxchatlauncher-sg.onrender.com%2Fhealth&up_message=Operational&down_message=Outage&up_color=brightgreen&down_color=red&label=) |
 
 </td>
 </tr>
