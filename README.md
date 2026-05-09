@@ -156,7 +156,7 @@ Roblox Chat Launcher will automatically check for updates when you launch it, an
 
 ### Uninstalling
 
-Roblox Chat Launcher can be easily uninstalled through the `Add or remove programs` menu and will automatically restore your original Roblox client or bootstrapper as the default app.
+Roblox Chat Launcher can be easily uninstalled through the [`Add or remove programs`](ms-settings:appsfeatures) menu and will automatically restore your original Roblox client or bootstrapper as the default app.
 
 ## Trust & Provenance
 
