@@ -18,6 +18,17 @@ class Program
 
     static void Main(string[] args)
     {
+#if DEBUG
+        var cultureName = Environment.GetEnvironmentVariable("APP_CULTURE");
+
+        if (!string.IsNullOrWhiteSpace(cultureName))
+        {
+            var culture = new System.Globalization.CultureInfo(cultureName);
+
+            System.Globalization.CultureInfo.DefaultThreadCurrentCulture = culture;
+            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = culture;
+        }
+#endif
         // Check if we are being called by the Inno Setup Uninstaller
         bool isUninstall = args.Contains("--uninstall", StringComparer.OrdinalIgnoreCase);
         // Launch the Roblox client without a URI to launch to Roblox's homepage instead of a game

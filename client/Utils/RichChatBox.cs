@@ -270,7 +270,7 @@ namespace RobloxChatLauncher.Utils
             AppendChatMessage(box, "im_riri", "Hello over WS!");
             AppendChatMessage(box, "Guest 41670", "Hello World!");
             AppendChatMessage(box, "Guest 39360", "What's up?");
-            AppendSystemMessage(box, "Hello over HTTP! (Only you can see this message.)");
+            AppendSystemMessage(box, string.Format(Strings.EchoResponse, "Hello over HTTP!"));
             AppendSystemMessage(box, Strings.MessageRejectedModeration);
             AppendWhisperMessage(box, "im_riri", "Guest 39360", "Are we ready to launch?", true);
             AppendWhisperMessage(box, "Guest 39360", "im_riri", "Send it!", false);
