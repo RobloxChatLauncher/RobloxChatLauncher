@@ -553,7 +553,7 @@ app.post('/api/v1/admin/broadcast', express.json(), validateWrite, async (req, r
         ? `to channel ${target.channelId}`
         : "globally";
 
-    console.log(`[Admin::Broadcast] Broadcast sent ${targetType}: "${text}"`);
+    console.log(`[Admin::Broadcast] Broadcast sent ${targetType}: ${text}`);
 
     const payload = JSON.stringify({
         type: 'message',
@@ -565,7 +565,9 @@ app.post('/api/v1/admin/broadcast', express.json(), validateWrite, async (req, r
     });
 
     let recipientCount = 0;
-    const channelCount = channels.size;
+    const channelCount = target?.channelId
+        ? (channels.has(target.channelId) ? 1 : 0)
+        : channels.size;
 
     // If a target channelId is provided, send only to that channel
     if (target?.channelId) {
@@ -603,7 +605,7 @@ app.post('/api/v1/admin/broadcast', express.json(), validateWrite, async (req, r
         stats: {
             totalRecipients: recipientCount,
             totalChannels: channelCount,
-            targeted: !!target // Returns true if a target object was used
+            targeted: !!target?.channelId // Returns true if a target object was used && valid
         }
     });
 });
