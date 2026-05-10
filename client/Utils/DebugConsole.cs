@@ -13,10 +13,7 @@ namespace RobloxChatLauncher.Utils
             {
                 Console.WriteLine(text);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Failed to write to console: " + ex.Message);
-            }
+            catch (Exception) { }
         }
     }
 }

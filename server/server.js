@@ -932,7 +932,7 @@ const validateVerifiedUser = async (req, res, next) => {
  *   get:
  *     summary: Check universe registration status
  *     description: Returns whether a specific universe is registered and set to public.
- *     tags: [Registry]
+ *     tags: [Public]
  *     parameters:
  *       - in: path
  *         name: universeId

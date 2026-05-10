@@ -18,7 +18,7 @@ if not BridgeEvent then
 end
 local LocalPlayer = Players.LocalPlayer
 
-print(string.format("[RCL::Client] Initialized Roblox Chat Launcher Integrations v%s @ (RobloxChatLauncher/RobloxChatLauncher)", Enums.Version))
+print(string.format("[RCL::Client] Initialized Roblox Chat Launcher Integrations v%s (RobloxChatLauncher/RobloxChatLauncher)", Enums.Version))
 
 -------------------------------
 -- 3. Command Handler Map

@@ -366,6 +366,14 @@ namespace RobloxChatLauncher
             // Initialize the Roblox Log Monitor
             _robloxService = new Services.RobloxAreaService();
 
+            _robloxService.OnSystemMessage += (_, msg) =>
+            {
+                this.Invoke((MethodInvoker)(() =>
+                {
+                    RichChatBox.AppendSystemMessage(chatBox, msg);
+                }));
+            };
+
             // Subscribe to OnGameJoin event to detect when the player joins a new server
             _robloxService.OnGameJoin += async (s, e) =>
             {
