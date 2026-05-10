@@ -1,2 +1,4 @@
 * text=auto eol=crlf
 Dockerfile.* linguist-language=Dockerfile
+*.lua linguist-language=luau
+*.lua diff=luau
