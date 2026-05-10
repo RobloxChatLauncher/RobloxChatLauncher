@@ -610,13 +610,13 @@ app.post('/api/v1/admin/broadcast', express.json(), validateWrite, async (req, r
     });
 });
 
-// ----- Command Mailbox Middleware -----
+// ----- Registry Validation Middleware -----
 const validateRegistry = async (req, res, next) => {
     const universeId = req.headers['x-universe-id'];
     const apiKey = req.headers['x-api-key'];
-    const jobId = req.headers['x-job-id'];
+    const jobId = req.headers['x-job-id']; // Optional
 
-    if (!universeId || !apiKey || !jobId) {
+    if (!universeId || !apiKey) {
         return res.status(401).json({ error: "Missing identity headers." });
     }
 
@@ -632,6 +632,151 @@ const validateRegistry = async (req, res, next) => {
     req.universeId = universeId;
     next();
 };
+
+/**
+ * @openapi
+ * /api/v1/universe/settings:
+ *   get:
+ *     summary: Get universe registration settings
+ *     description: Retrieves the public status and creation date for the authenticated universe.
+ *     tags: [Universe]
+ *     security:
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: x-universe-id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           example: 987654321
+ *       - in: header
+ *         name: x-api-key
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: "secret_api_key"
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 universeId:
+ *                   type: string
+ *                   example: "987654321"
+ *                 isPublic:
+ *                   type: boolean
+ *                   example: true
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ */
+app.get(
+    '/api/v1/universe/settings',
+    validateRegistry,
+    async (req, res) => {
+
+        try {
+            const result = await pool.query(
+                `SELECT universe_id, is_public, created_at
+                 FROM game_registry
+                 WHERE universe_id = $1
+                 LIMIT 1`,
+                [req.universeId]
+            );
+
+            if (result.rowCount === 0) {
+                return res.status(404).json({
+                    error: "Universe not found."
+                });
+            }
+
+            const game = result.rows[0];
+
+            res.json({
+                universeId: game.universe_id,
+                isPublic: game.is_public,
+                createdAt: game.created_at
+            });
+
+        } catch (err) {
+            res.status(500).json({
+                error: "Internal server error."
+            });
+        }
+    }
+);
+
+/**
+ * @openapi
+ * /api/v1/universe/settings:
+ *   patch:
+ *     summary: Update universe visibility
+ *     description: Updates whether the universe is publicly visible in the registry.
+ *     tags: [Universe]
+ *     security:
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: x-universe-id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: header
+ *         name: x-api-key
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - isPublic
+ *             properties:
+ *               isPublic:
+ *                 type: boolean
+ *                 example: false
+ *     responses:
+ *       200:
+ *         description: Visibility updated successfully
+ */
+app.patch(
+    '/api/v1/universe/settings',
+    express.json(),
+    validateRegistry,
+    async (req, res) => {
+
+        const { isPublic } = req.body;
+
+        if (typeof isPublic !== 'boolean') {
+            return res.status(400).json({
+                error: "isPublic must be a boolean."
+            });
+        }
+
+        try {
+            await pool.query(
+                'UPDATE game_registry SET is_public = $1 WHERE universe_id = $2',
+                [isPublic, req.universeId]
+            );
+
+            res.json({
+                status: "success",
+                message: `Visibility updated to ${isPublic ? 'public' : 'private'}.`
+            });
+
+        } catch (err) {
+            res.status(500).json({
+                error: "Internal server error."
+            });
+        }
+    }
+);
 
 // --------------------------------
 // ----- The Mailbox Endpoint -----
@@ -691,6 +836,16 @@ const validateRegistry = async (req, res, next) => {
  *                     type: object
  *                     example:
  *                       name: "Dance"
+*       400:
+ *       description: Missing required Job ID
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               error:
+ *                 type: string
+ *                 example: "x-job-id header is required for this endpoint."
  *       401:
  *         description: Missing identity headers
  *         content:
@@ -725,6 +880,10 @@ const validateRegistry = async (req, res, next) => {
 app.get('/api/v1/commands', validateRegistry, (req, res) => {
     // Extract universeId and jobId from the request (attached by validateRegistry)
     const { universeId, jobId } = req;
+
+    if (!jobId) {
+        return res.status(400).json({ error: "x-job-id header is required for this endpoint." });
+    }
 
     // Construct the private storage key
     const storageKey = `${universeId}:${jobId}`;
@@ -766,6 +925,69 @@ const validateVerifiedUser = async (req, res, next) => {
         res.status(500).json({ error: "Verification failed." });
     }
 };
+
+/**
+ * @openapi
+ * /api/v1/registry/{universeId}:
+ *   get:
+ *     summary: Check universe registration status
+ *     description: Returns whether a specific universe is registered and set to public.
+ *     tags: [Registry]
+ *     parameters:
+ *       - in: path
+ *         name: universeId
+ *         required: true
+ *         description: The Universe ID to check
+ *         schema:
+ *           type: string
+ *           example: "987654321"
+ *     responses:
+ *       200:
+ *         description: Registration status check complete
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 registered:
+ *                   type: boolean
+ *                   example: true
+ *                 universe_id:
+ *                   type: string
+ *                   example: "987654321"
+ *       500:
+ *         description: Internal server error
+ */
+app.get('/api/v1/registry/:universeId', async (req, res) => {
+    const { universeId } = req.params;
+
+    try {
+        const query = `
+            SELECT is_public 
+            FROM game_registry 
+            WHERE universe_id = $1 
+            LIMIT 1
+        `;
+        const result = await pool.query(query, [universeId]);
+
+        // If row doesn't exist OR if it exists but is NOT public
+        if (result.rowCount === 0 || result.rows[0].is_public === false) {
+            return res.json({
+                registered: false,
+                universe_id: universeId
+            });
+        }
+
+        // Only if it exists AND is public
+        res.json({
+            registered: true,
+            universe_id: universeId
+        });
+
+    } catch (err) {
+        res.status(500).json({ error: "Internal server error." });
+    }
+});
 
 // ----------------------------------
 // ----- The Mail Push Endpoint -----
