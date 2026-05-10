@@ -220,7 +220,7 @@ namespace RobloxChatLauncher
                     await RestartWebSocketAsync();
                     return true;
 
-                /// <summary>Sends an emote mail to the server to request the specified emote be performed in-game. This command only works if the user is verified and the Roblox game has Roblox Chat Launcher integration enabled.</summary>
+                /// <summary>Sends an emote mail to the server to request the specified emote be performed in-game. This command only works if the user is verified and the Roblox game has Roblox Chat Launcher integrations enabled.</summary>
                 /// <param>args: The name of the emote to perform.</param>
                 case "/emote":
                 case "/e":

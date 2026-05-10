@@ -13,10 +13,12 @@ local Players = game:GetService("Players")
 local Enums = require(ReplicatedStorage.Enums)
 local BridgeEvent = ReplicatedStorage:WaitForChild("RCL_Event", 10)
 if not BridgeEvent then
-    warn("[RCL Client] BridgeEvent did not appear in time!")
+    warn("[RCL::Client] BridgeEvent did not appear in time!")
     return -- Stop the script so it doesn't error later
 end
 local LocalPlayer = Players.LocalPlayer
+
+print(string.format("[RCL::Client] Initialized Roblox Chat Launcher Integrations v%s @ (RobloxChatLauncher/RobloxChatLauncher)", Enums.Version))
 
 -------------------------------
 -- 3. Command Handler Map
@@ -36,7 +38,7 @@ Handlers[Enums.CommandType.Emote] = function(data)
                 playEmote:Invoke(data.name)
             end)
         else
-            warn("[RCL] PlayEmote function not found on this character.")
+            warn("[RCL::Client] PlayEmote function not found on this character.")
         end
     end
 end
@@ -59,6 +61,6 @@ BridgeEvent.OnClientEvent:Connect(function(payload)
     if handler then
         handler(payload.data)
     else
-        warn("[RCL] No handler defined for command type:", payload.type)
+        warn("[RCL::Client] No handler defined for command type:", payload.type)
     end
 end)
