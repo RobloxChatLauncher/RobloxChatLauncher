@@ -7,9 +7,9 @@ namespace RobloxChatLauncher.Core
 #if DEBUG
         public static readonly string BASE_URL =
             Environment.GetEnvironmentVariable("BASE_URL")
-            ?? "https://RobloxChatLauncher.onrender.com";
+            ?? "RobloxChatLauncher.onrender.com";
 #else
-        public const string BASE_URL = "https://RobloxChatLauncher.onrender.com";
+        public const string BASE_URL = "RobloxChatLauncher.onrender.com";
 #endif
         public const string REPO_OWNER = "RobloxChatLauncher";
         public const string REPO_NAME = "RobloxChatLauncher";
