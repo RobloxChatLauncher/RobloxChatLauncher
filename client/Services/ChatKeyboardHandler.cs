@@ -21,6 +21,7 @@ namespace RobloxChatLauncher.Services
             key == Keys.Back ||
             key == Keys.ControlKey ||
             key == Keys.ShiftKey ||
+            key == Keys.LWin || key == Keys.RWin ||
             key == Keys.Menu || // Both alt keys
             key == Keys.Left || key == Keys.Right ||
             key == Keys.Up || key == Keys.Down;
@@ -50,6 +51,16 @@ namespace RobloxChatLauncher.Services
             if (!isRobloxFocused && !isChatFocused)
                 return;
 
+            // Ignore any combination if the Win key is a modifier
+            bool isWinKey = e.KeyCode == Keys.LWin || e.KeyCode == Keys.RWin;
+            bool isWinModifier = (NativeMethods.GetKeyState((int)Keys.LWin) < 0) ||
+                                 (NativeMethods.GetKeyState((int)Keys.RWin) < 0);
+
+            if (isWinKey || isWinModifier)
+            {
+                return; // Let Windows handle its own shortcuts
+            }
+
             if (!chatMode)
             {
                 // Toggle UI Visibility: Ctrl + Shift + C
@@ -73,7 +84,7 @@ namespace RobloxChatLauncher.Services
                 return;
             }
 
-            // --- NEW: Handle Ctrl Shortcuts ---
+            // --- Handle Ctrl Shortcuts ---
             if (e.Control)
             {
                 if (e.KeyCode == Keys.V)
@@ -84,7 +95,7 @@ namespace RobloxChatLauncher.Services
                 }
             }
 
-            // --- NEW: Handle Arrow Keys ---
+            // --- Handle Arrow Keys ---
             if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
             {
                 // Pass the arrow key to the form to move the internal caret
@@ -128,6 +139,15 @@ namespace RobloxChatLauncher.Services
 
         string TranslateKey(KeyEventArgs e)
         {
+            // Don't translate if Ctrl or Alt are held
+            bool isAlt = (e.Modifiers & Keys.Alt) != 0;
+            bool isControl = (e.Modifiers & Keys.Control) != 0;
+
+            if ((isControl || isAlt) && !(isControl && isAlt))
+            {
+                return null;
+            }
+
             // Don't translate control keys into text characters
             if (IsNonTextKey(e.KeyCode))
                 return null;
