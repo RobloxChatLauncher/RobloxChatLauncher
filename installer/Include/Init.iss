@@ -1,5 +1,3 @@
-[Code]
-
 #include "Flags\IsCleanInstallFlagPresent.pas"
 #include "Flags\IsClearAppDataFlagPresent.pas"
 #include "Flags\IsForcePurgeFlagPresent.pas"
