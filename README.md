@@ -2,7 +2,8 @@
 > The only official place to download Roblox Chat Launcher is [this GitHub repository](https://github.com/RobloxChatLauncher/RobloxChatLauncher). Any other websites offering downloads or claiming to be us are not owned by us.
 
 > [!WARNING]
-> Roblox Chat Launcher is looking for developers and contributors fluent in C#, JavaScript, and Luau to help improve and maintain the ecosystem.
+> **Contributors Needed:** Roblox Chat Launcher is looking for developers experienced with **WPF** to lead our framework migration from WinForms.
+> Urgent help is requested in [#81](https://github.com/RobloxChatLauncher/RobloxChatLauncher/issues/81).
 
 > [!WARNING]
 > Roblox Chat Launcher is seeking a long-term billing partner to cover hosting costs and API costs.
