@@ -27,7 +27,7 @@ i. TL;DR
                                   temporary guest label derived from your current WebSocket connection port.
         Transient Identity: For guest users, this label is strictly temporary; it changes every time you reconnect to the server. Users can manually 
                             trigger a reconnection and rotate their label at any time by using the '/rc' command within the client.
-        Open Source: Users may review the code to see exactly what data is processed and how it is handled at https://github.com/AlinaWan/RobloxChatLauncher.
+        Open Source: Users may review the code to see exactly what data is processed and how it is handled at https://github.com/RobloxChatLauncher/RobloxChatLauncher.
 
 2. Optional Roblox Account Verification
     Verification is a completely optional feature. We aim to ensure that users do not have to verify to access features that do not 

@@ -12,7 +12,7 @@ namespace RobloxChatLauncher.Services
     {
         /**
          * Portions of this file are derived from Bloxstrap's ActivityWatcher, which is licensed under the MIT License, with modifications to fit the needs of this project.
-         * This modified version is part of Roblox Chat Launcher at https://github.com/AlinaWan/RobloxChatLauncher and is licensed under the GNU General Public License v3.0.
+         * This modified version is part of Roblox Chat Launcher at https://github.com/RobloxChatLauncher/RobloxChatLauncher and is licensed under the GNU General Public License v3.0.
          * 
          * Original source:
          * =====================================

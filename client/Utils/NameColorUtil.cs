@@ -12,7 +12,7 @@ namespace RobloxChatLauncher.Utils
     /// Original Luau ModuleScript retrieved from Roblox DevForum, courtesy of 7z99:
     /// https://devforum.roblox.com/t/how-to-get-a-users-default-chat-colour-simple-module/957515
     /// 
-    /// This ported version is part of Roblox Chat Launcher at https://github.com/AlinaWan/RobloxChatLauncher and is licensed under the GNU General Public License v3.0.
+    /// This ported version is part of Roblox Chat Launcher at https://github.com/RobloxChatLauncher/RobloxChatLauncher and is licensed under the GNU General Public License v3.0.
     /// </summary>
     public static class NameColorUtil
     {

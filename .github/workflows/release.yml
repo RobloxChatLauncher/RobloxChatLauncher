@@ -218,7 +218,7 @@ jobs:
           }
 
           # conventional-changelog will write a header like:
-          # ## [](https://github.com/AlinaWan/RobloxChatLauncher/compare/v1.0.0...v) (YYYY-MM-DD)
+          # ## [](https://github.com/RobloxChatLauncher/RobloxChatLauncher/compare/v1.0.0...v) (YYYY-MM-DD)
           # Read Changelog, Replace the '...v)' with the actual tag
           $changelog = Get-Content -Path "CHANGELOG.md" -Raw
           $updatedChangelog = $changelog -replace '\.\.\.v\)', "...$($tagName))"
