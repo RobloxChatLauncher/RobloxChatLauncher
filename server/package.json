@@ -1,6 +1,6 @@
 {
     "name": "roblox-chat-launcher",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "description": "Server for the Roblox Chat Launcher project and client",
     "main": "server.js",
     "scripts": {
