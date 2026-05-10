@@ -28,7 +28,7 @@ local function sendTeamUpdate(player)
         gameId = game.JobId -- Using JobId to identify the specific server instance
     }
 
-    print("[RCL] Sending team update for:", player.Name)
+    print("[RCL::Egress] Sending team update for:", player.Name)
     HttpBridge.send(ENDPOINT, payload)
 end
 

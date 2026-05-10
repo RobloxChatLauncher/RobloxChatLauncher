@@ -18,6 +18,10 @@
         {
             get; set;
         }
+        public bool HasRCL
+        {
+            get; set;
+        }
         public long UserId
         {
             get; set;

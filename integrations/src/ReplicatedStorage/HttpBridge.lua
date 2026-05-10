@@ -52,7 +52,7 @@ function HttpBridge.send(url: string, payload: table)
                 Body = HttpService:JSONEncode(payload)
             })
         end)
-        if not success then warn("[RCL Egress] Error:", result) end
+        if not success then warn("[RCL::Egress] Error:", result) end
     end)
 end
 
@@ -104,9 +104,9 @@ function HttpBridge._startCentralLoop(endpoint: string, interval: number)
                     end
                 end
             elseif not success then
-                warn("[RCL Ingress] Connection error:", response)
+                warn("[RCL::Ingress] Connection error:", response)
             elseif response.StatusCode == 403 then
-                warn("[RCL Ingress] Auth Failed: Check API Key and UniverseID")
+                warn("[RCL::Ingress] Auth Failed: Check API Key and UniverseID")
             end
             
             task.wait(interval)

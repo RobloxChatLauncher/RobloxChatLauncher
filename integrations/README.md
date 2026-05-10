@@ -55,6 +55,13 @@ To securely communicate with the API, you must store your API key as an **Experi
 > [!WARNING]  
 > Your game **must be published** to Roblox for this to work. If the game is not published, the Universe ID will be `0`, and the API authentication will fail.
 
+> [!IMPORTANT]
+> By default, your Universe's registration status is NOT shown in public API search results for privacy reasons.
+>
+> You must make a PATCH request to `/api/v1/universe/settings` with `"isPublic": true` in the body if you want it to appear as registered in API search results or public listings.
+>
+> This setting only controls API search and directory visibility and does not limit who can use integrations functionality in your game.
+
 ---
 
 ## 🚦 Performance & Rate Limiting

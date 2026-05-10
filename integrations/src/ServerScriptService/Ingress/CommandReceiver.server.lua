@@ -67,7 +67,7 @@ local function handleIncomingRequest(input)
     for _, payload in ipairs(commands) do
         -- Now we are guaranteed to be looking at individual command objects
         if type(payload) ~= "table" or not payload.type then
-            warn("[RCL Ingress] Skipping malformed payload entry")
+            warn("[RCL::Ingress] Skipping malformed payload entry")
             continue 
         end
 
@@ -92,13 +92,13 @@ local function handleIncomingRequest(input)
                 -- Send the specific payload to the client
                 BridgeEvent:FireClient(player, payload)
             else
-                warn("[RCL Ingress] Player with ID " .. tostring(targetUserId) .. " not found in server.")
+                warn("[RCL::Ingress] Player with ID " .. tostring(targetUserId) .. " not found in server.")
             end
 
         -- C. ERROR HANDLING: No target or invalid target type
         else
             warn(string.format(
-                "[RCL Ingress] Dropping payload (Type: %s). Missing or invalid 'targetPlayer'. Received: %s",
+                "[RCL::Ingress] Dropping payload (Type: %s). Missing or invalid 'targetPlayer'. Received: %s",
                 tostring(payload.type),
                 tostring(target)
             ))
@@ -108,4 +108,4 @@ end
 
 -- 4. Start listening
 HttpBridge.registerHandler(handleIncomingRequest)
-print("[RCL Ingress] Bridge is active and listening for commands...")
+print("[RCL::Ingress] Bridge is active and listening for commands...")

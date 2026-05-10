@@ -7,7 +7,6 @@
     Licensed under the MPL 2.0 license.
     See https://www.mozilla.org/en-US/MPL/2.0/ for full text.
 --]=]
--- enums are sooooo hot omg <3
 local function CreateEnum(name, items)
     local enum = {}
     for _, value in ipairs(items) do
@@ -17,6 +16,8 @@ local function CreateEnum(name, items)
 end
 
 local Enums = {
+    Version = "0.1.0",
+
     CommandType = CreateEnum("CommandType", {
         "Emote"
     }),

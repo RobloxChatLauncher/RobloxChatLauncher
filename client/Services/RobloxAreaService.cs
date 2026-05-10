@@ -2,6 +2,8 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 
+using RobloxChatLauncher.Core;
+using RobloxChatLauncher.Services;
 using RobloxChatLauncher.Utils;
 using RobloxChatLauncher.Localization;
 using RobloxChatLauncher.Models;
@@ -66,6 +68,7 @@ namespace RobloxChatLauncher.Services
         private const string GameJoiningUDMUXPattern         = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
         private const string GameJoinedEntryPattern          = @"serverId: ([0-9\.]+)\|[0-9]+";
         private const string GameMessageEntryPattern         = @"\[BloxstrapRPC\] (.*)";
+        private const string GameRCLInitializedEntry         = "[FLog::Output] [RCL::Client] Initialized Roblox Chat Launcher Integrations";
 
         private readonly string _logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Roblox", "logs");
         private CancellationTokenSource? _cts;
@@ -77,6 +80,7 @@ namespace RobloxChatLauncher.Services
         private bool _teleportMarker = false;
         private bool _reservedTeleportMarker = false;
 
+        private long _lastNotifiedUniverseId = 0;
         private DateTime LastRPCRequest;
 
         public string LogLocation = null!;
@@ -90,6 +94,7 @@ namespace RobloxChatLauncher.Services
         public event EventHandler<Message>? OnRPCMessage;
         public event EventHandler? OnLogOpen;
         public event EventHandler? OnAppClose;
+        public event EventHandler<string>? OnSystemMessage;
 
         private bool _disposed = false;
 
@@ -194,6 +199,20 @@ namespace RobloxChatLauncher.Services
 
             string logMessage = entry[(logMessageIdx + 1)..];
 
+            if (logMessage.StartsWith(GameRCLInitializedEntry))
+            {
+                DebugConsole.WriteLine($"{logIdentity}: RCL Integrations self-reported by Universe {Data.UniverseId}");
+                Data.HasRCL = true;
+
+                // If we receive the self-report message, check API for registry
+                // ONLY check registry and notify if we haven't notified for THIS specific universe yet
+                if (_lastNotifiedUniverseId != Data.UniverseId)
+                {
+                    _lastNotifiedUniverseId = Data.UniverseId; // Update the tracking ID
+                    _ = CheckRegistryAsync(Data.UniverseId);
+                }
+            }
+
             if (logMessage.StartsWith(GameLeavingEntry))
             {
                 DebugConsole.WriteLine($"{logIdentity}: User is back into the desktop app");
@@ -206,6 +225,7 @@ namespace RobloxChatLauncher.Services
                 }
 
                 OnGameLeave?.Invoke(this, EventArgs.Empty);
+                _lastNotifiedUniverseId = 0; // Reset so if shows up if they re-join the same game
                 return;
             }
 
@@ -249,13 +269,23 @@ namespace RobloxChatLauncher.Services
                 if (logMessage.StartsWith(GameJoiningUniverseEntry))
                 {
                     var match = Regex.Match(logMessage, GameJoiningUniversePattern);
+
                     if (match.Groups.Count != 3)
                     {
                         DebugConsole.WriteLine($"{logIdentity}: Failed to assert format for game join universe entry");
                         return;
                     }
 
-                    Data.UniverseId = long.Parse(match.Groups[1].Value);
+                    // Logic for handling the ID change
+                    long newId = long.Parse(match.Groups[1].Value);
+
+                    if (Data.UniverseId != newId)
+                    {
+                        DebugConsole.WriteLine($"{logIdentity}: Universe ID changed from {Data.UniverseId} to {newId}. Resetting RCL status.");
+                        Data.HasRCL = false; // Reset flag for the new universe
+                        Data.UniverseId = newId;
+                    }
+
                     Data.UserId = long.Parse(match.Groups[2].Value);
                 }
                 else if (logMessage.StartsWith(GameJoiningUDMUXEntry))
@@ -374,6 +404,39 @@ namespace RobloxChatLauncher.Services
                     LastRPCRequest = DateTime.Now;
                 }
             }
+        }
+
+        private async Task CheckRegistryAsync(long universeId)
+        {
+            try
+            {
+                var url = $"https://{Constants.BASE_URL}/api/v1/registry/{universeId}";
+
+                var response = await RobloxChatLauncher.ChatForm.Client.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                    return;
+
+                var json = await response.Content.ReadAsStringAsync();
+                var data = JsonSerializer.Deserialize<JsonElement>(json);
+
+                // This might be false if the universe is set to isPublic = false
+                bool registered = data.GetProperty("registered").GetBoolean();
+
+                if (registered)
+                {
+                    // This will only trigger if the game self-reports AND is isPublic in the registry
+                    EmitSystemMessage("This universe has Roblox Chat Launcher Integrations enabled.");
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugConsole.WriteLine($"Registry check failed: {ex.Message}");
+            }
+        }
+
+        private void EmitSystemMessage(string message)
+        {
+            OnSystemMessage?.Invoke(this, message);
         }
 
         public void Dispose()
