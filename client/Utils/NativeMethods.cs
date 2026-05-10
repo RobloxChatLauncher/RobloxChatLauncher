@@ -51,6 +51,9 @@ namespace RobloxChatLauncher.Utils
         public static extern bool GetKeyboardState(byte[] lpKeyState);
 
         [DllImport("user32.dll")]
+        public static extern short GetKeyState(int nVirtKey);
+
+        [DllImport("user32.dll")]
         public static extern IntPtr GetKeyboardLayout(uint idThread);
 
         public const int GWL_EXSTYLE = -20;
