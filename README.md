@@ -1,5 +1,5 @@
 > [!CAUTION]
-> The only official place to download Roblox Chat Launcher is [this GitHub repository](https://github.com/AlinaWan/RobloxChatLauncher). Any other websites offering downloads or claiming to be us are not owned by us.
+> The only official place to download Roblox Chat Launcher is [this GitHub repository](https://github.com/RobloxChatLauncher/RobloxChatLauncher). Any other websites offering downloads or claiming to be us are not owned by us.
 
 > [!WARNING]
 > Roblox Chat Launcher is looking for developers and contributors fluent in C#, JavaScript, and Luau to help improve and maintain the ecosystem.
@@ -8,8 +8,8 @@
 > Roblox Chat Launcher is seeking a long-term billing partner to cover hosting costs and API costs.
 
 <p align="center">
-    <img src="https://github.com/AlinaWan/RobloxChatLauncher/raw/main/assets/brand/rcl_logo_dark.webp#gh-dark-mode-only" width="580">
-    <img src="https://github.com/AlinaWan/RobloxChatLauncher/raw/main/assets/brand/rcl_logo_light.webp#gh-light-mode-only" width="580">
+    <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_logo_dark.webp#gh-dark-mode-only" width="580">
+    <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_logo_light.webp#gh-light-mode-only" width="580">
 </p>
 
 <!--
@@ -20,8 +20,8 @@
 
 <div align="center">
   
-[![License](https://img.shields.io/github/license/AlinaWan/RobloxChatLauncher)](LICENSE)
-[![GitHub Release](https://img.shields.io/github/v/release/AlinaWan/RobloxChatLauncher?include_prereleases&label=Release&color=green)](https://github.com/AlinaWan/RobloxChatLauncher/releases/latest)
+[![License](https://img.shields.io/github/license/RobloxChatLauncher/RobloxChatLauncher)](LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/RobloxChatLauncher/RobloxChatLauncher?include_prereleases&label=Release&color=green)](https://github.com/RobloxChatLauncher/RobloxChatLauncher/releases/latest)
 [![Contributors welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](CONTRIBUTING.md)
 [![C#](https://custom-icon-badges.demolab.com/badge/C%23-%23239120.svg?logo=cshrp&logoColor=white)](#)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=000)](#)
@@ -34,8 +34,8 @@
 <div align="center">
 
 [![Discord Server](https://img.shields.io/discord/1476208199689572508?label=Discord%20Server&style=for-the-badge&logo=discord)](https://discord.gg/mhe2bX3dtH)
-[![GitHub Stars](https://img.shields.io/github/stars/AlinaWan/RobloxChatLauncher?style=for-the-badge&label=people%20supporting%20free%20chat%20%5Bstars%5D&color=yellow)](https://github.com/AlinaWan/RobloxChatLauncher/stargazers)
-[![GitHub Downloads](https://img.shields.io/github/downloads/AlinaWan/RobloxChatLauncher/total?style=for-the-badge&color=green)](https://github.com/AlinaWan/RobloxChatLauncher/releases)
+[![GitHub Stars](https://img.shields.io/github/stars/RobloxChatLauncher/RobloxChatLauncher?style=for-the-badge&label=people%20supporting%20free%20chat%20%5Bstars%5D&color=yellow)](https://github.com/RobloxChatLauncher/RobloxChatLauncher/stargazers)
+[![GitHub Downloads](https://img.shields.io/github/downloads/RobloxChatLauncher/RobloxChatLauncher/total?style=for-the-badge&color=green)](https://github.com/RobloxChatLauncher/RobloxChatLauncher/releases)
 
 </div>
 
@@ -115,7 +115,7 @@ Roblox Chat Launcher is only supported for PCs running Windows.
 
 **Q: Is this malware?**
 
-   * **A:** No. The source code here is viewable to all, and it'd be impossible for us to slip anything malicious into the downloads without anyone noticing. Just be sure you're downloading it from [this GitHub repository](https://github.com/AlinaWan/RobloxChatLauncher).
+   * **A:** No. The source code here is viewable to all, and it'd be impossible for us to slip anything malicious into the downloads without anyone noticing. Just be sure you're downloading it from [this GitHub repository](https://github.com/RobloxChatLauncher/RobloxChatLauncher).
 
       * **Want to be 100% sure?** Every release is cryptographically signed and attested. You can verify that the `.exe` you downloaded exactly matches the code in this repo by following the [Verification Guide](#trust--provenance).
 
@@ -144,7 +144,7 @@ Using Discord involves a clunky overlay or constant Alt-Tabbing, which is heavy,
 
 ## 🌐 Installing
 
-Download the [latest release of Roblox Chat Launcher](https://github.com/AlinaWan/RobloxChatLauncher/releases), and run the installer. After installation, launching a game will automatically launch the chat window alongside it.
+Download the [latest release of Roblox Chat Launcher](https://github.com/RobloxChatLauncher/RobloxChatLauncher/releases), and run the installer. After installation, launching a game will automatically launch the chat window alongside it.
 
 You will also need the [.NET 10.0 Desktop Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/10.0/runtime). If you don't already have it installed, you'll be prompted to install it anyway. Be sure to install Roblox Chat Launcher after you've installed this.
 
@@ -167,7 +167,7 @@ To ensure the installer hasn't been tampered with, every release is signed using
 If you have the GitHub CLI installed:
 
 ```powershell
-gh attestation verify RobloxChatLauncherInstaller.exe --repo AlinaWan/RobloxChatLauncher
+gh attestation verify RobloxChatLauncherInstaller.exe --repo RobloxChatLauncher/RobloxChatLauncher
 ```
 
 ### Verify with Cosign
@@ -175,7 +175,7 @@ gh attestation verify RobloxChatLauncherInstaller.exe --repo AlinaWan/RobloxChat
 If you prefer Cosign, download the `.exe` and the `.cosign.bundle` from the release page:
 
 ```powershell
-cosign verify-blob RobloxChatLauncherInstaller.exe --bundle RobloxChatLauncherInstaller.exe.cosign.bundle --certificate-identity-regexp "https://github.com/AlinaWan/RobloxChatLauncher/" --certificate-oidc-issuer https://token.actions.githubusercontent.com
+cosign verify-blob RobloxChatLauncherInstaller.exe --bundle RobloxChatLauncherInstaller.exe.cosign.bundle --certificate-identity-regexp "https://github.com/RobloxChatLauncher/RobloxChatLauncher/" --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
 
 ## Terms of Service

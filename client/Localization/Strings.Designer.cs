@@ -65,7 +65,7 @@ namespace RobloxChatLauncher.Localization {
         ///Made with ❤︎ by Riri and Contributors
         ///Developed in VS 2026 🎀 Built with .NET / WinForms
         ///Server written in Node.js 🌸 Hosted on Render.com and Neon.com
-        ///Source: https://github.com/AlinaWan/RobloxChatLauncher
+        ///Source: https://github.com/RobloxChatLauncher/RobloxChatLauncher
         ///And of course, credits to you 💖.
         /// </summary>
         public static string AboutText {

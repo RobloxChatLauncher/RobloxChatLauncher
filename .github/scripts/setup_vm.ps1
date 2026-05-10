@@ -16,7 +16,7 @@ param (
 
 $ErrorActionPreference = "Stop"
 
-## 1️⃣ Prepare Directories
+## Prepare Directories
 $dlPath = "C:\Downloads"
 $dotnetPath = "C:\dotnet"
 
@@ -24,7 +24,7 @@ Write-Host "Preparing directories..." -ForegroundColor Cyan
 if (!(Test-Path $dlPath)) { New-Item -ItemType Directory -Path $dlPath -Force }
 if (!(Test-Path $dotnetPath)) { New-Item -ItemType Directory -Path $dotnetPath -Force }
 
-## 2️⃣ Install .NET
+## Install .NET
 Write-Host "Installing .NET $Version ($Mode)..." -ForegroundColor Cyan
 $installScript = Join-Path $dotnetPath "dotnet-install.ps1"
 Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript
@@ -41,10 +41,10 @@ $env:PATH += ";$dotnetPath"
 Write-Host ".NET installation complete" -ForegroundColor Green
 dotnet --info
 
-## 3️⃣ Download RobloxChatLauncher
+## Download RobloxChatLauncher
 if ($UseReleaseExe) {
     Write-Host "Downloading release installer (.exe)..." -ForegroundColor Cyan
-    $releaseApi = "https://api.github.com/repos/AlinaWan/RobloxChatLauncher/releases"
+    $releaseApi = "https://api.github.com/repos/RobloxChatLauncher/RobloxChatLauncher/releases"
     $releases = Invoke-RestMethod -Uri $releaseApi
     if ($releases.Count -eq 0) { throw "No releases found!" }
 
@@ -67,11 +67,11 @@ if ($UseReleaseExe) {
     Write-Host "Downloading source from ref: $Branch..." -ForegroundColor Cyan
     # Determine URL type
     if ($Branch -match '^\d{7,}$' -or $Branch -match '^[a-f0-9]{7,40}$') {
-        $url = "https://github.com/AlinaWan/RobloxChatLauncher/archive/$Branch.zip"
+        $url = "https://github.com/RobloxChatLauncher/RobloxChatLauncher/archive/$Branch.zip"
     } elseif ($Branch -match '^v') {
-        $url = "https://github.com/AlinaWan/RobloxChatLauncher/archive/refs/tags/$Branch.zip"
+        $url = "https://github.com/RobloxChatLauncher/RobloxChatLauncher/archive/refs/tags/$Branch.zip"
     } else {
-        $url = "https://github.com/AlinaWan/RobloxChatLauncher/archive/refs/heads/$Branch.zip"
+        $url = "https://github.com/RobloxChatLauncher/RobloxChatLauncher/archive/refs/heads/$Branch.zip"
     }
     $zipFile = Join-Path $dlPath "RobloxChatLauncher.zip"
     Invoke-WebRequest -Uri $url -OutFile $zipFile

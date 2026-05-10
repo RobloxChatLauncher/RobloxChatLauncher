@@ -2,14 +2,14 @@
 > Privacy is the cornerstone of this project. Every contribution must prioritize user anonymity and data minimization. We do not accept features that require telemetry, invasive tracking, or the collection of personally identifiable information (PII).
 
 <p align="center">
-    <img src="https://github.com/AlinaWan/RobloxChatLauncher/raw/main/assets/brand/rcl_logo_dark.webp#gh-dark-mode-only" width="580">
-    <img src="https://github.com/AlinaWan/RobloxChatLauncher/raw/main/assets/brand/rcl_logo_light.webp#gh-light-mode-only" width="580">
+    <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_logo_dark.webp#gh-dark-mode-only" width="580">
+    <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_logo_light.webp#gh-light-mode-only" width="580">
 </p>
 
 <div align="center">
 
 [![Contributors welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](CONTRIBUTING.md)
-[![License](https://img.shields.io/github/license/AlinaWan/RobloxChatLauncher)](LICENSE)
+[![License](https://img.shields.io/github/license/RobloxChatLauncher/RobloxChatLauncher)](LICENSE)
 [![C#](https://custom-icon-badges.demolab.com/badge/C%23-%23239120.svg?logo=cshrp&logoColor=white)](#)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=000)](#)
 [![Node.js](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white)](#)
@@ -42,8 +42,8 @@ We follow a "Discussion First" workflow. To ensure your time is well-spent and y
 
 ### 1. Identify a Task
 
-* **New Ideas:** If you have a feature idea or found a bug, please open a [new issue](https://github.com/AlinaWan/RobloxChatLauncher/issues/new) to discuss first.
-* **Existing Tasks:** Browse the [Issue Tracker](https://github.com/AlinaWan/RobloxChatLauncher/issues) for issues labeled `help wanted` or `good first issue`.
+* **New Ideas:** If you have a feature idea or found a bug, please open a [new issue](https://github.com/RobloxChatLauncher/RobloxChatLauncher/issues/new) to discuss first.
+* **Existing Tasks:** Browse the [Issue Tracker](https://github.com/RobloxChatLauncher/RobloxChatLauncher/issues) for issues labeled `help wanted` or `good first issue`.
 
 ### 2. Propose Your Plan
 
@@ -118,7 +118,7 @@ Once a maintainer acknowledges your plan and assigns you to the issue, you are c
 ## 🎀 Quick Start
 
 ```powershell
-gh repo fork AlinaWan/RobloxChatLauncher --clone --remote=true; if($?){ cd RobloxChatLauncher; git checkout -b feat/your-feature-name }
+gh repo fork RobloxChatLauncher/RobloxChatLauncher --clone --remote=true; if($?){ cd RobloxChatLauncher; git checkout -b feat/your-feature-name }
 ```
 
 ---
@@ -276,7 +276,7 @@ Use a sandboxed environment for safe testing:
 First things first, clone the repository and navigate to the root folder:
 
 ```powershell
-git clone https://github.com/AlinaWan/RobloxChatLauncher
+git clone https://github.com/RobloxChatLauncher/RobloxChatLauncher
 cd RobloxChatLauncher
 ```
 
@@ -424,7 +424,7 @@ All commits **must follow [Conventional Commits v1.0.0](https://www.conventional
     and downloading Roblox Chat Launcher (source or release executable):
   </p>
 
-  <pre><code>iex (iwr -useb https://raw.githubusercontent.com/AlinaWan/RobloxChatLauncher/main/.github/scripts/setup_vm.ps1); setup -Mode SDK -Branch main
+  <pre><code>iex (iwr -useb https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/main/.github/scripts/setup_vm.ps1); setup -Mode SDK -Branch main
 </code></pre>
 
   <p><strong>Options:</strong></p>

@@ -28,7 +28,7 @@ namespace RobloxChatLauncher
                 /// <summary>Opens the external command documentation URL.</summary>
                 case "/help":
                 case "/?":
-                    OpenUrl("https://github.com/AlinaWan/RobloxChatLauncher/tree/main/assets/docs/COMMANDS.md");
+                    OpenUrl("https://github.com/RobloxChatLauncher/RobloxChatLauncher/tree/main/assets/docs/COMMANDS.md");
                     RichChatBox.AppendSystemMessage(chatBox, Strings.OpeningWebsite);
                     return true;
 
@@ -66,7 +66,7 @@ namespace RobloxChatLauncher
                 /// <summary>Opens the default web browser to the GitHub issues page for reporting bugs or requesting features.</summary>
                 case "/bug":
                 case "/issue":
-                    OpenUrl("https://github.com/AlinaWan/RobloxChatLauncher/issues/new");
+                    OpenUrl("https://github.com/RobloxChatLauncher/RobloxChatLauncher/issues/new");
                     RichChatBox.AppendSystemMessage(chatBox, Strings.OpeningWebsite);
                     return true;
 
