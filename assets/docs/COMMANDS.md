@@ -22,4 +22,4 @@
 | /verify | - | Initiates the Roblox account verification process by fetching a unique code for the given Roblox username. | args: The Roblox username to verify. |
 | /confirm | - | Confirms the Roblox account verification by checking the previously generated code against the user's Roblox profile, and if successful, links the account and refreshes the connection to update the username. | - |
 | /unverify | - | Unverifies the user's Roblox account by clearing local verification data and attempting to unlink the account on the server, then refreshes the connection to update the username to "Guest". | - |
-| /emote | `/e` | Sends an emote mail to the server to request the specified emote be performed in-game. This command only works if the user is verified and the Roblox game has Roblox Chat Launcher integration enabled. | args: The name of the emote to perform. |
+| /emote | `/e` | Sends an emote mail to the server to request the specified emote be performed in-game. This command only works if the user is verified and the Roblox game has Roblox Chat Launcher integrations enabled. | args: The name of the emote to perform. |
