@@ -398,10 +398,31 @@ All commits **must follow [Conventional Commits v1.0.0](https://www.conventional
 * `feat(scope):` new feature
 * `fix(scope):` bug fix
 * `refactor(scope):` code changes that don’t add features or fix bugs
+* `infra(scope):` changes to core infrastructure
 * `perf(scope):` performance improvements
 * `chore(scope):` maintenance tasks
 * `docs(scope):` changes or additions to documentation
 
+### Approved Scopes
+
+<details>
+  <summary>Click to expand</summary>
+    
+* `client` all types
+* `server` all types
+* `installer` all types
+* `integrations` all types
+* `ci` all types
+* `test` all types
+* `assets` chore
+* `readme` chore or docs
+* `contributing` chore or docs
+* `docs` chore
+* `deps` chore
+* `gitattributes` chore
+* `gitignore` chore
+
+</details>
 
 ## 💻 Development Guidelines
 
