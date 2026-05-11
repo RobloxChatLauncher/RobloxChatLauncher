@@ -66,7 +66,7 @@ namespace RobloxChatLauncher
                 /// <summary>Opens the default web browser to the GitHub issues page for reporting bugs or requesting features.</summary>
                 case "/bug":
                 case "/issue":
-                    OpenUrl("https://github.com/RobloxChatLauncher/RobloxChatLauncher/issues/new");
+                    OpenUrl("https://github.com/RobloxChatLauncher/RobloxChatLauncher/issues/new?template=bug_report.yml");
                     RichChatBox.AppendSystemMessage(chatBox, Strings.OpeningWebsite);
                     return true;
 
