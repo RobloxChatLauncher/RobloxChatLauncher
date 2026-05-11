@@ -140,6 +140,12 @@ The backend handles validation, session management, and database operations.
 - Located in `/client`
 - Entry point: `Program.cs`
 
+#### Debug & Override Tools
+When compiling the client in **Debug mode**, you can use environment variables to override default behavior without modifying the source code:
+
+*   `APP_CULTURE`: Overrides the UI language (e.g., `$env:APP_CULTURE="zh-Hans"`).
+*   `BASE_URL`: Overrides the backend endpoint. In Debug, the internal `Constants.BASE_URL` becomes `readonly` instead of `const` to allow the override.
+
 #### Base URL Configuration
 
 The backend base URL used by the client is defined in:
@@ -172,9 +178,8 @@ Example (incorrect):
 
 The server will fail to start if PostgreSQL is not configured correctly.
 
-> [!IMPORTANT]
-> **Security Recommendation:**  
-> PostgreSQL should not be exposed to the public internet. Only the backend server should have direct database access over a private or internal network.
+> [!NOTE]
+> **Deployment Lifecycle:** Frankfurt and Singapore clusters are typically the first to receive "canary" updates. Be aware that these regions may reflect changes before a global rollout.
 
 ### Communication Flow
 
