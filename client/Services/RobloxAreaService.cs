@@ -46,6 +46,7 @@ namespace RobloxChatLauncher.Services
          * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
          * SOFTWARE.
          */
+        private const string GameRCLInitializedEntry         = "[FLog::Output] [RCL::Client] Initialized Roblox Chat Launcher Integrations";
         private const string GameMessageEntry                = "[FLog::Output] [BloxstrapRPC]";
         private const string GameJoiningEntry                = "[FLog::Output] ! Joining game";
 
@@ -68,8 +69,7 @@ namespace RobloxChatLauncher.Services
         private const string GameJoiningUDMUXPattern         = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
         private const string GameJoinedEntryPattern          = @"serverId: ([0-9\.]+)\|[0-9]+";
         private const string GameMessageEntryPattern         = @"\[BloxstrapRPC\] (.*)";
-        private const string GameRCLInitializedEntry         = "[FLog::Output] [RCL::Client] Initialized Roblox Chat Launcher Integrations";
-
+        
         private readonly string _logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Roblox", "logs");
         private CancellationTokenSource? _cts;
 
