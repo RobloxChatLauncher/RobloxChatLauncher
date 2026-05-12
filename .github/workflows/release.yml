@@ -74,6 +74,7 @@ jobs:
   build-release:
     runs-on: windows-latest
     needs: validate-tag
+    environment: release
 
     steps:
       - name: Checkout repository
