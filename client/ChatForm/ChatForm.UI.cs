@@ -123,7 +123,7 @@ namespace RobloxChatLauncher
                 mainContainer.Visible = !isWindowHidden;
 
                 // Also hide the toggle button itself when the window is hidden
-                toggleBtn.Visible = !isWindowHidden;
+                // toggleBtn.Visible = !isWindowHidden;
 
                 // Update the visual state of the button
                 toggleBtn.IsActive = !isWindowHidden;
