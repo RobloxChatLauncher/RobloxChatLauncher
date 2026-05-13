@@ -1,162 +1,662 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Universe Verification</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Developer Portal | Universe Verification</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
+          rel="stylesheet" />
+
+    <style>
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .input-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            transition: all 0.2s;
+        }
+
+            .input-box:focus {
+                border-color: #3b82f6;
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(59,130,246,0.45);
+            }
+
+        .step-hidden {
+            display: none;
+        }
+
+        .dot-mask {
+            -webkit-text-security: disc;
+        }
+
+        .btn-loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            min-width: 16px;
+            min-height: 16px;
+            border-radius: 9999px;
+            border: 2px solid #3b82f6;
+            border-top-color: transparent;
+            animation: spin 0.7s linear infinite;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
-<body style="font-family: Arial; padding: 20px;">
 
-    <h2>Roblox Universe Verification</h2>
+<body class="min-h-screen flex items-center justify-center p-6">
 
-    <input id="userId" placeholder="User ID" /><br><br>
-    <input id="universeId" placeholder="Universe ID" /><br><br>
+    <div class="max-w-md w-full space-y-8">
 
-    <button onclick="startFlow()">Start Verification</button>
+        <!-- Header -->
+        <div class="text-center">
 
-    <div id="resultArea" style="display:none; margin-top:20px; padding:15px; border:2px solid #007bff; background:#f0f7ff; border-radius:8px;">
-        <h3 style="margin-top:0;">Verification Successful!</h3>
-        <p style="color: #d9534f; font-weight: bold;">Please copy your API key. ⚠️ This key will not be shown again.</p>
-        <p>Copy your API key into your <strong>Experience Secrets</strong>:</p>
+            <h1 class="text-3xl font-bold tracking-tight text-white">
+                API Access
+            </h1>
 
-        <div id="keyDisplay" style="font-family: monospace; background: #eee; padding: 10px; margin-bottom: 10px; filter: blur(5px); user-select: none; word-break: break-all;">
-            <!-- Key will appear here -->
+            <p class="mt-2 text-sm text-slate-400">
+                Verify your Roblox Universe to generate an API key for Roblox Chat Launcher Integrations.
+            </p>
+
         </div>
 
-        <button id="copyBtn" style="padding:10px 20px; cursor:pointer; background:#007bff; color:white; border:none; border-radius:4px;">
-            Reveal & Copy Key
-        </button>
+        <!-- Main Card -->
+        <div class="glass rounded-3xl p-8 shadow-2xl">
+
+            <!-- Progress -->
+            <div class="mb-6 flex items-center justify-between">
+
+                <div id="stepIndicator"
+                     class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
+                    Step 1 of 3
+                </div>
+
+                <div class="flex gap-2">
+
+                    <div id="dot1"
+                         class="w-2 h-2 rounded-full bg-blue-500"></div>
+
+                    <div id="dot2"
+                         class="w-2 h-2 rounded-full bg-slate-700"></div>
+
+                    <div id="dot3"
+                         class="w-2 h-2 rounded-full bg-slate-700"></div>
+
+                </div>
+
+            </div>
+
+            <!-- Step 1 -->
+            <div id="step1" class="space-y-6">
+
+                <div class="space-y-4">
+
+                    <div>
+
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 ml-1">
+                            User ID
+                        </label>
+
+                        <input id="userId"
+                               type="text"
+                               placeholder="12345678"
+                               class="input-box w-full px-4 py-3 rounded-xl text-white placeholder-slate-500" />
+
+                    </div>
+
+                    <div>
+
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 ml-1">
+                            Universe ID
+                        </label>
+
+                        <input id="universeId"
+                               type="text"
+                               placeholder="98765432"
+                               class="input-box w-full px-4 py-3 rounded-xl text-white placeholder-slate-500" />
+
+                    </div>
+
+                </div>
+
+                <button id="step1Btn"
+                        onclick="handleStep1(event)"
+                        class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+                    Continue
+                </button>
+
+            </div>
+
+            <!-- Step 2 -->
+            <div id="step2" class="step-hidden space-y-6">
+
+                <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+
+                    <p class="text-sm text-blue-200">
+                        Paste this code into your
+                        <strong>Roblox Profile Description</strong>,
+                        save it, then click verify.
+                    </p>
+
+                </div>
+
+                <div class="relative group">
+
+                    <div id="codeBox"
+                         class="mono w-full bg-slate-900 px-4 py-6 rounded-xl text-center text-xl text-blue-400 border border-slate-700"></div>
+
+                </div>
+
+                <button id="step2Btn"
+                        onclick="handleStep2(event)"
+                        class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+                    I've updated my profile
+                </button>
+
+            </div>
+
+            <!-- Step 3 -->
+            <div id="step3" class="step-hidden space-y-6 text-center">
+
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-500 mb-2">
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-6 w-6"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor">
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7" />
+                    </svg>
+
+                </div>
+
+                <h3 class="text-xl font-semibold">
+                    Verification Successful
+                </h3>
+
+                <div class="text-left space-y-2">
+
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 ml-1">
+                        Your Experience Secret
+                    </label>
+
+                    <div class="relative flex items-center">
+
+                        <div id="keyDisplay"
+                             class="mono dot-mask w-full bg-slate-900 px-4 py-3.5 rounded-xl text-emerald-400 border border-slate-700 overflow-hidden text-ellipsis whitespace-nowrap pr-24"></div>
+
+                        <div class="absolute right-2 flex gap-1">
+
+                            <button onclick="toggleKey()"
+                                    class="p-2 text-slate-400 hover:text-white transition-colors">
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-5 w-5"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+
+                            </button>
+
+                            <button id="copyBtn"
+                                    onclick="copyKey()"
+                                    class="p-2 text-slate-400 hover:text-white transition-colors">
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     class="h-5 w-5"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <p class="text-[11px] text-amber-500/80 font-medium px-1">
+                        ⚠️ Warning: This key will only be shown once.
+                        Please store it securely.
+                    </p>
+
+                    <a id="secretManagerBtn"
+                       href="#"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]"
+                       Open Roblox Secret Manager
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- Status -->
+            <div id="statusContainer"
+                 class="mt-6 pt-6 border-t border-slate-800 hidden">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="spinner"></div>
+
+                    <p id="statusText"
+                       class="text-xs text-slate-400 mono"></p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center">
+
+            <p class="text-slate-500 text-sm">
+                © 2026 Roblox Chat Launcher
+            </p>
+
+            <p class="text-slate-600 text-[11px] mt-1">
+                Not affiliated with or endorsed by Roblox Corporation.
+            </p>
+
+        </div>
+
     </div>
-<pre id="log" style="margin-top:20px;"></pre>
 
     <script>
+        const workerCode = `
+            self.onmessage = async (e) => {
+                const { seed, difficulty } = e.data;
+                const target = "0".repeat(difficulty);
+                let nonce = 0;
+
+                while (true) {
+                    const data = seed + nonce;
+                    const hashBuffer = await crypto.subtle.digest(
+                        "SHA-256",
+                        new TextEncoder().encode(data)
+                    );
+
+                    const hashHex = Array.from(new Uint8Array(hashBuffer))
+                        .map(b => b.toString(16).padStart(2, "0"))
+                        .join("");
+
+                    if (hashHex.startsWith(target)) {
+                        self.postMessage(nonce);
+                        return;
+                    }
+                    nonce++;
+                }
+            };
+        `;
+
+        // Create a URL for the blob so the Worker can "download" it
+        const blob = new Blob([workerCode], { type: 'application/javascript' });
+        const workerUrl = URL.createObjectURL(blob);
+
+        let cachedKey = "";
+        let isVisible = false;
+
         const log = (msg) => {
-            document.getElementById("log").textContent += msg + "\n";
+
+            const container = document.getElementById("statusContainer");
+            const text = document.getElementById("statusText");
+
+            container.classList.remove("hidden");
+
+            text.textContent = msg;
         };
 
-        /* -----------------------------
-           PoW Solver
-        ----------------------------- */
+        const updateProgress = (step) => {
+
+            document.getElementById("stepIndicator").textContent =
+                `Step ${step} of 3`;
+
+            for (let i = 1; i <= 3; i++) {
+
+                const dot = document.getElementById(`dot${i}`);
+
+                if (i <= step) {
+                    dot.classList.remove("bg-slate-700");
+                    dot.classList.add("bg-blue-500");
+                } else {
+                    dot.classList.remove("bg-blue-500");
+                    dot.classList.add("bg-slate-700");
+                }
+            }
+        };
+
+        const switchStep = (stepNumber) => {
+
+            ["step1", "step2", "step3"].forEach(id => {
+                document
+                    .getElementById(id)
+                    .classList.add("step-hidden");
+            });
+
+            document
+                .getElementById(`step${stepNumber}`)
+                .classList.remove("step-hidden");
+
+            document
+                .getElementById("statusContainer")
+                .classList.add("hidden");
+
+            updateProgress(stepNumber);
+        };
+
+        const setButtonLoading = (button, loading, loadingText) => {
+
+            if (loading) {
+
+                button.disabled = true;
+
+                button.dataset.originalText = button.innerHTML;
+
+                button.classList.add("btn-loading");
+
+                button.innerHTML = loadingText;
+
+            } else {
+
+                button.disabled = false;
+
+                button.classList.remove("btn-loading");
+
+                if (button.dataset.originalText) {
+                    button.innerHTML = button.dataset.originalText;
+                }
+            }
+        };
+
         async function solvePoW(seed, difficulty) {
-            const target = "0".repeat(difficulty);
-            let nonce = 0;
+            return new Promise((resolve, reject) => {
+                log("Solving computational challenge...");
 
-            log("Solving PoW...");
+                const worker = new Worker(workerUrl);
 
-            while (true) {
-                const data = seed + nonce;
+                worker.postMessage({ seed, difficulty });
 
-                const hashBuffer = await crypto.subtle.digest(
-                    "SHA-256",
-                    new TextEncoder().encode(data)
+                worker.onmessage = (e) => {
+                    const result = e.data;
+                    worker.terminate(); // Stop the thread to save memory
+                    resolve(result);
+                };
+
+                worker.onerror = (err) => {
+                    worker.terminate();
+                    reject(err);
+                };
+            });
+        }
+
+        async function handleStep1(event) {
+
+            const button = event.currentTarget;
+
+            if (button.disabled) return;
+
+            const userId =
+                document.getElementById("userId").value.trim();
+
+            const universeId =
+                document.getElementById("universeId").value.trim();
+
+            if (
+                !/^\d+$/.test(userId) ||
+                !/^\d+$/.test(universeId)
+            ) {
+                return log(
+                    "User ID and Universe ID must be numeric."
+                );
+            }
+
+            setButtonLoading(
+                button,
+                true,
+                "Processing..."
+            );
+
+            try {
+
+                log("Requesting challenge...");
+
+                const powRes =
+                    await fetch("/api/v1/creators/challenge");
+
+                const powData = await powRes.json();
+
+                const nonce1 = await solvePoW(
+                    powData.seed,
+                    powData.difficulty
                 );
 
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const hashHex = hashArray
-                    .map(b => b.toString(16).padStart(2, "0"))
-                    .join("");
+                log("Generating profile code...");
 
-                if (hashHex.startsWith(target)) {
-                    log("PoW solved: " + nonce);
-                    return nonce;
+                const codeRes = await fetch(
+                    "/api/v1/creators/generate",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            userId,
+                            seed: powData.seed,
+                            nonce: nonce1
+                        })
+                    }
+                );
+
+                const codeData = await codeRes.json();
+
+                if (!codeRes.ok) {
+                    throw new Error(
+                        codeData.reason || "Generation failed"
+                    );
                 }
 
-                nonce++;
+                document.getElementById("codeBox").textContent =
+                    codeData.code;
+
+                switchStep(2);
+
+            } catch (err) {
+
+                log("Error: " + err.message);
+
+            } finally {
+
+                setButtonLoading(button, false);
+
             }
         }
 
-        /* -----------------------------
-           MAIN FLOW
-        ----------------------------- */
-        async function startFlow() {
-            const userId = document.getElementById("userId").value;
-            const universeId = document.getElementById("universeId").value;
+        async function handleStep2(event) {
 
-            if (!userId || !universeId) {
-                alert("Missing fields");
-                return;
-            }
+            const button = event.currentTarget;
 
-            document.getElementById("log").textContent = "";
+            if (button.disabled) return;
 
-            log("Fetching challenge for profile code...");
-            const powRes = await fetch("/api/v1/creators/challenge");
-            const powData = await powRes.json();
-            const nonce1 = await solvePoW(powData.seed, powData.difficulty); log("Requesting profile code...");
+            const userId =
+                document.getElementById("userId").value.trim();
 
-            log("Generating...");
-            const codeRes = await fetch("/api/v1/creators/generate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    userId,
-                    seed: powData.seed,
-                    nonce: nonce1
-                })
-            });
+            const universeId =
+                document.getElementById("universeId").value.trim();
 
-            const codeData = await codeRes.json();
-            if (!codeRes.ok) {
-                log("Error: " + JSON.stringify(codeData));
-                return;
-            }
-
-            const confirmDone = confirm(
-                `STEP 1: Put this code in your Roblox profile description:\n\n` +
-                `${codeData.code}\n\n` +
-                `STEP 2: Press OK once you have saved your profile.`
+            setButtonLoading(
+                button,
+                true,
+                "Verifying..."
             );
 
-            if (!confirmDone) {
-                log("Verification cancelled by user.");
-                return;
+            try {
+
+                log("Requesting validation challenge...");
+
+                const valPowRes =
+                    await fetch("/api/v1/creators/challenge");
+
+                const valPowData = await valPowRes.json();
+
+                const nonce2 = await solvePoW(
+                    valPowData.seed,
+                    valPowData.difficulty
+                );
+
+                log("Validating profile data...");
+
+                const validateRes = await fetch(
+                    "/api/v1/creators/confirm",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            userId,
+                            universeId,
+                            seed: valPowData.seed,
+                            nonce: nonce2
+                        })
+                    }
+                );
+
+                const result =
+                    await validateRes.json();
+
+                if (result.ok && result.apiKey) {
+
+                    cachedKey = result.apiKey;
+
+                    document.getElementById(
+                        "keyDisplay"
+                    ).textContent = cachedKey;
+
+                    document.getElementById(
+                        "secretManagerBtn"
+                    ).href =
+                        `https://create.roblox.com/dashboard/creations/experiences/${universeId}/secrets`;
+
+                    switchStep(3);
+
+                } else {
+
+                    throw new Error(
+                        result.reason || "Validation failed"
+                    );
+                }
+
+            } catch (err) {
+
+                log("Validation Failed: " + err.message);
+
+            } finally {
+
+                setButtonLoading(button, false);
+
             }
+        }
 
-            /* ---------------- Final Validation ---------------- */
-            log("Fetching challenge for validation...");
-            const valPowRes = await fetch("/api/v1/creators/challenge");
-            const valPowData = await valPowRes.json();
-            const nonce2 = await solvePoW(valPowData.seed, valPowData.difficulty);
+        function toggleKey() {
 
-            log("Validating...");
-            const validateRes = await fetch("/api/v1/creators/confirm", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    userId,
-                    universeId,
-                    seed: valPowData.seed,
-                    nonce: nonce2
-                })
-            });
+            const display =
+                document.getElementById("keyDisplay");
 
-            const result = await validateRes.json();
+            isVisible = !isVisible;
 
-            if (result.ok && result.apiKey) {
-                log("Success! Key generated.");
+            display.classList.toggle(
+                "dot-mask",
+                !isVisible
+            );
+        }
 
-                // Show the UI box
-                const area = document.getElementById("resultArea");
-                const display = document.getElementById("keyDisplay");
-                const btn = document.getElementById("copyBtn");
+        async function copyKey() {
 
-                area.style.display = "block";
-                display.textContent = result.apiKey;
+            try {
 
-                // Set up the click event for the Reveal/Copy button
-                btn.onclick = () => {
-                    display.style.filter = "none"; // Remove blur
-                    display.style.userSelect = "all"; // Allow highlighting
+                await navigator.clipboard.writeText(
+                    cachedKey
+                );
 
-                    navigator.clipboard.writeText(result.apiKey);
-                    alert("Key copied! Paste this into your Roblox Experience Secrets.");
+                const btn =
+                    document.getElementById("copyBtn");
 
-                    btn.textContent = "Copied!";
-                    btn.disabled = true;
-                };
+                const originalInner =
+                    btn.innerHTML;
 
-            } else {
-                log("Result: " + (result.reason || "Failed"));
+                btn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 text-emerald-500"
+                            viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                            <path d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" />
+                        </svg>
+                    `;
+
+                setTimeout(() => {
+                    btn.innerHTML = originalInner;
+                }, 2000);
+
+            } catch {
+
+                log("Clipboard access denied.");
+
             }
-        } // end of startFlow
+        }
+
+        updateProgress(1);
+
     </script>
 
 </body>
