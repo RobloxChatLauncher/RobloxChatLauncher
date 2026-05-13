@@ -61,7 +61,7 @@ router.get("/challenge", (req, res) => {
  *             properties:
  *               robloxId:
  *                 type: string
- *                 example: "123456789""
+ *                 example: "123456789"
  *               seed:
  *                 type: string
  *                 example: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"

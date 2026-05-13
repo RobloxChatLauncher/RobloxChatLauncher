@@ -52,7 +52,7 @@ const swaggerOptions = {
             { name: "Public" }
         ]
     },
-    apis: ['./server.js'],
+    apis: ['./server.js', './routes/*.js'],
 };
 
 // Allowed mail types for the mail push endpoint
