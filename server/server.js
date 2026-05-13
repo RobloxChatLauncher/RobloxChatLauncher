@@ -638,7 +638,7 @@ const validateRegistry = async (req, res, next) => {
  * /api/v1/universe/settings:
  *   get:
  *     summary: Get universe registration settings
- *     description: Retrieves the public status and creation date for the authenticated universe.
+ *     description: Retrieves the visibility status and creation date for the authenticated universe.
  *     tags: [Universe]
  *     security:
  *       - ApiKeyAuth: []
@@ -666,7 +666,7 @@ const validateRegistry = async (req, res, next) => {
  *                 universeId:
  *                   type: string
  *                   example: "987654321"
- *                 isPublic:
+ *                 isUnlisted:
  *                   type: boolean
  *                   example: true
  *                 createdAt:
@@ -680,7 +680,7 @@ app.get(
 
         try {
             const result = await pool.query(
-                `SELECT universe_id, is_public, created_at
+                `SELECT universe_id, is_unlisted, created_at
                  FROM game_registry
                  WHERE universe_id = $1
                  LIMIT 1`,
@@ -697,7 +697,7 @@ app.get(
 
             res.json({
                 universeId: game.universe_id,
-                isPublic: game.is_public,
+                isUnlisted: game.is_unlisted,
                 createdAt: game.created_at
             });
 
@@ -714,7 +714,7 @@ app.get(
  * /api/v1/universe/settings:
  *   patch:
  *     summary: Update universe visibility
- *     description: Updates whether the universe is publicly visible in the registry.
+ *     description: Updates whether the universe is publicly listed in the registry.
  *     tags: [Universe]
  *     security:
  *       - ApiKeyAuth: []
@@ -736,9 +736,9 @@ app.get(
  *           schema:
  *             type: object
  *             required:
- *               - isPublic
+ *               - isUnlisted
  *             properties:
- *               isPublic:
+ *               isUnlisted:
  *                 type: boolean
  *                 example: false
  *     responses:
@@ -751,23 +751,23 @@ app.patch(
     validateRegistry,
     async (req, res) => {
 
-        const { isPublic } = req.body;
+        const { isUnlisted } = req.body;
 
-        if (typeof isPublic !== 'boolean') {
+        if (typeof isUnlisted !== 'boolean') {
             return res.status(400).json({
-                error: "isPublic must be a boolean."
+                error: "isUnlisted must be a boolean."
             });
         }
 
         try {
             await pool.query(
-                'UPDATE game_registry SET is_public = $1 WHERE universe_id = $2',
-                [isPublic, req.universeId]
+                'UPDATE game_registry SET is_unlisted = $1 WHERE universe_id = $2',
+                [isUnlisted, req.universeId]
             );
 
             res.json({
                 status: "success",
-                message: `Visibility updated to ${isPublic ? 'public' : 'private'}.`
+                message: `Visibility updated to ${isUnlisted ? 'unlisted' : 'listed'}.`
             });
 
         } catch (err) {
@@ -931,7 +931,7 @@ const validateVerifiedUser = async (req, res, next) => {
  * /api/v1/registry/{universeId}:
  *   get:
  *     summary: Check universe registration status
- *     description: Returns whether a specific universe is registered and set to public.
+ *     description: Returns whether a specific universe is registered if not unlisted.
  *     tags: [Public]
  *     parameters:
  *       - in: path
@@ -963,22 +963,22 @@ app.get('/api/v1/registry/:universeId', async (req, res) => {
 
     try {
         const query = `
-            SELECT is_public 
+            SELECT is_unlisted 
             FROM game_registry 
             WHERE universe_id = $1 
             LIMIT 1
         `;
         const result = await pool.query(query, [universeId]);
 
-        // If row doesn't exist OR if it exists but is NOT public
-        if (result.rowCount === 0 || result.rows[0].is_public === false) {
+        // If row doesn't exist OR if it exists but is UNLISTED
+        if (result.rowCount === 0 || result.rows[0].is_unlisted === true) {
             return res.json({
                 registered: false,
                 universe_id: universeId
             });
         }
 
-        // Only if it exists AND is public
+        // Only if it exists AND is listed
         res.json({
             registered: true,
             universe_id: universeId

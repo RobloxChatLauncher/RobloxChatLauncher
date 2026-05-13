@@ -63,9 +63,9 @@ async function removeGame(universeId) {
     await pool.query('DELETE FROM game_registry WHERE universe_id = $1', [universeId]);
 }
 
-async function getPublicGameStatus(universeId) {
+async function getUnlistedGameStatus(universeId) {
     const query = `
-        SELECT universe_id, is_public 
+        SELECT universe_id, is_unlisted 
         FROM game_registry 
         WHERE universe_id = $1 
         LIMIT 1
@@ -75,13 +75,13 @@ async function getPublicGameStatus(universeId) {
     if (result.rowCount === 0) return null; // Game not in registry at all
 
     const game = result.rows[0];
-    return game.is_public ? { universe_id: game.universe_id, registered: true } : null;
+    return !game.is_unlisted ? { universe_id: game.universe_id, registered: true } : null;
 }
 
-async function updateGameVisibility(universeId, isPublic) {
+async function updateGameVisibility(universeId, isUnlisted) {
     await pool.query(
-        'UPDATE game_registry SET is_public = $1 WHERE universe_id = $2',
-        [isPublic, universeId]
+        'UPDATE game_registry SET is_unlisted = $1 WHERE universe_id = $2',
+        [isUnlisted, universeId]
     );
     return true;
 }
@@ -89,7 +89,7 @@ async function updateGameVisibility(universeId, isPublic) {
 module.exports = {
     authenticateGameServer,
     getAllGames,
-    getPublicGameStatus,
+    getUnlistedGameStatus,
     upsertGame,
     removeGame,
     updateGameVisibility
