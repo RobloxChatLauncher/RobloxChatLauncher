@@ -129,7 +129,7 @@
                             User ID
                         </label>
 
-                        <input id="userId"
+                        <input id="robloxId"
                                type="text"
                                placeholder="12345678"
                                class="input-box w-full px-4 py-3 rounded-xl text-white placeholder-slate-500" />
@@ -272,7 +272,7 @@
                        href="#"
                        target="_blank"
                        rel="noopener noreferrer"
-                       class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]"
+                       class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
                        Open Roblox Secret Manager
                     </a>
 
@@ -445,14 +445,14 @@
 
             if (button.disabled) return;
 
-            const userId =
-                document.getElementById("userId").value.trim();
+            const robloxId =
+                document.getElementById("robloxId").value.trim();
 
             const universeId =
                 document.getElementById("universeId").value.trim();
 
             if (
-                !/^\d+$/.test(userId) ||
+                !/^\d+$/.test(robloxId) ||
                 !/^\d+$/.test(universeId)
             ) {
                 return log(
@@ -490,7 +490,7 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            userId,
+                            robloxId,
                             seed: powData.seed,
                             nonce: nonce1
                         })
@@ -527,8 +527,8 @@
 
             if (button.disabled) return;
 
-            const userId =
-                document.getElementById("userId").value.trim();
+            const robloxId =
+                document.getElementById("robloxId").value.trim();
 
             const universeId =
                 document.getElementById("universeId").value.trim();
@@ -563,7 +563,7 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            userId,
+                            robloxId,
                             universeId,
                             seed: valPowData.seed,
                             nonce: nonce2

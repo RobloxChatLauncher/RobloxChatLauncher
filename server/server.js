@@ -46,8 +46,9 @@ const swaggerOptions = {
         },
         tags: [
             { name: "Admin" },
+            { name: "Creators" },
             { name: "Universe" },
-            {name: "Verified"},
+            { name: "Verified"},
             { name: "Public" }
         ]
     },

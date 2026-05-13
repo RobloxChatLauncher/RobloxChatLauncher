@@ -1,3 +1,4 @@
+// Allows self-serve API key generation
 const axios = require("axios");
 const crypto = require("crypto");
 const path = require("path");
@@ -36,17 +37,17 @@ async function getUniverseCreator(universeId) {
     return res.data?.data?.[0]?.creator || null;
 }
 
-async function getUserGroups(userId) {
+async function getUserGroups(robloxId) {
     const res = await axios.get(
-        `https://groups.roblox.com/v2/users/${userId}/groups/roles`
+        `https://groups.roblox.com/v2/users/${robloxId}/groups/roles`
     );
 
     return res.data?.data || [];
 }
 
-async function getProfileDescription(userId) {
+async function getProfileDescription(robloxId) {
     const res = await axios.get(
-        `https://users.roblox.com/v1/users/${userId}`
+        `https://users.roblox.com/v1/users/${robloxId}`
     );
 
     return res.data?.description || "";
@@ -57,19 +58,19 @@ async function getProfileDescription(userId) {
 ----------------------------- */
 
 async function generateCode(req, res) {
-    const { userId, seed, nonce } = req.body;
+    const { robloxId, seed, nonce } = req.body;
 
     if (!seed || !nonce || !pow.verify(seed, nonce)) {
         return res.status(401).send("Invalid PoW");
     }
 
-    if (!userId) {
+    if (!robloxId) {
         return res.status(400).send("User ID required");
     }
 
     try {
         const userRes = await axios.get(
-            `https://users.roblox.com/v1/users/${userId}`
+            `https://users.roblox.com/v1/users/${robloxId}`
         );
 
         if (!userRes.data?.id) {
@@ -80,12 +81,12 @@ async function generateCode(req, res) {
             WORDS[crypto.randomInt(0, WORDS.length)].toLowerCase()
         ).join(' ')}`;
 
-        pendingCreatorChecks.set(Number(userId), {
+        pendingCreatorChecks.set(Number(robloxId), {
             code,
             expiresAt: Date.now() + Constants.VERIFICATION_TTL_MS
         });
 
-        res.json({ userId, code });
+        res.json({ robloxId, code });
 
     } catch (err) {
         console.error(err);
@@ -97,24 +98,24 @@ async function generateCode(req, res) {
    VALIDATION CORE
 ----------------------------- */
 
-async function validateCreator(userId, universeId, seed, nonce) {
+async function validateCreator(robloxId, universeId, seed, nonce) {
     if (!pow.verify(seed, nonce)) {
         return { ok: false, reason: "PoW failed" };
     }
 
-    const pending = pendingCreatorChecks.get(Number(userId));
+    const pending = pendingCreatorChecks.get(Number(robloxId));
 
     if (!pending || Date.now() > pending.expiresAt) {
         return { ok: false, reason: "No profile verification" };
     }
 
-    const description = await getProfileDescription(userId);
+    const description = await getProfileDescription(robloxId);
 
     if (!description.includes(pending.code)) {
         return { ok: false, reason: "Profile code missing" };
     }
 
-    pendingCreatorChecks.delete(Number(userId));
+    pendingCreatorChecks.delete(Number(robloxId));
 
     const creator = await getUniverseCreator(universeId);
 
@@ -122,13 +123,13 @@ async function validateCreator(userId, universeId, seed, nonce) {
 
     if (creator.type === "User") {
         return {
-            ok: Number(creator.id) === Number(userId),
+            ok: Number(creator.id) === Number(robloxId),
             reason: "User owner check"
         };
     }
 
     if (creator.type === "Group") {
-        const groups = await getUserGroups(userId);
+        const groups = await getUserGroups(robloxId);
 
         const match = groups.find(
             g => Number(g.group.id) === Number(creator.id)
@@ -139,7 +140,8 @@ async function validateCreator(userId, universeId, seed, nonce) {
         const rank = match.role.rank;
 
         return {
-            ok: rank >= 254 && rank <= 255,
+            // Using a range here to allow for changes in allowed range
+            ok: rank >= 255 && rank <= 255,
             reason: `Rank ${rank}`
         };
     }
