@@ -72,6 +72,8 @@ app.set('trust proxy', 1); // trust only the first proxy hop (Render)
 app.use(express.text({ limit: Constants.TEXT_LIMIT_BYTES }));
 
 // ----- Routes -----
+const landingRoutes = require('./routes/landing');
+app.use('/', landingRoutes);
 app.use("/api/v1/creators", require("./routes/creators"));
 
 // ----- Swagger Setup -----
