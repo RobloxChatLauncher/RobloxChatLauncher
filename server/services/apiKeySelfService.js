@@ -122,26 +122,27 @@ async function validateCreator(robloxId, universeId, seed, nonce) {
     if (!creator) return { ok: false, reason: "Universe not found" };
 
     if (creator.type === "User") {
+        const isOwner = Number(creator.id) === Number(robloxId);
         return {
-            ok: Number(creator.id) === Number(robloxId),
-            reason: "User owner check"
+            ok: isOwner,
+            groupId: null, // No group for user-owned games
+            reason: isOwner ? "Success" : "User owner check"
         };
     }
 
     if (creator.type === "Group") {
         const groups = await getUserGroups(robloxId);
-
-        const match = groups.find(
-            g => Number(g.group.id) === Number(creator.id)
-        );
+        const match = groups.find(g => Number(g.group.id) === Number(creator.id));
 
         if (!match) return { ok: false, reason: "Not in group" };
 
         const rank = match.role.rank;
+        // Using a range here to allow for changes in allowed range
+        const isAuthorized = rank >= 255 && rank <= 255
 
         return {
-            // Using a range here to allow for changes in allowed range
-            ok: rank >= 255 && rank <= 255,
+            ok: isAuthorized,
+            groupId: creator.id, // Pass the group ID back
             reason: `Rank ${rank}`
         };
     }

@@ -21,6 +21,7 @@ async function initDatabase() {
         CREATE TABLE IF NOT EXISTS game_registry (
             universe_id BIGINT PRIMARY KEY,
             creator_id BIGINT NOT NULL,
+            group_id BIGINT DEFAULT NULL,
             api_key TEXT UNIQUE NOT NULL,
             is_unlisted BOOLEAN NOT NULL DEFAULT TRUE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

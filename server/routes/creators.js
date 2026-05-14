@@ -166,24 +166,27 @@ router.post("/generate", generateCode);
 router.post("/confirm", async (req, res) => {
     const { robloxId, universeId, seed, nonce } = req.body;
 
-    const result = await validateCreator(robloxId, universeId, seed, nonce);
+    // Destructure groupId from the result
+    const { ok, groupId, reason } = await validateCreator(robloxId, universeId, seed, nonce);
 
-    if (result.ok) {
+    if (ok) {
         // 64 characters sha256 hex (32 bytes)
         const apiKey = `rcl_${crypto.randomBytes(32).toString('hex')}`;
 
         try {
             const query = `
-                INSERT INTO game_registry (universe_id, creator_id, api_key)
-                VALUES ($1, $2, $3)
+                INSERT INTO game_registry (universe_id, creator_id, group_id, api_key)
+                VALUES ($1, $2, $3, $4)
                 ON CONFLICT (universe_id) 
                 DO UPDATE SET 
                     api_key = EXCLUDED.api_key,
                     creator_id = EXCLUDED.creator_id,
+                    group_id = EXCLUDED.group_id,
                     updated_at = CURRENT_TIMESTAMP;
             `;
 
-            const values = [universeId, robloxId, apiKey];
+            // If groupId is undefined/null, it will insert as NULL in Postgres
+            const values = [universeId, robloxId, groupId, apiKey];
             await pool.query(query, values);
 
             return res.json({
@@ -196,7 +199,7 @@ router.post("/confirm", async (req, res) => {
             return res.status(500).json({ ok: false, reason: "Database storage failed" });
         }
     } else {
-        return res.status(403).json(result);
+        return res.status(403).json({ ok: false, reason });
     }
 });
 
