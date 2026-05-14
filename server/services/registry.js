@@ -26,7 +26,7 @@ async function authenticateGameServer(universeId, apiKey) {
 
         if (result.rowCount === 0) {
             // Fake compare to prevent oracle
-            const fake = '0'.repeat(64); // 64 hex chars (sha256 hex)
+            const fake = 'rcl_' + '0'.repeat(64); // 64 hex chars (sha256 hex)
             safeCompare(hashedInput, fake);
             return false;
         }
@@ -53,7 +53,10 @@ async function upsertGame(universeId, apiKey) {
         INSERT INTO game_registry (universe_id, api_key)
         VALUES ($1, $2)
         ON CONFLICT (universe_id) 
-        DO UPDATE SET api_key = EXCLUDED.api_key;
+        DO UPDATE SET
+            api_key = EXCLUDED.api_key,
+            creator_id = EXCLUDED.creator_id,
+            updated_at = CURRENT_TIMESTAMP;
     `;
 
     await pool.query(query, [universeId, hashedKey]);

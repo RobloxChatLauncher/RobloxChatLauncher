@@ -1,7 +1,7 @@
 Privacy Policy
 --------------
 
-Last Updated: April 14, 2026
+Last Updated: May 13, 2026
 
 This Privacy Policy explains how this service processes information when users send messages through the application.
 The service is designed with privacy-by-design principles and minimizes the collection and retention of personal data.
@@ -12,6 +12,7 @@ i. TL;DR
         - ✓ Your messages, which are never stored outside of logs and are automatically deleted after 7 days.
         - ✓ The channel your messages were sent on.
         - ✓ If you choose to verify your account, your Roblox User ID and Machine GUID in our database tables.
+        - ✓ (Creators) If you generate an API key with us, your Roblox User ID, Universe ID, and Group ID (if applicable) in our database tables.
     We CANNOT see the following information in our logs:
         - ✗ Your public IP address or physical location.
         - ✗ Any permanent identifiers associated with messages, even if you are verified.
@@ -42,14 +43,24 @@ i. TL;DR
         Right to Erasure: You may invoke your "Right to be Forgotten" at any time by running the '/unverify' command within the client. Executing
                           this command sends an immediate deletion request to our server, which permanently purges your Hardware ID and linked
                           Roblox User ID from our database and clears all associated data from your local device.
+        Right to Erasure (Creators): Creators who wish to revoke their API key and delete their game registry data (Universe ID and linked Creator ID)
+                                     may do so by contacting us at the email provided in the Contact & Privacy Inquiries section.
 
-3. Message Content & Content Moderation
+3. Creator API Access & Game Registry
+    To facilitate the self-serve API system, we collect specific data required to authenticate your Roblox Experience.
+        Data Collected: When you verify a game, we store your Roblox User ID (as the creator), the Roblox Universe ID, the Roblox Group ID (if applicable) and a hashed API Key.
+        Purpose: This data is strictly used to validate that incoming requests from Roblox servers are authorized to interact with the Roblox Chat Launcher API.
+        Visibility Settings: By default, registered Universe IDs are marked as "Unlisted." If you choose to opt-in to public listings
+                             (via the /settings endpoint), your Universe ID will be visible in our public API directory.
+        Data Retention: This information is stored persistently in our PostgreSQL database (Neon) until you request deletion.
+
+4. Message Content & Content Moderation
     Messages submitted to the service are processed for the purpose of maintaining a safe and abuse-free environment. To assist with
     content moderation, message text is analyzed using the Perspective API. The service enables Google's doNotStore option, which
     instructs Google not to retain submitted message text or use it for model training after analysis.
     Users are encouraged to review Google's Privacy Policy at https://policies.google.com/privacy.
 
-4. Hosting & Infrastructure
+5. Hosting & Infrastructure
     This service is hosted on Render, and persistent data is stored on Neon. As hosting providers, Render and Neon may automatically collect
     technical metadata and retain access logs (such as IP addresses, timestamps, and database tables) for security and operational monitoring.
     In addition, message content may appear transiently within the application logs as part of normal request handling.
@@ -60,7 +71,7 @@ i. TL;DR
     and cannot be guaranteed to remain private once transmitted.
     Users are encouraged to review Render's Privacy Policy at https://render.com/privacy and Neon's Privacy Policy at https://neon.com/privacy-policy.
 
-5. Limited Personal Data Processing
+6. Limited Personal Data Processing
     The service is built on a "zero-account" model. We do not collect names, emails, or credentials.
         What the Server Sees: Your submitted message content, the specific channel/instance it is routed to, and (if verified) your Roblox User ID.
         Temporary Metadata: For guest users, the server tracks active connections via ephemeral port numbers. Because these ports are reused by 
@@ -70,7 +81,7 @@ i. TL;DR
                       link a specific message to a specific person once the connection is closed.
     All processing is limited to what is necessary for service operation, security, and abuse prevention.
 
-6. Legal Basis & Consent
+7. Legal Basis & Consent
     GDPR / UK GDPR
         Where applicable, personal data is processed under Article 6(1)(f) (legitimate interests) for ensuring service security, preventing abuse,
         and maintaining system integrity. Pursuant to Article 11 GDPR, we do not require, and do not collect, additional information to identify 
@@ -91,12 +102,12 @@ i. TL;DR
             Verifiable Requests: California residents have the right to request deletion or access. However, we can only fulfill requests that are Verifiable.
                                  As we do not maintain traditional accounts, we may not be able to verify requests from unverified users. 
 
-7. International Data Transfers
+8. International Data Transfers
     This service is hosted on servers located in the United States (via Render and Neon). When you use the service, your data is transferred to and processed in the
     U.S. We ensure a similar degree of protection is afforded to it by ensuring that our sub-processors (Render, Neon, and Google) utilize standard contractual
     clauses (SCCs) or other legally recognized transfer mechanisms approved by the European Commission.
 
-8. California Privacy Rights
+9. California Privacy Rights
     California residents have the right to request:
         - The categories of personal information processed
         - The purposes for which personal information is used
@@ -107,11 +118,11 @@ i. TL;DR
     sharing of personal data. Deletion requests apply to data under the service’s direct control. Certain technical logs managed by infrastructure
     providers may be retained for a limited period and deleted automatically in accordance with their retention policies.
 
-9. Contact & Privacy Inquiries
+10. Contact & Privacy Inquiries
     The Data Controller for this service is the operator of the RobloxChatLauncher project. For the purposes of PIPEDA, the operator also serves as
     the Privacy Officer. If you have questions or wish to challenge our compliance with these principles, please contact:
         Email: RobloxChatLauncher@proton.me
 
-10. Policy Updates
+11. Policy Updates
     This Privacy Policy may be updated from time to time. Changes take effect immediately upon posting. Users are encouraged to review this
     policy periodically for updates.

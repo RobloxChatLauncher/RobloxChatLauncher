@@ -1,7 +1,7 @@
 Terms of Service
 ----------------
 
-Last Updated: February 26, 2026
+Last Updated: May 13, 2026
 
 i. TL;DR
     - The Server is provided at no cost to You; anyone can use it for free.
@@ -11,6 +11,7 @@ i. TL;DR
     - If Your specific actions on the Server lead to any claims from a third-party, You agree to
       indemnify, defend, and hold harmless the Developer.
     - If You have an issue, You agree to resolve it informally, or resolve disputes individually.
+    - We are not liable if the API goes down or causes issues within your Roblox Experience.
 
 1. Acceptable Use
     You agree not to use the Server to:
@@ -18,21 +19,23 @@ i. TL;DR
         - Spam, DoS, DDoS, or attempt to crash the Server.
         - Harass, abuse, or harm other Users.
         - Violate any third-party's Terms of Service.
+        - Attempt to scrape, reverse-engineer, or "brute-force" any type of access key.
 
 2. Limitation of Liability
     TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE DEVELOPER BE LIABLE FOR ANY
     SPECIAL, INCIDENTAL, INDIRECT, OR CONSEQUENTIAL DAMAGES WHATSOEVER (INCLUDING, BUT NOT LIMITED TO,
-    DAMAGES FOR LOSS OF PROFITS, LOSS OF DATA, BUSINESS INTERRUPTION, OR PERSONAL INJURY) ARISING OUT OF
-    OR IN ANY WAY RELATED TO THE USE OF OR INABILITY TO USE THE SOFTWARE OR SERVER, EVEN IF YOU HAVE BEEN
-    ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. IN NO CASE SHALL THE DEVELOPER'S TOTAL LIABILITY UNDER ANY
-    PROVISION OF THIS TERMS OF SERVICE EXCEED THE ACTUAL AMOUNT PAID BY YOU FOR THE SOFTWARE OR ACCESS TO
-    USE THE SERVER.
+    DAMAGES FOR LOSS OF PROFITS, LOSS OF IN-GAME REVENUE, GAME DISRUPTION, LOSS OF DATA, BUSINESS INTERRUPTION,
+    OR PERSONAL INJURY) ARISING OUT OF OR IN ANY WAY RELATED TO THE USE OF OR INABILITY TO USE THE SOFTWARE OR
+    SERVER, EVEN IF YOU HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. IN NO CASE SHALL THE DEVELOPER'S
+    TOTAL LIABILITY UNDER ANY PROVISION OF THIS TERMS OF SERVICE EXCEED THE ACTUAL AMOUNT PAID BY YOU FOR THE
+    SOFTWARE OR ACCESS TO USE THE SERVER.
 
 3. Indemnification
     You agree to indemnify, defend, and hold harmless the Developer from and against any and all claims,
     liabilities, damages, losses, and expenses (including, without limitation, reasonable legal fees and
-    court costs) arising out of or in connection with Your use of the Software or Server, any breach
-    of this Terms of Service, or any third-party claims resulting from the Your actions or omissions.
+    court costs) arising out of or in connection with Your use of the Software or Server, the integration
+    of the Software into third-party platforms (e.g., Roblox Experiences), any breach of this Terms of
+    Service, or any third-party claims resulting from Your actions or omissions.
 
 4. Dispute Resolution
     The Developer and You agree that most concerns can be resolved quickly and to Your satisfaction by
@@ -40,3 +43,10 @@ i. TL;DR
     any legal action or proceeding arising out of Your use of the Software or Server will, to the maximum
     extent permitted by law, be conducted only on an individual basis and not in a class, consolidated,
     or representative action.
+
+5. Service Availability (API)
+    The Developer provides the API on an "as-is" and "as-available" basis. We do not guarantee that the API
+    will be uninterrupted, secure, or error-free. We reserve the right to:
+        - Revoke or rotate API keys at any time for security reasons.
+        - Implement rate limits or throttle access to maintain server stability.
+        - Modify or discontinue API features without prior notice.

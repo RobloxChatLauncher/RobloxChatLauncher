@@ -46,12 +46,13 @@ const swaggerOptions = {
         },
         tags: [
             { name: "Admin" },
+            { name: "Creators" },
             { name: "Universe" },
-            {name: "Verified"},
+            { name: "Verified"},
             { name: "Public" }
         ]
     },
-    apis: ['./server.js'],
+    apis: ['./server.js', './routes/*.js'],
 };
 
 // Allowed mail types for the mail push endpoint
@@ -61,12 +62,17 @@ const ALLOWED_MAIL_TYPES = new Set([
 
 // ----- Express App Setup -----
 const app = express();
+app.use(express.json());
+app.use(express.static("public"));
 // Trust proxy (Render / Heroku / etc.)
 // Always use proxy from Render as the trusted IP
 app.set('trust proxy', 1); // trust only the first proxy hop (Render)
 // Middleware to parse plain text bodies (sent by C# client)
 // Limit messages to 1kb (more than enough for a chat message)
 app.use(express.text({ limit: Constants.TEXT_LIMIT_BYTES }));
+
+// ----- Routes -----
+app.use("/api/v1/creators", require("./routes/creators"));
 
 // ----- Swagger Setup -----
 const swaggerDocs = swaggerJsdoc(swaggerOptions);

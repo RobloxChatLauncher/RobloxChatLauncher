@@ -414,9 +414,10 @@ All commits **must follow [Conventional Commits v1.0.0](https://www.conventional
 * `integrations` all types
 * `ci` all types
 * `test` all types
-* `assets` chore
 * `readme` chore or docs
 * `contributing` chore or docs
+* `legal` chore or docs
+* `assets` chore
 * `docs` chore
 * `deps` chore
 * `gitattributes` chore
