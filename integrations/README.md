@@ -73,13 +73,13 @@ To ensure stability and prevent script errors, keep the following limits in mind
 
 ## Terms of Service
 
-By using Roblox Chat Launcher, you agree to the [Terms of Service](TERMS). Please read them carefully before using the Software.
+By using Roblox Chat Launcher, you agree to the [Terms of Service](../TERMS). Please read them carefully before using the Software.
 
 ## Privacy Policy
 
 This project takes steps to protect your privacy and limit data collection. We do not, and are not interested in, selling, sharing, or profiting from your data.
 
-See the [Privacy Policy](PRIVACY) for more details.
+See the [Privacy Policy](../PRIVACY) for more details.
 
 ## License
 
