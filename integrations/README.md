@@ -1,6 +1,3 @@
-> [!IMPORTANT]  
-> You'll need an API key from the maintainers to send and receive data from the Roblox Chat Launcher API.
-
 <p align="center">
     <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_integrations_logo_dark.webp#gh-dark-mode-only" width="700">
     <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_integrations_logo_light.webp#gh-light-mode-only" width="700">
@@ -20,40 +17,34 @@
 
 </div>
 
+<div align="center">
+
+[![API Access](https://img.shields.io/badge/API%20Access-blue?style=for-the-badge)](https://RobloxChatLauncher.onrender.com/creators/api-access/)
+
+</div>
+
 ----
 
-Set up these scripts in your Roblox Experience to allow Roblox Chat Launcher users access to commands like `/emote` and team chat within your game.
+Integrate these scripts into your Roblox Experience to enable Roblox Chat Launcher users to access features like `/emote` commands and team chat sync in your game.
 
 ## 🛠 Installation
 
-You can integrate these scripts using **Rojo** or by **manually** copying them into your project.
-
 ### Option 1: Rojo (Recommended)
-Simply sync this directory to your Roblox project using your preferred Rojo workflow.
+
+Sync this directory to your Roblox project using your preferred Rojo workflow.
 
 ### Option 2: Manual Setup
+
 1. Copy the `.lua` scripts from this directory into your game.
-2. Create a **RemoteEvent** in `ReplicatedStorage`.
-3. Name the RemoteEvent **`RCL_Event`**.
+2. Create a **RemoteEvent** in `ReplicatedStorage` named `RCL_Event`.
 
----
+## 🔐 Getting Your API Key
 
-## 🔐 API Key Configuration
+You can generate an API key instantly by verifying ownership of your game. For group games, only the group owner can register.
 
-To securely communicate with the API, you must store your API key as an **Experience Secret** on the Roblox Creator Dashboard.
-
-1. Navigate to your [Creator Dashboard](https://create.roblox.com/dashboard/creations).
-2. Select your Experience (Universe).
-3. Go to **Settings** > **Secrets** (or navigate directly to `https://create.roblox.com/dashboard/creations/experiences/<your-universe-id>/secrets`).
-4. Click **Create Secret**.
-5. Set the Name to **`RCL_API_KEY`**.
-6. Paste your provided API key into the Value field and save.
-
-> [!CAUTION]  
-> **Never** hard-code your API key directly into your scripts. Using the Secrets Store ensures your credentials remain private and secure and are only accessible by the server.
-
-> [!WARNING]  
-> Your game **must be published** to Roblox for this to work. If the game is not published, the Universe ID will be `0`, and the API authentication will fail.
+1. **Visit the Creator Portal:** [Creator Portal | Universe Verification](https://RobloxChatLauncher.onrender.com/creators/api-access/)
+2. **Verify Identity:** Enter your `User ID` and `Universe ID`, then briefly add a verification code to your **Roblox Profile** description.
+3. **Add Your Key to Roblox:** After generating your unique API key, click **Open Roblox Secret Manager** and paste your key in a new secret named `RCL_API_KEY`.
 
 > [!IMPORTANT]
 > By default, your Universe's registration status is NOT shown in public API search results for privacy reasons.
@@ -66,7 +57,11 @@ To securely communicate with the API, you must store your API key as an **Experi
 >
 > This setting only controls API search and directory visibility and does not limit who can use integrations functionality in your game.
 
----
+## ⚠️ Warnings & Considerations
+
+* **Never** hard-code your API key directly into your scripts. Using the Secrets Store ensures your credentials remain private and secure and are only accessible by the server.
+* Your game **must be published** to Roblox for this to work. If the game is not published, the Universe ID will be `0`, and the API authentication will fail.
+* Generating a new API key for an **already-registered** Universe will immediately overwrite the previous API key.
 
 ## 🚦 Performance & Rate Limiting
 
@@ -76,10 +71,8 @@ To ensure stability and prevent script errors, keep the following limits in mind
 * **Ingress Bridge Polling:** The default Ingress script polls the mailbox at a rate of 1 request per second (60 requests/min). The polling loop runs once per server.
 * **Egress Scripts:** Egress scripts may send POST requests independently when triggered by in-game events (e.g., a player joining). Please be mindful that the combined total requests from all scripts do not exceed Roblox's limits.
 
----
-
 ## 📄 License
 
-The `.lua` scripts in this directory are licensed under the [Mozilla Public License 2.0](LICENSE).
+The scripts in this directory are licensed under the [Mozilla Public License 2.0](LICENSE).
 
-Transparency: All code is open source, and you can review exactly how data is egressed from your game to our servers. No hidden operations or data collection occur beyond what the scripts explicitly show.
+The integrations code is fully open-source. We encourage you to review the scripts to see exactly how data is egressed to our servers.
