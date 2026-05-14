@@ -836,7 +836,7 @@ app.patch(
  *                     type: object
  *                     example:
  *                       name: "Dance"
-*       400:
+ *       400:
  *       description: Missing required Job ID
  *       content:
  *         application/json:
