@@ -71,7 +71,17 @@ To ensure stability and prevent script errors, keep the following limits in mind
 * **Ingress Bridge Polling:** The default Ingress script polls the mailbox at a rate of 1 request per second (60 requests/min). The polling loop runs once per server.
 * **Egress Scripts:** Egress scripts may send POST requests independently when triggered by in-game events (e.g., a player joining). Please be mindful that the combined total requests from all scripts do not exceed Roblox's limits.
 
-## 📄 License
+## Terms of Service
+
+By using Roblox Chat Launcher, you agree to the [Terms of Service](TERMS). Please read them carefully before using the Software.
+
+## Privacy Policy
+
+This project takes steps to protect your privacy and limit data collection. We do not, and are not interested in, selling, sharing, or profiting from your data.
+
+See the [Privacy Policy](PRIVACY) for more details.
+
+## License
 
 The scripts in this directory are licensed under the [Mozilla Public License 2.0](LICENSE).
 
