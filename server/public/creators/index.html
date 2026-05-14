@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Roblox Chat Launcher Integrations</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+          rel="stylesheet" />
+
+    <style>
+
+        :root {
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top, rgba(59,130,246,0.16), transparent 32%), radial-gradient(circle at bottom right, rgba(99,102,241,0.14), transparent 28%), #0f172a;
+            color: #f8fafc;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass {
+            background: rgba(15,23,42,0.68);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .cursor-light {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient( 600px circle at var(--mouse-x) var(--mouse-y), rgba(59,130,246,0.16), transparent 40% );
+        }
+
+        .cursor-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), black 0%, rgba(0,0,0,0.95) 18%, transparent 65%);
+        }
+
+        .hover-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+
+            .hover-card::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: radial-gradient( 400px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.07), transparent 45% );
+                opacity: 0;
+                transition: opacity 0.25s ease;
+                pointer-events: none;
+            }
+
+            .hover-card:hover::before {
+                opacity: 1;
+            }
+
+            .hover-card:hover {
+                transform: translateY(-4px);
+                border-color: rgba(96,165,250,0.32);
+            }
+
+        .button-primary {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.18s ease, background 0.2s ease;
+        }
+
+            .button-primary::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient( 115deg, transparent 20%, rgba(255,255,255,0.18) 50%, transparent 80% );
+                transform: translateX(-120%);
+                transition: transform 0.7s ease;
+            }
+
+            .button-primary:hover::before {
+                transform: translateX(120%);
+            }
+
+            .button-primary:hover {
+                transform: translateY(-1px);
+            }
+
+        .gradient-text {
+            background: linear-gradient( 135deg, #ffffff 0%, #93c5fd 35%, #c4b5fd 100% );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .code-block {
+            background: #020617;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        @media (max-width: 1024px) {
+
+            .feature-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor-light"></div>
+    <div class="cursor-grid"></div>
+
+    <!-- Navbar -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/55 border-b border-white/5">
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="h-20 flex items-center justify-between">
+
+                <a href="/"
+                   class="flex items-center gap-3">
+
+                    <div class="w-10 h-10 rounded-2xl overflow-hidden border border-blue-500/20 shadow-lg shadow-blue-500/10 bg-slate-900/80">
+
+                        <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_server_icon.png"
+                             class="w-full h-full object-cover rounded-2xl"
+                             draggable="false" />
+
+                    </div>
+
+                    <div>
+
+                        <div class="font-semibold text-white">
+                            Roblox Chat Launcher
+                        </div>
+
+                        <div class="text-xs text-slate-500">
+                            Creator Integrations
+                        </div>
+
+                    </div>
+
+                </a>
+
+                <div class="flex items-center gap-4">
+
+                    <a href="/"
+                       class="text-sm text-slate-400 hover:text-white transition-colors">
+                        Home
+                    </a>
+
+                    <a href="/creators/api-access/"
+                       class="button-primary bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-blue-500/20">
+
+                        API Access
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+
+        <div class="max-w-7xl mx-auto px-6 pt-24 pb-24 relative z-10">
+
+            <div class="max-w-5xl mx-auto text-center">
+
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-xs uppercase tracking-[0.22em] text-blue-300 mb-8">
+
+                    <div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
+
+                    Roblox Experience Integrations
+
+                </div>
+
+                <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_integrations_logo_dark.webp"
+                     class="w-full max-w-4xl mx-auto"
+                     draggable="false" />
+
+                <h1 class="mt-12 text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.05]">
+
+                    Add Native Chat
+                    <span class="gradient-text">
+                        Features
+                    </span>
+
+                    To Your Roblox Game
+
+                </h1>
+
+                <p class="mt-8 text-lg md:text-xl text-slate-400 leading-relaxed max-w-3xl mx-auto">
+
+                    Integrate Roblox Chat Launcher into your experience to enable
+                    synchronized chat, emotes, team messaging, and desktop-powered
+                    multiplayer communication.
+
+                </p>
+
+                <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+
+                    <a href="/creators/api-access/"
+                       class="button-primary w-full sm:w-auto text-center bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-4 rounded-2xl shadow-2xl shadow-blue-500/20">
+
+                        Get Your API Key
+
+                    </a>
+
+                    <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher"
+                       class="w-full sm:w-auto text-center glass hover:bg-white/5 transition-all text-white font-semibold px-8 py-4 rounded-2xl">
+
+                        View Source
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Features -->
+    <section class="py-24">
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="grid md:grid-cols-3 gap-6">
+
+                <div class="hover-card glass rounded-3xl p-8">
+
+                    <div class="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-6">
+
+                        ⚡
+
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-white">
+
+                        Real-Time Sync
+
+                    </h3>
+
+                    <p class="mt-4 text-slate-400 leading-relaxed">
+
+                        Synchronize Roblox server communication instantly with
+                        Roblox Chat Launcher desktop clients.
+
+                    </p>
+
+                </div>
+
+                <div class="hover-card glass rounded-3xl p-8">
+
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-6">
+
+                        🔒
+
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-white">
+
+                        Secure API Keys
+
+                    </h3>
+
+                    <p class="mt-4 text-slate-400 leading-relaxed">
+
+                        Generate and manage experience-specific API credentials
+                        securely through Roblox Secrets.
+
+                    </p>
+
+                </div>
+
+                <div class="hover-card glass rounded-3xl p-8">
+
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-6">
+
+                        🛠
+
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-white">
+
+                        Open Source
+
+                    </h3>
+
+                    <p class="mt-4 text-slate-400 leading-relaxed">
+
+                        Review exactly how integrations work and inspect all
+                        networking behavior directly from source.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Installation -->
+    <section class="py-24">
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="feature-grid grid grid-cols-2 gap-10 items-start">
+
+                <div class="hover-card glass rounded-3xl p-10">
+
+                    <div class="text-sm uppercase tracking-[0.25em] text-blue-300 mb-5">
+                        Installation
+                    </div>
+
+                    <h2 class="text-4xl font-bold text-white tracking-tight">
+
+                        Setup In Minutes
+
+                    </h2>
+
+                    <div class="mt-8 space-y-5">
+
+                        <div class="glass rounded-2xl p-5">
+
+                            <div class="font-semibold text-white">
+                                1. Add Lua Scripts
+                            </div>
+
+                            <p class="mt-2 text-sm text-slate-400">
+                                Sync using Rojo or manually import the integration scripts.
+                            </p>
+
+                        </div>
+
+                        <div class="glass rounded-2xl p-5">
+
+                            <div class="font-semibold text-white">
+                                2. Create RCL_Event
+                            </div>
+
+                            <p class="mt-2 text-sm text-slate-400">
+                                Add a RemoteEvent named RCL_Event to ReplicatedStorage.
+                            </p>
+
+                        </div>
+
+                        <div class="glass rounded-2xl p-5">
+
+                            <div class="font-semibold text-white">
+                                3. Add Secret
+                            </div>
+
+                            <p class="mt-2 text-sm text-slate-400">
+                                Store your generated API key as RCL_API_KEY.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="hover-card code-block rounded-3xl p-8 overflow-hidden">
+
+                    <div class="flex items-center gap-2 mb-6">
+
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+
+                    </div>
+
+                    <pre class="mono text-sm text-slate-300 leading-relaxed overflow-x-auto"><code>-- ReplicatedStorage
+RemoteEvent.Name = "RCL_Event"
+
+-- Secret Name
+RCL_API_KEY
+
+-- Integration Features
+/e dance
+Team Chat Sync</code></pre>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- CTA -->
+    <section class="py-28">
+
+        <div class="max-w-5xl mx-auto px-6">
+
+            <div class="hover-card glass rounded-[2rem] p-12 md:p-16 relative overflow-hidden">
+
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-indigo-500/10"></div>
+
+                <div class="relative z-10 text-center">
+
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs uppercase tracking-[0.25em] text-slate-300 mb-8">
+
+                        Creator Portal
+
+                    </div>
+
+                    <h2 class="text-5xl font-bold tracking-tight text-white">
+
+                        Generate Your API Key
+
+                    </h2>
+
+                    <p class="mt-6 text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+
+                        Verify ownership of your Roblox universe and instantly
+                        enable integrations support in your game.
+
+                    </p>
+
+                    <div class="mt-10">
+
+                        <a href="/creators/api-access/"
+                           class="button-primary inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white font-semibold px-10 py-4 rounded-2xl shadow-2xl shadow-blue-500/20">
+
+                            Open Creator Portal
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-10">
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+
+                <div class="text-center md:text-left">
+
+                    <div class="text-sm text-slate-400">
+                        © 2026 Roblox Chat Launcher
+                    </div>
+
+                    <div class="text-xs text-slate-600 mt-1">
+                        Not affiliated with or endorsed by Roblox Corporation.
+                    </div>
+
+                </div>
+
+                <div class="flex items-center gap-6 text-sm">
+
+                    <a href="https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/refs/heads/main/PRIVACY"
+                       class="text-slate-500 hover:text-white transition-colors">
+
+                        Privacy Policy
+
+                    </a>
+
+                    <a href="https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/refs/heads/main/TERMS"
+                       class="text-slate-500 hover:text-white transition-colors">
+
+                        Terms of Service
+
+                    </a>
+
+                    <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher"
+                       class="text-slate-500 hover:text-white transition-colors">
+                        GitHub
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+    <script>
+
+        const root = document.documentElement;
+
+        window.addEventListener("mousemove", (e) => {
+
+            root.style.setProperty(
+                "--mouse-x",
+                `${e.clientX}px`
+            );
+
+            root.style.setProperty(
+                "--mouse-y",
+                `${e.clientY}px`
+            );
+        });
+
+        document.querySelectorAll(".hover-card")
+            .forEach((card) => {
+
+                card.addEventListener("mousemove", (e) => {
+
+                    const rect =
+                        card.getBoundingClientRect();
+
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    card.style.setProperty(
+                        "--mouse-x",
+                        `${x}px`
+                    );
+
+                    card.style.setProperty(
+                        "--mouse-y",
+                        `${y}px`
+                    );
+                });
+            });
+
+    </script>
+
+</body>
+</html>

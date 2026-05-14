@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Roblox Chat Launcher</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+          rel="stylesheet" />
+
+    <style>
+
+        :root {
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top, rgba(59,130,246,0.16), transparent 32%), radial-gradient(circle at bottom right, rgba(99,102,241,0.14), transparent 28%), #0f172a;
+            color: #f8fafc;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass {
+            background: rgba(15,23,42,0.68);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .noise::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 4px 4px;
+            pointer-events: none;
+            opacity: 0.15;
+            z-index: -1;
+        }
+
+        .cursor-light {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient( 600px circle at var(--mouse-x) var(--mouse-y), rgba(59,130,246,0.16), transparent 40% );
+        }
+
+        .cursor-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), black 0%, rgba(0,0,0,0.95) 18%, transparent 65%);
+        }
+
+        .hero-glow {
+            position: absolute;
+            inset: -20%;
+            background: radial-gradient(circle, rgba(59,130,246,0.18), transparent 55%);
+            filter: blur(60px);
+            z-index: -1;
+        }
+
+        .hover-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+        }
+
+            .hover-card::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: radial-gradient( 400px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.07), transparent 45% );
+                opacity: 0;
+                transition: opacity 0.25s ease;
+                pointer-events: none;
+            }
+
+            .hover-card:hover::before {
+                opacity: 1;
+            }
+
+            .hover-card:hover {
+                transform: translateY(-4px);
+                border-color: rgba(96,165,250,0.32);
+            }
+
+        .feature-image {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+            .feature-image:hover {
+                transform: scale(1.02);
+                box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 25px 80px rgba(59,130,246,0.22);
+            }
+
+        .button-primary {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.18s ease, background 0.2s ease;
+        }
+
+            .button-primary::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient( 115deg, transparent 20%, rgba(255,255,255,0.22) 50%, transparent 80% );
+                transform: translateX(-120%);
+                transition: transform 0.7s ease;
+            }
+
+            .button-primary:hover::before {
+                transform: translateX(120%);
+            }
+
+            .button-primary:hover {
+                transform: translateY(-1px);
+            }
+
+        .gradient-text {
+            background: linear-gradient( 135deg, #ffffff 0%, #93c5fd 35%, #c4b5fd 100% );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-fade {
+            position: relative;
+        }
+
+            .section-fade::after {
+                content: "";
+                position: absolute;
+                inset: auto 0 -1px 0;
+                height: 1px;
+                background: linear-gradient( 90deg, transparent, rgba(255,255,255,0.1), transparent );
+            }
+
+        @media (max-width: 1024px) {
+
+            .feature-row {
+                grid-template-columns: 1fr !important;
+            }
+
+            .feature-image {
+                order: -1 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="noise">
+
+    <div class="cursor-light"></div>
+    <div class="cursor-grid"></div>
+
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/55 border-b border-white/5">
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="h-20 flex items-center justify-between">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="w-10 h-10 rounded-2xl overflow-hidden border border-blue-500/20 shadow-lg shadow-blue-500/10 bg-slate-900/80">
+
+                        <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_server_icon.png"
+                             alt="Roblox Chat Launcher Icon"
+                             class="w-full h-full object-cover rounded-2xl select-none pointer-events-none"
+                             draggable="false" />
+
+                    </div>
+
+                    <div>
+
+                        <div class="font-semibold text-white">
+                            Roblox Chat Launcher
+                        </div>
+
+                        <div class="text-xs text-slate-500">
+                            Desktop Communication Platform
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <nav class="hidden md:flex items-center gap-8 text-sm text-slate-400">
+
+                    <a href="#features"
+                       class="hover:text-white transition-colors">
+                        Features
+                    </a>
+
+                    <a href="/creators"
+                       class="hover:text-white transition-colors">
+                        For Creators
+                    </a>
+
+                    <a href="#privacy"
+                       class="hover:text-white transition-colors">
+                        Privacy
+                    </a>
+
+                </nav>
+
+                <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher/releases"
+                   class="button-primary inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-blue-500/20">
+
+                    Download
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+
+        <div class="hero-glow"></div>
+
+        <div class="max-w-7xl mx-auto px-6 pt-24 pb-28 relative z-10">
+
+            <div class="max-w-4xl mx-auto text-center">
+
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-xs uppercase tracking-[0.22em] text-blue-300 mb-8">
+
+                    <div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
+
+                    Desktop Companion for Roblox
+
+                </div>
+
+                <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_logo_dark.webp"
+                     class="w-full max-w-4xl mx-auto select-none pointer-events-none"
+                     draggable="false" />
+
+                <h1 class="mt-10 text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.05]">
+
+                    Bring Back
+                    <span class="gradient-text">
+                        Co-Op Gameplay
+                    </span>
+
+                </h1>
+
+                <p class="mt-8 text-lg md:text-xl text-slate-400 leading-relaxed max-w-3xl mx-auto">
+
+                    Real-time Roblox communication without invasive telemetry.
+                    Roblox Chat Launcher restores classic multiplayer interaction
+                    with a native-feeling desktop experience.
+
+                </p>
+
+                <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+
+                    <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher/releases"
+                       class="button-primary w-full sm:w-auto text-center bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-4 rounded-2xl shadow-2xl shadow-blue-500/20">
+
+                        Download for Windows
+
+                    </a>
+
+                    <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher"
+                       class="w-full sm:w-auto text-center glass hover:bg-white/5 transition-all text-white font-semibold px-8 py-4 rounded-2xl">
+
+                        View on GitHub
+
+                    </a>
+
+                </div>
+
+                <p class="mt-6 text-sm text-slate-500">
+
+                    Requires
+                    <a href="https://aka.ms/dotnet-core-applaunch?missing_runtime=true&arch=x64&rid=win11-x64&apphost_version=10.0.0&gui=true"
+                       class="text-blue-400 hover:text-blue-300 transition-colors">
+                        .NET 10 Desktop Runtime
+                    </a>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Feature 1 -->
+    <section id="features"
+             class="section-fade py-28">
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="feature-row grid grid-cols-2 gap-16 items-center">
+
+                <div class="hover-card glass rounded-3xl p-10">
+
+                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs uppercase tracking-[0.2em] mb-6">
+
+                        Messaging
+
+                    </div>
+
+                    <h2 class="text-4xl font-bold tracking-tight text-white">
+
+                        Real-Time Chat
+
+                    </h2>
+
+                    <p class="mt-6 text-slate-400 leading-relaxed text-lg">
+
+                        Communicate with players in your Roblox server using a
+                        seamlessly integrated chat interface that feels native
+                        to the platform.
+
+                    </p>
+
+                    <div class="mt-8 grid gap-4">
+
+                        <div class="glass rounded-2xl p-4 border border-white/5">
+
+                            <div class="font-medium text-white">
+                                Native Input Flow
+                            </div>
+
+                            <div class="text-sm text-slate-500 mt-1">
+                                Press / and Enter exactly like Roblox chat.
+                            </div>
+
+                        </div>
+
+                        <div class="glass rounded-2xl p-4 border border-white/5">
+
+                            <div class="font-medium text-white">
+                                Low Latency Sync
+                            </div>
+
+                            <div class="text-sm text-slate-500 mt-1">
+                                Messages synchronize instantly with your session.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <img src="https://github.com/RobloxChatLauncher/.github/raw/main/assets/readme/feature_one.webp"
+                         class="feature-image rounded-3xl border border-white/10 shadow-2xl shadow-black/50 w-full" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Feature 2 -->
+    <section class="section-fade py-28">
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="feature-row grid grid-cols-2 gap-16 items-center">
+
+                <div>
+
+                    <img src="https://github.com/RobloxChatLauncher/.github/raw/main/assets/readme/feature_two.webp"
+                         class="feature-image rounded-3xl border border-white/10 shadow-2xl shadow-black/50 w-full" />
+
+                </div>
+
+                <div class="hover-card glass rounded-3xl p-10">
+
+                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs uppercase tracking-[0.2em] mb-6">
+
+                        Emotes
+
+                    </div>
+
+                    <h2 class="text-4xl font-bold tracking-tight text-white">
+
+                        Bring Back /emote
+
+                    </h2>
+
+                    <p class="mt-6 text-slate-400 leading-relaxed text-lg">
+
+                        Use the classic /e command in supported Roblox experiences
+                        and trigger synchronized in-game emotes directly from chat.
+
+                    </p>
+
+                    <div class="mt-8 glass rounded-2xl p-5 border border-white/5">
+
+                        <div class="flex items-center gap-3">
+
+                            <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
+
+                            <div class="text-white font-medium">
+                                Integrations Enabled
+                            </div>
+
+                        </div>
+
+                        <p class="mt-3 text-sm text-slate-500 leading-relaxed">
+
+                            Look for the integrations enabled message when joining
+                            compatible Roblox games.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Feature 3 -->
+    <section id="compatibility"
+             class="section-fade py-28">
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="feature-row grid grid-cols-2 gap-16 items-center">
+
+                <div class="hover-card glass rounded-3xl p-10">
+
+                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs uppercase tracking-[0.2em] mb-6">
+
+                        Compatibility
+
+                    </div>
+
+                    <h2 class="text-4xl font-bold tracking-tight text-white">
+
+                        Bootstrapper Compatible
+
+                    </h2>
+
+                    <p class="mt-6 text-slate-400 leading-relaxed text-lg">
+
+                        Fully compatible with your favorite Roblox bootstrappers,
+                        including Bloxstrap, Fishstrap, Voidstrap, and more.
+
+                    </p>
+
+                    <div class="mt-8 flex flex-wrap gap-3">
+
+                        <div class="glass px-4 py-2 rounded-xl text-sm text-slate-300">
+                            Bloxstrap
+                        </div>
+
+                        <div class="glass px-4 py-2 rounded-xl text-sm text-slate-300">
+                            Fishstrap
+                        </div>
+
+                        <div class="glass px-4 py-2 rounded-xl text-sm text-slate-300">
+                            Voidstrap
+                        </div>
+
+                        <div class="glass px-4 py-2 rounded-xl text-sm text-slate-300">
+                            & More
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <img src="https://github.com/RobloxChatLauncher/.github/raw/main/assets/readme/feature_three.webp"
+                         class="feature-image rounded-3xl border border-white/10 shadow-2xl shadow-black/50 w-full" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- CTA -->
+    <section class="py-28">
+
+        <div class="max-w-5xl mx-auto px-6">
+
+            <div class="hover-card glass rounded-[2rem] p-12 md:p-16 relative overflow-hidden">
+
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-indigo-500/10"></div>
+
+                <div class="relative z-10 text-center">
+
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs uppercase tracking-[0.25em] text-slate-300 mb-8">
+
+                        Ready to Install
+
+                    </div>
+
+                    <h2 class="text-5xl font-bold tracking-tight text-white">
+
+                        Start Playing Together Again
+
+                    </h2>
+
+                    <p class="mt-6 text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+
+                        Experience modern Roblox communication with privacy-first
+                        design and seamless integration.
+
+                    </p>
+
+                    <div class="mt-10">
+
+                        <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher/releases"
+                           class="button-primary inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white font-semibold px-10 py-4 rounded-2xl shadow-2xl shadow-blue-500/20">
+
+                            Download Latest Release
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer id="privacy"
+            class="border-t border-white/5 py-10">
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+
+                <div class="text-center md:text-left">
+
+                    <div class="text-sm text-slate-400">
+
+                        © 2026 Roblox Chat Launcher Developers & Contributors
+
+                    </div>
+
+                    <div class="text-xs text-slate-600 mt-1">
+
+                        Not affiliated with or endorsed by Roblox Corporation.
+
+                    </div>
+
+                </div>
+
+                <div class="flex items-center gap-6 text-sm">
+
+                    <a href="https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/refs/heads/main/PRIVACY"
+                       class="text-slate-500 hover:text-white transition-colors">
+
+                        Privacy Policy
+
+                    </a>
+
+                    <a href="https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/refs/heads/main/TERMS"
+                       class="text-slate-500 hover:text-white transition-colors">
+
+                        Terms of Service
+
+                    </a>
+
+                    <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher"
+                       class="text-slate-500 hover:text-white transition-colors">
+
+                        GitHub
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+    <script>
+
+        const root = document.documentElement;
+
+        window.addEventListener("mousemove", (e) => {
+
+            root.style.setProperty(
+                "--mouse-x",
+                `${e.clientX}px`
+            );
+
+            root.style.setProperty(
+                "--mouse-y",
+                `${e.clientY}px`
+            );
+        });
+
+        const cards =
+            document.querySelectorAll(".hover-card");
+
+        cards.forEach((card) => {
+
+            card.addEventListener("mousemove", (e) => {
+
+                const rect =
+                    card.getBoundingClientRect();
+
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                card.style.setProperty(
+                    "--mouse-x",
+                    `${x}px`
+                );
+
+                card.style.setProperty(
+                    "--mouse-y",
+                    `${y}px`
+                );
+            });
+        });
+
+    </script>
+
+</body>
+</html>

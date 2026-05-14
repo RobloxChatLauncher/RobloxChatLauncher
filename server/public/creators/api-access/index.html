@@ -19,6 +19,77 @@
             color: #f8fafc;
         }
 
+        :root {
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        body {
+            background: radial-gradient(circle at top, rgba(59,130,246,0.16), transparent 32%), radial-gradient(circle at bottom right, rgba(99,102,241,0.14), transparent 28%), #0f172a;
+            overflow-x: hidden;
+        }
+
+        .cursor-light {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient( 600px circle at var(--mouse-x) var(--mouse-y), rgba(59,130,246,0.16), transparent 40% );
+        }
+
+        .cursor-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), black 0%, rgba(0,0,0,0.95) 18%, transparent 65%);
+        }
+
+        .button-primary {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .button-primary::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient( 115deg, transparent 20%, rgba(255,255,255,0.18) 50%, transparent 80% );
+                transform: translateX(-120%);
+                transition: transform 0.7s ease;
+            }
+
+            .button-primary:hover::before {
+                transform: translateX(120%);
+            }
+
+        .hover-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+
+            .hover-card::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: radial-gradient( 400px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 45% );
+                opacity: 0;
+                transition: opacity 0.25s ease;
+                pointer-events: none;
+            }
+
+            .hover-card:hover::before {
+                opacity: 1;
+            }
+
+            .hover-card:hover {
+                transform: translateY(-3px);
+                border-color: rgba(96,165,250,0.3);
+            }
+
         .mono {
             font-family: 'JetBrains Mono', monospace;
         }
@@ -75,221 +146,341 @@
     </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center p-6">
+<body class="min-h-screen flex flex-col">
 
-    <div class="max-w-md w-full space-y-8">
+    <div class="cursor-light"></div>
+    <div class="cursor-grid"></div>
 
-        <!-- Header -->
-        <div class="text-center">
+    <!-- Navbar -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/55 border-b border-white/5">
 
-            <h1 class="text-3xl font-bold tracking-tight text-white">
-                API Access
-            </h1>
+        <div class="max-w-7xl mx-auto px-6">
 
-            <p class="mt-2 text-sm text-slate-400">
-                Verify your Roblox Universe to generate an API key for Roblox Chat Launcher Integrations.
-            </p>
+            <div class="h-20 flex items-center justify-between">
 
-        </div>
+                <a href="/"
+                   class="flex items-center gap-3">
 
-        <!-- Main Card -->
-        <div class="glass rounded-3xl p-8 shadow-2xl">
+                    <div class="w-10 h-10 rounded-2xl overflow-hidden border border-blue-500/20 shadow-lg shadow-blue-500/10 bg-slate-900/80">
 
-            <!-- Progress -->
-            <div class="mb-6 flex items-center justify-between">
-
-                <div id="stepIndicator"
-                     class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
-                    Step 1 of 3
-                </div>
-
-                <div class="flex gap-2">
-
-                    <div id="dot1"
-                         class="w-2 h-2 rounded-full bg-blue-500"></div>
-
-                    <div id="dot2"
-                         class="w-2 h-2 rounded-full bg-slate-700"></div>
-
-                    <div id="dot3"
-                         class="w-2 h-2 rounded-full bg-slate-700"></div>
-
-                </div>
-
-            </div>
-
-            <!-- Step 1 -->
-            <div id="step1" class="space-y-6">
-
-                <div class="space-y-4">
-
-                    <div>
-
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 ml-1">
-                            User ID
-                        </label>
-
-                        <input id="robloxId"
-                               type="text"
-                               placeholder="12345678"
-                               class="input-box w-full px-4 py-3 rounded-xl text-white placeholder-slate-500" />
+                        <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_server_icon.png"
+                             class="w-full h-full object-cover rounded-2xl"
+                             draggable="false" />
 
                     </div>
 
                     <div>
 
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 ml-1">
-                            Universe ID
-                        </label>
+                        <div class="font-semibold text-white">
+                            Roblox Chat Launcher
+                        </div>
 
-                        <input id="universeId"
-                               type="text"
-                               placeholder="98765432"
-                               class="input-box w-full px-4 py-3 rounded-xl text-white placeholder-slate-500" />
-
-                    </div>
-
-                </div>
-
-                <button id="step1Btn"
-                        onclick="handleStep1(event)"
-                        class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
-                    Continue
-                </button>
-
-            </div>
-
-            <!-- Step 2 -->
-            <div id="step2" class="step-hidden space-y-6">
-
-                <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
-
-                    <p class="text-sm text-blue-200">
-                        Paste this code into your
-                        <strong>Roblox Profile Description</strong>,
-                        save it, then click verify.
-                    </p>
-
-                </div>
-
-                <div class="relative group">
-
-                    <div id="codeBox"
-                         class="mono w-full bg-slate-900 px-4 py-6 rounded-xl text-center text-xl text-blue-400 border border-slate-700"></div>
-
-                </div>
-
-                <button id="step2Btn"
-                        onclick="handleStep2(event)"
-                        class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
-                    I've updated my profile
-                </button>
-
-            </div>
-
-            <!-- Step 3 -->
-            <div id="step3" class="step-hidden space-y-6 text-center">
-
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-500 mb-2">
-
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         class="h-6 w-6"
-                         fill="none"
-                         viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M5 13l4 4L19 7" />
-                    </svg>
-
-                </div>
-
-                <h3 class="text-xl font-semibold">
-                    Verification Successful
-                </h3>
-
-                <div class="text-left space-y-2">
-
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 ml-1">
-                        Your Experience Secret
-                    </label>
-
-                    <div class="relative flex items-center">
-
-                        <div id="keyDisplay"
-                             class="mono dot-mask w-full bg-slate-900 px-4 py-3.5 rounded-xl text-emerald-400 border border-slate-700 overflow-hidden text-ellipsis whitespace-nowrap pr-24"></div>
-
-                        <div class="absolute right-2 flex gap-1">
-
-                            <button onclick="toggleKey()"
-                                    class="p-2 text-slate-400 hover:text-white transition-colors">
-
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     class="h-5 w-5"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          stroke-width="2"
-                                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          stroke-width="2"
-                                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-
-                            </button>
-
-                            <button id="copyBtn"
-                                    onclick="copyKey()"
-                                    class="p-2 text-slate-400 hover:text-white transition-colors">
-
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     class="h-5 w-5"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          stroke-width="2"
-                                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-
-                            </button>
-
+                        <div class="text-xs text-slate-500">
+                            Creator Portal
                         </div>
 
                     </div>
 
-                    <p class="text-[11px] text-amber-500/80 font-medium px-1">
-                        ⚠️ Warning: This key will only be shown once.
-                        Please store it securely.
-                    </p>
+                </a>
 
-                    <a id="secretManagerBtn"
-                       href="#"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
-                       Open Roblox Secret Manager
+                <div class="flex items-center gap-6">
+
+                    <a href="/"
+                       class="text-sm text-slate-400 hover:text-white transition-colors">
+                        Home
+                    </a>
+
+                    <a href="/creators"
+                       class="text-sm text-slate-400 hover:text-white transition-colors">
+                        For Creators
                     </a>
 
                 </div>
 
             </div>
 
-            <!-- Status -->
-            <div id="statusContainer"
-                 class="mt-6 pt-6 border-t border-slate-800 hidden">
+        </div>
 
-                <div class="flex items-center gap-3">
+    </header>
 
-                    <div class="spinner"></div>
+    <main class="flex-1 flex items-center justify-center p-6 relative z-10">
 
-                    <p id="statusText"
-                       class="text-xs text-slate-400 mono"></p>
+        <div class="max-w-md w-full space-y-8">
+
+            <!-- Header -->
+            <div class="text-center">
+
+                <h1 class="text-3xl font-bold tracking-tight text-white">
+                    API Access
+                </h1>
+
+                <p class="mt-2 text-sm text-slate-400">
+                    Verify your Roblox Universe to generate an API key for Roblox Chat Launcher Integrations.
+                </p>
+
+            </div>
+
+            <!-- Main Card -->
+            <div class="glass hover-card rounded-3xl p-8 shadow-2xl border border-white/10">
+
+                <!-- Progress -->
+                <div class="mb-6 flex items-center justify-between">
+
+                    <div id="stepIndicator"
+                         class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
+                        Step 1 of 3
+                    </div>
+
+                    <div class="flex gap-2">
+
+                        <div id="dot1"
+                             class="w-2 h-2 rounded-full bg-blue-500"></div>
+
+                        <div id="dot2"
+                             class="w-2 h-2 rounded-full bg-slate-700"></div>
+
+                        <div id="dot3"
+                             class="w-2 h-2 rounded-full bg-slate-700"></div>
+
+                    </div>
+
+                </div>
+
+                <!-- Step 1 -->
+                <div id="step1" class="space-y-6">
+
+                    <div class="space-y-4">
+
+                        <div>
+
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 ml-1">
+                                User ID
+                            </label>
+
+                            <input id="robloxId"
+                                   type="text"
+                                   placeholder="12345678"
+                                   class="input-box w-full px-4 py-3 rounded-xl text-white placeholder-slate-500" />
+
+                        </div>
+
+                        <div>
+
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 ml-1">
+                                Universe ID
+                            </label>
+
+                            <input id="universeId"
+                                   type="text"
+                                   placeholder="98765432"
+                                   class="input-box w-full px-4 py-3 rounded-xl text-white placeholder-slate-500" />
+
+                        </div>
+
+                    </div>
+
+                    <button id="step1Btn"
+                            onclick="handleStep1(event)"
+                            class="button-primary w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+                        Continue
+                    </button>
+
+                </div>
+
+                <!-- Step 2 -->
+                <div id="step2" class="step-hidden space-y-6">
+
+                    <div class="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+
+                        <p class="text-sm text-blue-200">
+                            Paste this code into your
+                            <strong>Roblox Profile Description</strong>,
+                            save it, then click verify.
+                        </p>
+
+                    </div>
+
+                    <div class="relative group">
+
+                        <div id="codeBox"
+                             class="mono w-full bg-slate-900 px-4 py-6 rounded-xl text-center text-xl text-blue-400 border border-slate-700"></div>
+
+                    </div>
+
+                    <button id="step2Btn"
+                            onclick="handleStep2(event)"
+                            class="button-primary w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+                        I've updated my profile
+                    </button>
+
+                </div>
+
+                <!-- Step 3 -->
+                <div id="step3" class="step-hidden space-y-6 text-center">
+
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-500 mb-2">
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-6 w-6"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor">
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M5 13l4 4L19 7" />
+                        </svg>
+
+                    </div>
+
+                    <h3 class="text-xl font-semibold">
+                        Verification Successful
+                    </h3>
+
+                    <div class="text-left space-y-2">
+
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 ml-1">
+                            Your Experience Secret
+                        </label>
+
+                        <div class="relative flex items-center">
+
+                            <div id="keyDisplay"
+                                 class="mono dot-mask w-full bg-slate-900 px-4 py-3.5 rounded-xl text-emerald-400 border border-slate-700 overflow-hidden text-ellipsis whitespace-nowrap pr-24"></div>
+
+                            <div class="absolute right-2 flex gap-1">
+
+                                <button onclick="toggleKey()"
+                                        class="p-2 text-slate-400 hover:text-white transition-colors">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-5 w-5"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+
+                                </button>
+
+                                <button id="copyBtn"
+                                        onclick="copyKey()"
+                                        class="p-2 text-slate-400 hover:text-white transition-colors">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-5 w-5"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <p class="text-[11px] text-amber-500/80 font-medium px-1">
+                            ⚠️ Warning: This key will only be shown once.
+                            Please store it securely.
+                        </p>
+
+                        <a id="secretManagerBtn"
+                           href="#"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]">
+                            Open Roblox Secret Manager
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- Status -->
+                <div id="statusContainer"
+                     class="mt-6 pt-6 border-t border-slate-800 hidden">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="spinner"></div>
+
+                        <p id="statusText"
+                           class="text-xs text-slate-400 mono"></p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center">
+
+                <p class="text-slate-500 text-sm">
+                    © 2026 Roblox Chat Launcher
+                </p>
+
+                <p class="text-slate-600 text-[11px] mt-1">
+                    Not affiliated with or endorsed by Roblox Corporation.
+                </p>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-10 relative z-10">
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+
+                <div class="text-center md:text-left">
+
+                    <div class="text-sm text-slate-400">
+                        © 2026 Roblox Chat Launcher
+                    </div>
+
+                    <div class="text-xs text-slate-600 mt-1">
+                        Not affiliated with or endorsed by Roblox Corporation.
+                    </div>
+
+                </div>
+
+                <div class="flex items-center gap-6 text-sm">
+
+                    <a href="https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/refs/heads/main/PRIVACY"
+                       class="text-slate-500 hover:text-white transition-colors">
+
+                        Privacy Policy
+
+                    </a>
+
+                    <a href="https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/refs/heads/main/TERMS"
+                       class="text-slate-500 hover:text-white transition-colors">
+
+                        Terms of Service
+
+                    </a>
+
+                    <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher"
+                       class="text-slate-500 hover:text-white transition-colors">
+                        GitHub
+                    </a>
 
                 </div>
 
@@ -297,47 +488,34 @@
 
         </div>
 
-        <!-- Footer -->
-        <div class="text-center">
-
-            <p class="text-slate-500 text-sm">
-                © 2026 Roblox Chat Launcher
-            </p>
-
-            <p class="text-slate-600 text-[11px] mt-1">
-                Not affiliated with or endorsed by Roblox Corporation.
-            </p>
-
-        </div>
-
-    </div>
+    </footer>
 
     <script>
         const workerCode = `
-            self.onmessage = async (e) => {
-                const { seed, difficulty } = e.data;
-                const target = "0".repeat(difficulty);
-                let nonce = 0;
+                            self.onmessage = async (e) => {
+                                const { seed, difficulty } = e.data;
+                                const target = "0".repeat(difficulty);
+                                let nonce = 0;
 
-                while (true) {
-                    const data = seed + nonce;
-                    const hashBuffer = await crypto.subtle.digest(
-                        "SHA-256",
-                        new TextEncoder().encode(data)
-                    );
+                                while (true) {
+                                    const data = seed + nonce;
+                                    const hashBuffer = await crypto.subtle.digest(
+                                        "SHA-256",
+                                        new TextEncoder().encode(data)
+                                    );
 
-                    const hashHex = Array.from(new Uint8Array(hashBuffer))
-                        .map(b => b.toString(16).padStart(2, "0"))
-                        .join("");
+                                    const hashHex = Array.from(new Uint8Array(hashBuffer))
+                                        .map(b => b.toString(16).padStart(2, "0"))
+                                        .join("");
 
-                    if (hashHex.startsWith(target)) {
-                        self.postMessage(nonce);
-                        return;
-                    }
-                    nonce++;
-                }
-            };
-        `;
+                                    if (hashHex.startsWith(target)) {
+                                        self.postMessage(nonce);
+                                        return;
+                                    }
+                                    nonce++;
+                                }
+                            };
+                        `;
 
         // Create a URL for the blob so the Worker can "download" it
         const blob = new Blob([workerCode], { type: 'application/javascript' });
@@ -635,14 +813,14 @@
                     btn.innerHTML;
 
                 btn.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5 text-emerald-500"
-                            viewBox="0 0 20 20"
-                            fill="currentColor">
-                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                            <path d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" />
-                        </svg>
-                    `;
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="h-5 w-5 text-emerald-500"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor">
+                                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                                            <path d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" />
+                                        </svg>
+                                    `;
 
                 setTimeout(() => {
                     btn.innerHTML = originalInner;
@@ -654,6 +832,44 @@
 
             }
         }
+
+        const root = document.documentElement;
+
+        window.addEventListener("mousemove", (e) => {
+
+            root.style.setProperty(
+                "--mouse-x",
+                `${e.clientX}px`
+            );
+
+            root.style.setProperty(
+                "--mouse-y",
+                `${e.clientY}px`
+            );
+        });
+
+        document.querySelectorAll(".hover-card")
+            .forEach((card) => {
+
+                card.addEventListener("mousemove", (e) => {
+
+                    const rect =
+                        card.getBoundingClientRect();
+
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    card.style.setProperty(
+                        "--mouse-x",
+                        `${x}px`
+                    );
+
+                    card.style.setProperty(
+                        "--mouse-y",
+                        `${y}px`
+                    );
+                });
+            });
 
         updateProgress(1);
 
