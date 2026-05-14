@@ -53,7 +53,10 @@ async function upsertGame(universeId, apiKey) {
         INSERT INTO game_registry (universe_id, api_key)
         VALUES ($1, $2)
         ON CONFLICT (universe_id) 
-        DO UPDATE SET api_key = EXCLUDED.api_key;
+        DO UPDATE SET
+            api_key = EXCLUDED.api_key,
+            creator_id = EXCLUDED.creator_id,
+            updated_at = CURRENT_TIMESTAMP;
     `;
 
     await pool.query(query, [universeId, hashedKey]);

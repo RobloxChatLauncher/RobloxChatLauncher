@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const crypto = require("crypto");
 
+const { pool } = require('../db/postgresPool');
 const pow = require("../utils/pow");
 
 const {
@@ -171,11 +172,29 @@ router.post("/confirm", async (req, res) => {
         // 64 characters sha256 hex (32 bytes)
         const apiKey = `rcl_${crypto.randomBytes(32).toString('hex')}`;
 
-        return res.json({
-            ok: true,
-            apiKey: apiKey,
-            message: "Verification successful"
-        });
+        try {
+            const query = `
+                INSERT INTO game_registry (universe_id, creator_id, api_key)
+                VALUES ($1, $2, $3)
+                ON CONFLICT (universe_id) 
+                DO UPDATE SET 
+                    api_key = EXCLUDED.api_key,
+                    creator_id = EXCLUDED.creator_id,
+                    updated_at = CURRENT_TIMESTAMP;
+            `;
+
+            const values = [universeId, robloxId, apiKey];
+            await pool.query(query, values);
+
+            return res.json({
+                ok: true,
+                apiKey: apiKey,
+                message: "Verification successful"
+            });
+        } catch (dbErr) {
+            console.error("Database Error:", dbErr);
+            return res.status(500).json({ ok: false, reason: "Database storage failed" });
+        }
     } else {
         return res.status(403).json(result);
     }
