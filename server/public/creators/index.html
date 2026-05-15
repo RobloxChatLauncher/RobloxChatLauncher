@@ -73,6 +73,7 @@
                 opacity: 0;
                 transition: opacity 0.25s ease;
                 pointer-events: none;
+                border-radius: inherit;
             }
 
             .hover-card:hover::before {
@@ -117,6 +118,83 @@
             background: #020617;
             border: 1px solid rgba(255,255,255,0.08);
         }
+
+            .code-block pre {
+                margin: 0;
+            }
+
+            .code-block code {
+                display: block;
+                white-space: pre;
+            }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 2px solid #020617;
+        }
+
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: rgba(59, 130, 246, 0.5);
+            }
+
+        .custom-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 5px;
+            border: 2px solid #0f172a;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #334155;
+            }
+
+        #fileSelect option {
+            background: #020617;
+        }
+
+        .tree-item {
+            display: flex;
+            align-items: center;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-right: 1rem;
+            transition: background-color 0.15s ease;
+            user-select: none;
+        }
+
+            .tree-item.file {
+                cursor: pointer;
+            }
+
+                .tree-item.file:hover {
+                    background-color: rgba(255, 255, 255, 0.05);
+                }
+
+            .tree-item.folder {
+                cursor: default;
+            }
 
         @media (max-width: 1024px) {
 
@@ -391,17 +469,52 @@
 
                 </div>
 
-                <div class="hover-card code-block rounded-3xl p-8 overflow-hidden">
+                <div class="hover-card code-block rounded-3xl overflow-visible flex flex-col h-[600px] z-40">
 
-                    <div class="flex items-center gap-2 mb-6">
+                    <!-- Header -->
+                    <div class="px-6 pt-6 pb-4 border-b border-white/5 flex items-center justify-between">
 
-                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
-                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                        <div class="flex items-center gap-4">
+
+                            <div class="flex items-center gap-2">
+
+                                <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-400"></div>
+
+                            </div>
+
+                            <div>
+
+                                <div id="fileName"
+                                     class="mono text-sm text-white font-medium">
+
+                                    Introduction
+
+                                </div>
+
+                                <div class="text-xs text-slate-500">
+
+                                    integrations/src
+
+                                </div>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                    <pre class="mono text-sm text-slate-300 leading-relaxed overflow-x-auto"><code>-- ReplicatedStorage
+                    <!-- Scrollable Code Container -->
+                    <div class="relative flex-1 min-h-0">
+                        <!-- The Button stays here, fixed relative to this div -->
+                        <button id="copyButton"
+                                class="absolute top-4 right-4 z-20 glass hover:bg-white/5 transition-all text-xs font-medium px-4 py-2 rounded-xl text-slate-300 backdrop-blur-xl">
+                            Copy
+                        </button>
+
+                        <div class="overflow-auto h-full custom-scrollbar">
+                            <pre class="mono text-sm text-slate-300 leading-relaxed p-6 min-w-full"><code id="codeContent">-- ReplicatedStorage
 RemoteEvent.Name = "RCL_Event"
 
 -- Secret Name
@@ -410,6 +523,79 @@ RCL_API_KEY
 -- Integration Features
 /e dance
 Team Chat Sync</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Navigation -->
+                    <div class="border-t border-white/5 p-5 flex flex-col gap-4 bg-slate-950/40 rounded-b-[1.75rem]">
+
+                        <div class="flex items-center gap-3">
+
+                            <button id="prevFile"
+                                    class="glass hover:bg-white/5 px-4 py-2 rounded-xl text-sm text-slate-300 transition-all">
+
+                                ← Previous
+
+                            </button>
+
+                            <button id="nextFile"
+                                    class="glass hover:bg-white/5 px-4 py-2 rounded-xl text-sm text-slate-300 transition-all">
+
+                                Next →
+
+                            </button>
+
+                        </div>
+
+                        <div class="relative">
+
+                            <button id="treeButton"
+                                    class="w-full glass hover:bg-white/5 transition-all rounded-2xl px-4 py-3 flex items-center justify-between text-sm text-slate-200 border border-white/5">
+
+                                <div class="flex items-center gap-3">
+
+                                    <svg class="w-4 h-4 text-slate-400"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2"
+                                         viewBox="0 0 24 24">
+
+                                        <path d="M3 7h18M6 12h12M10 17h4" />
+
+                                    </svg>
+
+                                    <span id="treeButtonLabel">
+                                        Select File
+                                    </span>
+
+                                </div>
+
+                                <svg id="treeChevron"
+                                     class="w-4 h-4 text-slate-500 transition-transform"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     viewBox="0 0 24 24">
+
+                                    <path d="m6 9 6 6 6-6" />
+
+                                </svg>
+
+                            </button>
+
+                            <div id="treeMenu"
+                                 class="absolute left-0 right-0 top-full mt-3 glass rounded-2xl border border-white/5 overflow-hidden hidden z-50 shadow-2xl shadow-black/40">
+
+                                <div id="treeItems"
+                                     class="max-h-80 overflow-y-auto py-2">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -521,40 +707,160 @@ Team Chat Sync</code></pre>
         const root = document.documentElement;
 
         window.addEventListener("mousemove", (e) => {
-
-            root.style.setProperty(
-                "--mouse-x",
-                `${e.clientX}px`
-            );
-
-            root.style.setProperty(
-                "--mouse-y",
-                `${e.clientY}px`
-            );
+            root.style.setProperty("--mouse-x", `${e.clientX}px`);
+            root.style.setProperty("--mouse-y", `${e.clientY}px`);
         });
 
-        document.querySelectorAll(".hover-card")
-            .forEach((card) => {
+        document.querySelectorAll(".hover-card").forEach((card) => {
+            card.addEventListener("mousemove", (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty("--mouse-x", `${x}px`);
+                card.style.setProperty("--mouse-y", `${y}px`);
+            });
+        });
 
-                card.addEventListener("mousemove", (e) => {
+        const introFile = {
+            name: "Introduction",
+            path: "Introduction",
+            content: `-- ReplicatedStorage\nRemoteEvent.Name = "RCL_Event"\n\n-- Secret Name\nRCL_API_KEY\n\n-- Integration Features\n/e dance\nTeam Chat Sync`
+        };
 
-                    const rect =
-                        card.getBoundingClientRect();
+        let files = [introFile];
+        let currentIndex = 0;
 
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
+        const fileName = document.getElementById("fileName");
+        const codeContent = document.getElementById("codeContent");
+        const prevFile = document.getElementById("prevFile");
+        const nextFile = document.getElementById("nextFile");
+        const copyButton = document.getElementById("copyButton");
+        const treeButton = document.getElementById("treeButton");
+        const treeMenu = document.getElementById("treeMenu");
+        const treeItems = document.getElementById("treeItems");
+        const treeButtonLabel = document.getElementById("treeButtonLabel");
+        const treeChevron = document.getElementById("treeChevron");
 
-                    card.style.setProperty(
-                        "--mouse-x",
-                        `${x}px`
-                    );
+        function renderFile(index) {
+            currentIndex = index;
+            const file = files[index];
+            fileName.textContent = file.path;
+            codeContent.textContent = file.content;
+            treeButtonLabel.textContent = file.path;
+        }
 
-                    card.style.setProperty(
-                        "--mouse-y",
-                        `${y}px`
-                    );
+        function buildTree() {
+            const rootStructure = { type: 'folder', children: {} };
+
+            files.forEach((file, index) => {
+                const parts = file.path.split("/");
+                let current = rootStructure;
+
+                parts.forEach((part, i) => {
+                    const isLast = i === parts.length - 1;
+                    if (!current.children[part]) {
+                        current.children[part] = isLast
+                            ? { type: 'file', index: index }
+                            : { type: 'folder', children: {} };
+                    }
+                    current = current.children[part];
                 });
             });
+
+            function renderNode(node, depth = 0) {
+                let html = "";
+                const children = Object.entries(node.children || {});
+
+                children.forEach(([key, childNode]) => {
+                    const isFile = childNode.type === 'file';
+                    const paddingLeft = `${depth * 1.25}rem`;
+
+                    const iconPath = isFile
+                        ? `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>`
+                        : `<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>`;
+
+                    html += `
+            <div class="tree-item ${isFile ? 'file' : 'folder'}" 
+                 style="padding-left: calc(${paddingLeft} + 1rem);"
+                 ${isFile ? `data-index="${childNode.index}"` : ''}>
+                <svg class="w-4 h-4 mr-2 shrink-0 ${isFile ? 'text-slate-400' : 'text-blue-400'}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    ${iconPath}
+                </svg>
+                <span class="text-sm truncate ${!isFile ? 'text-blue-300 font-medium' : 'text-slate-300'}">${key}</span>
+            </div>`;
+
+                    if (childNode.type === 'folder') {
+                        html += renderNode(childNode, depth + 1);
+                    }
+                });
+
+                return html;
+            }
+
+            treeItems.innerHTML = renderNode(rootStructure, 0);
+
+            treeItems.querySelectorAll(".tree-item[data-index]").forEach(item => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    const index = Number(item.dataset.index);
+                    renderFile(index);
+                    treeMenu.classList.add("hidden");
+                    treeChevron.style.transform = "";
+                });
+            });
+        }
+
+        treeButton.addEventListener("click", () => {
+            treeMenu.classList.toggle("hidden");
+            treeChevron.style.transform = treeMenu.classList.contains("hidden") ? "" : "rotate(180deg)";
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!treeButton.contains(e.target) && !treeMenu.contains(e.target)) {
+                treeMenu.classList.add("hidden");
+                treeChevron.style.transform = "";
+            }
+        });
+
+        async function loadFiles() {
+            try {
+                const res = await fetch("/api/v1/integrations");
+                const data = await res.json();
+
+                files = [
+                    introFile,
+                    ...data.files
+                ];
+
+                renderFile(0);
+                buildTree();
+            } catch (err) {
+                console.error(err);
+                renderFile(0);
+                buildTree();
+            }
+        }
+
+        prevFile.addEventListener("click", () => {
+            const next = (currentIndex - 1 + files.length) % files.length;
+            renderFile(next);
+        });
+
+        nextFile.addEventListener("click", () => {
+            const next = (currentIndex + 1) % files.length;
+            renderFile(next);
+        });
+
+        copyButton.addEventListener("click", async () => {
+            const text = codeContent.textContent;
+            await navigator.clipboard.writeText(text);
+            copyButton.textContent = "Copied!";
+            setTimeout(() => {
+                copyButton.textContent = "Copy";
+            }, 1500);
+        });
+
+        loadFiles();
 
     </script>
 
