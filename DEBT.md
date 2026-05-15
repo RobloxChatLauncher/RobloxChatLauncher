@@ -27,7 +27,16 @@ The following is a list of known and documented technical debts.
         adds the font to the wrong one and retries up to 20 times per font. Note that for all intents and purposes assignment is random and there is no way to make it deterministic due to GDI+ being fundamentally flawed.
       * Areas: [./client/Utils/RichChatBox.cs](./client/Utils/RichChatBox.cs)
 
-    **Goal:** Move to WPF to utilize native `AllowsTransparency` and robust Hit-Testing.
+    **Goal:** Completely migrate to WPF to utilize native `AllowsTransparency`, robust Hit-Testing, native font loading, hardware acceleration, DPI awareness, etc.
+
+* [ ] **Server: Roblox API Rate-Limit Mitigation** *Updated 2026-05-14*
+
+  The server currently hits Roblox API limits periodically due to user volume.
+    * **Risk:** Frequent 429 (Too Many Requests) errors from the Roblox API lead to intermittent feature failure for end-users and potential temporary IP blacklisting from Roblox services.
+    * Areas: [./server/services/verification.js](./server/services/verification.js), [./server/services/apiKeySelfService.cs](./server/services/apiKeySelfService.js)
+
+  **Goal:** Implement load balancing across our existing **regional servers** or deploy new single-responsibility **proxy servers** to distribute outbound API calls across a wider pool of IP addresses and provide a fallback if one server is rate-limited.
+    * Project Lead's Recommendation: Outsource a proxy provider to forward Roblox API requests through.
 
 ## 💛 Medium Priority
 
@@ -35,9 +44,10 @@ The following is a list of known and documented technical debts.
 
   Most pending checks and codes are stored in local in-memory `Maps`.
     * **Risk:** This creates a single point of failure (data loss on restart) and prevents horizontal scaling .
-    * Areas: [./server/services/mailboxService.js](./server/services/mailboxService.js), [./server/services/verification.js](./server/services/verification.js), [./server/services/apiKeySelfService.cs](./server/services/apiKeySelfService.cs), [./server/services/pow.js](./server/services/pow.js)
+    * Areas: [./server/services/mailboxService.js](./server/services/mailboxService.js), [./server/services/verification.js](./server/services/verification.js), [./server/services/apiKeySelfService.cs](./server/services/apiKeySelfService.js), [./server/services/pow.js](./server/services/pow.js)
 
   **Goal:** Move shared state to the existing **PostgreSQL** instance or deploy a **Valkey** instance to act as high-speed shared memory.
+    * Project Lead's Recommendation: Outsource a Valkey provider for cache storage and initialize a pool in [./server/db/](./server/db/).
 
 ## 💚 Low Priority
 
