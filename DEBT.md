@@ -51,4 +51,32 @@ The following is a list of known and documented technical debts.
 
 ## 💚 Low Priority
 
-*\<None currently\>*
+* [ ] **Client: Hardcoded Prerelease Flag in Update Service** *Updated 2026-05-15*
+
+  The automatic update routine is currently forced to check for prereleases because the project has not yet published a formal, stable release.
+    * **Technical Constraints:**
+      * The background update check passes a hardcoded `true` argument to include prereleases. This needs to be toggled back to `false` once the first stable build is shipped to prevent production clients from accidentally pulling unstable development builds.
+      * Areas: [./client/Services/UpdateService.cs](./client/Services/UpdateService.cs), [./client/ChatForm/ChatForm.UI.cs](./client/ChatForm/ChatForm.UI.cs) (caller)
+
+    **Goal:** Update the automatic `CheckAndDownloadUpdate` startup call to target stable releases by default by changing the argument to `false` once version `1.0.0` or a stable equivalent is published.
+
+## ❤️ Out of Scope
+
+The following items are recognized issues that severely impact the project but cannot be resolved under current operational or financial limitations. They are considered hard constraints until external conditions change.
+
+* [ ] **Project: Budget Infrastructural Constraints** *Updated 2026-05-15*
+
+  The project is severely bottlenecked by a $0 operational budget, forcing reliance on free-tier infrastructure and APIs that introduce strict rate limits, service-ending deadlines, and monthly downtime risks.
+    * **Moderation Constraints:**
+      * The system relies entirely on the free tier of Google's Perspective API for content moderation, which imposes severe functional and existential constraints on the project.
+      * Outbound moderation requests are bottlenecked by a strict global rate limit of 1 QPS (1 message/echo per second) shared across all servers, causing long message queues during peak traffic.
+      * Google is sunsetting the Perspective API on December 31, 2026. Because all viable alternative moderation services require paid subscriptions, the server will completely cease to function after this date without funding.
+      * Areas: [./server/services/moderationService.js](./server/services/moderationService.js), [./server/server.js](./server/server.js), [./server/config/env.js](./server/config/env.js)
+
+    * **Hosting Constraints:**
+      * The backend is deployed on the Render Free Tier, which imposes a strict global limit of 750 instance hours per month across all services under the account.
+      * While Render allows free services to spin down and sleep during periods of inactivity, our current user volume keeps the server active nearly 24/7.
+      * Once the 750-hour cap is breached, Render suspends all services under the account. The server will become completely unreachable for the remainder of that calendar month.
+      * Areas: [./render.yaml](./render.yaml) (infrastructure)
+
+    These infrastructural bottlenecks cannot be resolved under our current development model until dependable funding, a billing partner, or other external sponsorship is secured.
