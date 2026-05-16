@@ -412,6 +412,7 @@ All commits **must follow [Conventional Commits v1.0.0](https://www.conventional
 * `server` all types
 * `installer` all types
 * `integrations` all types
+* `web` all types
 * `ci` all types
 * `test` all types
 * `readme` chore or docs
