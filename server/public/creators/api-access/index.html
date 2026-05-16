@@ -7,6 +7,7 @@
     <title>Creator Portal | Universe Verification</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="navbar.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
           rel="stylesheet" />
@@ -206,56 +207,17 @@
     <div class="cursor-grid"></div>
 
     <!-- Navbar -->
-    <header class="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/55 border-b border-white/5">
-
-        <div class="max-w-7xl mx-auto px-6">
-
-            <div class="h-20 flex items-center justify-between">
-
-                <a href="/"
-                   class="flex items-center gap-3">
-
-                    <div class="w-10 h-10 rounded-2xl overflow-hidden border border-blue-500/20 shadow-lg shadow-blue-500/10 bg-slate-900/80">
-
-                        <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_server_icon.png"
-                             class="w-full h-full object-cover rounded-2xl"
-                             draggable="false" />
-
-                    </div>
-
-                    <div>
-
-                        <div class="font-semibold text-white">
-                            Roblox Chat Launcher
-                        </div>
-
-                        <div class="text-xs text-slate-500">
-                            Creator Portal
-                        </div>
-
-                    </div>
-
-                </a>
-
-                <div class="flex items-center gap-6">
-
-                    <a href="/"
-                       class="text-sm text-slate-400 hover:text-white transition-colors">
-                        Home
-                    </a>
-
-                    <a href="/creators"
-                       class="text-sm text-slate-400 hover:text-white transition-colors">
-                        For Creators
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </header>
+    <script>
+        renderNavbar({
+            subtitle: "Creator Portal",
+            buttons: `
+          <div class="flex items-center gap-6">
+            <a href="/" class="text-sm text-slate-400 hover:text-white transition-colors">Home</a>
+            <a href="/creators" class="text-sm text-slate-400 hover:text-white transition-colors">For Creators</a>
+          </div>
+        `
+        });
+    </script>
 
     <main class="flex-1 flex items-center justify-center p-6 relative z-10">
 
@@ -490,79 +452,34 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-white/5 py-10 relative z-10">
-
-        <div class="max-w-7xl mx-auto px-6">
-
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-
-                <div class="text-center md:text-left">
-
-                    <div class="text-sm text-slate-400">
-                        © 2026 Roblox Chat Launcher
-                    </div>
-
-                    <div class="text-xs text-slate-600 mt-1">
-                        Not affiliated with or endorsed by Roblox Corporation.
-                    </div>
-
-                </div>
-
-                <div class="flex items-center gap-6 text-sm">
-
-                    <a href="https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/refs/heads/main/PRIVACY"
-                       class="text-slate-500 hover:text-white transition-colors">
-
-                        Privacy Policy
-
-                    </a>
-
-                    <a href="https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/refs/heads/main/TERMS"
-                       class="text-slate-500 hover:text-white transition-colors">
-
-                        Terms of Service
-
-                    </a>
-
-                    <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher"
-                       class="text-slate-500 hover:text-white transition-colors">
-                        GitHub
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </footer>
+    <script>renderFooter();</script>
 
     <script>
         const workerCode = `
-                                    self.onmessage = async (e) => {
-                                        const { seed, difficulty } = e.data;
-                                        const target = "0".repeat(difficulty);
-                                        let nonce = 0;
+            self.onmessage = async (e) => {
+                const { seed, difficulty } = e.data;
+                const target = "0".repeat(difficulty);
+                let nonce = 0;
 
-                                        while (true) {
-                                            const data = seed + nonce;
-                                            const hashBuffer = await crypto.subtle.digest(
-                                                "SHA-256",
-                                                new TextEncoder().encode(data)
-                                            );
+                while (true) {
+                    const data = seed + nonce;
+                    const hashBuffer = await crypto.subtle.digest(
+                        "SHA-256",
+                        new TextEncoder().encode(data)
+                    );
 
-                                            const hashHex = Array.from(new Uint8Array(hashBuffer))
-                                                .map(b => b.toString(16).padStart(2, "0"))
-                                                .join("");
+                    const hashHex = Array.from(new Uint8Array(hashBuffer))
+                        .map(b => b.toString(16).padStart(2, "0"))
+                        .join("");
 
-                                            if (hashHex.startsWith(target)) {
-                                                self.postMessage(nonce);
-                                                return;
-                                            }
-                                            nonce++;
-                                        }
-                                    };
-                                `;
+                    if (hashHex.startsWith(target)) {
+                        self.postMessage(nonce);
+                        return;
+                    }
+                    nonce++;
+                }
+            };
+        `;
 
         // Create a URL for the blob so the Worker can "download" it
         const blob = new Blob([workerCode], { type: 'application/javascript' });
@@ -886,14 +803,14 @@
                     btn.innerHTML;
 
                 btn.innerHTML = `
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    class="h-5 w-5 text-emerald-500"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor">
-                                                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                                                    <path d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" />
-                                                </svg>
-                                            `;
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-5 w-5 text-emerald-500"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor">
+                                                        <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                                                        <path d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" />
+                                                    </svg>
+                                                `;
 
                 setTimeout(() => {
                     btn.innerHTML = originalInner;

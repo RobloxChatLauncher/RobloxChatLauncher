@@ -8,6 +8,7 @@
     <title>Roblox Chat Launcher</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="navbar.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
           rel="stylesheet" />
@@ -175,69 +176,23 @@
     <div class="cursor-light"></div>
     <div class="cursor-grid"></div>
 
-    <!-- Navigation -->
-    <header class="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/55 border-b border-white/5">
-
-        <div class="max-w-7xl mx-auto px-6">
-
-            <div class="h-20 flex items-center justify-between">
-
-                <div class="flex items-center gap-3">
-
-                    <div class="w-10 h-10 rounded-2xl overflow-hidden border border-blue-500/20 shadow-lg shadow-blue-500/10 bg-slate-900/80">
-
-                        <img src="https://github.com/RobloxChatLauncher/RobloxChatLauncher/raw/main/assets/brand/rcl_server_icon.png"
-                             alt="Roblox Chat Launcher Icon"
-                             class="w-full h-full object-cover rounded-2xl select-none pointer-events-none"
-                             draggable="false" />
-
-                    </div>
-
-                    <div>
-
-                        <div class="font-semibold text-white">
-                            Roblox Chat Launcher
-                        </div>
-
-                        <div class="text-xs text-slate-500">
-                            Desktop Communication Platform
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <nav class="hidden md:flex items-center gap-8 text-sm text-slate-400">
-
-                    <a href="#features"
-                       class="hover:text-white transition-colors">
-                        Features
-                    </a>
-
-                    <a href="/creators"
-                       class="hover:text-white transition-colors">
-                        For Creators
-                    </a>
-
-                    <a href="#privacy"
-                       class="hover:text-white transition-colors">
-                        Privacy
-                    </a>
-
-                </nav>
-
-                <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher/releases"
-                   class="button-primary inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-blue-500/20">
-
-                    Download
-
-                </a>
-
-            </div>
-
-        </div>
-
-    </header>
+    <!-- Navbar -->
+    <script>
+        renderNavbar({
+            subtitle: "Desktop Communication Platform",
+            buttons: `
+          <nav class="hidden md:flex items-center gap-8 text-sm text-slate-400">
+            <a href="#features" class="hover:text-white transition-colors">Features</a>
+            <a href="/creators" class="hover:text-white transition-colors">For Creators</a>
+            <a href="#privacy" class="hover:text-white transition-colors">Privacy</a>
+          </nav>
+          <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher/releases"
+             class="button-primary inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-blue-500/20">
+            Download
+          </a>
+        `
+        });
+    </script>
 
     <!-- Hero -->
     <section class="relative overflow-hidden">
@@ -562,59 +517,7 @@
     </section>
 
     <!-- Footer -->
-    <footer id="privacy"
-            class="border-t border-white/5 py-10">
-
-        <div class="max-w-7xl mx-auto px-6">
-
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-
-                <div class="text-center md:text-left">
-
-                    <div class="text-sm text-slate-400">
-
-                        © 2026 Roblox Chat Launcher Developers & Contributors
-
-                    </div>
-
-                    <div class="text-xs text-slate-600 mt-1">
-
-                        Not affiliated with or endorsed by Roblox Corporation.
-
-                    </div>
-
-                </div>
-
-                <div class="flex items-center gap-6 text-sm">
-
-                    <a href="https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/refs/heads/main/PRIVACY"
-                       class="text-slate-500 hover:text-white transition-colors">
-
-                        Privacy Policy
-
-                    </a>
-
-                    <a href="https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/refs/heads/main/TERMS"
-                       class="text-slate-500 hover:text-white transition-colors">
-
-                        Terms of Service
-
-                    </a>
-
-                    <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher"
-                       class="text-slate-500 hover:text-white transition-colors">
-
-                        GitHub
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </footer>
+    <script>renderFooter();</script>
 
     <script>
 
