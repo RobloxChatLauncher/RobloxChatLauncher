@@ -54,18 +54,16 @@ The following is a list of known and documented technical debts.
 * [ ] **Client: Hardcoded Prerelease Flag in Update Service** *Updated 2026-05-15*
 
   The automatic update routine is currently forced to check for prereleases because the project has not yet published a formal, stable release.
-    * **Technical Constraints:**
-      * The background update check passes a hardcoded `true` argument to include prereleases. This needs to be toggled back to `false` once the first stable build is shipped to prevent production clients from accidentally pulling unstable development builds.
-      * Areas: [./client/ChatForm/ChatForm.UI.cs](./client/ChatForm/ChatForm.UI.cs) (caller)[^stm], [./client/Services/UpdateService.cs](./client/Services/UpdateService.cs)
+    * **Risk:** The background update check passes a hardcoded `true` argument to include prereleases. This needs to be toggled back to `false` once the first stable build is shipped to prevent production clients from accidentally pulling unstable development builds.
+    * Areas: [./client/ChatForm/ChatForm.UI.cs](./client/ChatForm/ChatForm.UI.cs) (caller)[^stm], [./client/Services/UpdateService.cs](./client/Services/UpdateService.cs)
 
     **Goal:** Update the automatic `CheckAndDownloadUpdate()` startup call to target stable releases by default by changing the argument to `false` once version `1.0.0` or a stable equivalent is published.
 
 * [ ] **Client: Console Lifecycle Hack via Menu Deletion** *Updated 2026-05-16*
 
   The client currently prevents users from accidentally terminating the main program by forcefully calling `DeleteMenu(sysMenu, SC_CLOSE, MF_BYCOMMAND)` on the debug console to remove the close button from the system menu and forcing the user to manually type the same chat command again to trigger `FreeConsole()`.
-    * **Risk:**
-      * Disabling standard OS window controls breaks native UX expectations (users can't click X to close).
-      * Areas: [./client/Utils/NativeMethods.cs](./client/Utils/NativeMethods.cs), [./client/ChatForm/ChatForm.Client.cs](./client/ChatForm/ChatForm.Client.cs) (`HandleDebugConsole()`)[^stm]
+    * **Risk:** Disabling standard OS window controls breaks native UX expectations (users can't click X to close).
+    * Areas: [./client/Utils/NativeMethods.cs](./client/Utils/NativeMethods.cs), [./client/ChatForm/ChatForm.Client.cs](./client/ChatForm/ChatForm.Client.cs) (`HandleDebugConsole()`)[^stm]
 
     **Goal:** Restore the native close button and properly intercept `if (ctrlType == CTRL_CLOSE_EVENT)` to invoke `FreeConsole()` on the console window.
 
