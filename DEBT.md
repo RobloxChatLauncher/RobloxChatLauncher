@@ -25,7 +25,7 @@ The following is a list of known and documented technical debts.
     * **Technical Constraints:**
       * Fonts are currently loaded by allocating fresh memory for every single attempt and font weight due to GDI+ merging fonts. The current system frees the memory and allocates a new block to try again if it
         adds the font to the wrong one and retries up to 20 times per font. Note that for all intents and purposes assignment is random and there is no way to make it deterministic due to GDI+ being fundamentally flawed.
-      * Areas: [./client/Utils/RichChatBox.cs](./client/Utils/RichChatBox.cs)
+      * Areas: [./client/Utils/RichChatBox.cs](./client/Utils/RichChatBox.cs) (tbrem)
 
     **Goal:** Completely migrate to WPF to utilize native `AllowsTransparency`, robust Hit-Testing, native font loading, hardware acceleration, DPI awareness, etc.
 
@@ -44,7 +44,7 @@ The following is a list of known and documented technical debts.
 
   Most pending checks and codes are stored in local in-memory `Maps`.
     * **Risk:** This creates a single point of failure (data loss on restart) and prevents horizontal scaling .
-    * Areas: [./server/services/mailboxService.js](./server/services/mailboxService.js), [./server/services/verification.js](./server/services/verification.js), [./server/services/apiKeySelfService.cs](./server/services/apiKeySelfService.js), [./server/services/pow.js](./server/services/pow.js)
+    * Areas: [./server/services/mailboxService.js](./server/services/mailboxService.js), [./server/services/verification.js](./server/services/verification.js), [./server/services/apiKeySelfService.js](./server/services/apiKeySelfService.js), [./server/services/pow.js](./server/services/pow.js)
 
   **Goal:** Move shared state to the existing **PostgreSQL** instance or deploy a **Valkey** instance to act as high-speed shared memory.
     * Project Lead's Recommendation: Outsource a Valkey provider for cache storage and initialize a pool in [./server/db/](./server/db/).
@@ -56,9 +56,18 @@ The following is a list of known and documented technical debts.
   The automatic update routine is currently forced to check for prereleases because the project has not yet published a formal, stable release.
     * **Technical Constraints:**
       * The background update check passes a hardcoded `true` argument to include prereleases. This needs to be toggled back to `false` once the first stable build is shipped to prevent production clients from accidentally pulling unstable development builds.
-      * Areas: [./client/Services/UpdateService.cs](./client/Services/UpdateService.cs), [./client/ChatForm/ChatForm.UI.cs](./client/ChatForm/ChatForm.UI.cs) (caller)
+      * Areas: [./client/ChatForm/ChatForm.UI.cs](./client/ChatForm/ChatForm.UI.cs) (caller)[^stm], [./client/Services/UpdateService.cs](./client/Services/UpdateService.cs)
 
-    **Goal:** Update the automatic `CheckAndDownloadUpdate` startup call to target stable releases by default by changing the argument to `false` once version `1.0.0` or a stable equivalent is published.
+    **Goal:** Update the automatic `CheckAndDownloadUpdate()` startup call to target stable releases by default by changing the argument to `false` once version `1.0.0` or a stable equivalent is published.
+
+* [ ] **Client: Console Lifecycle Hack via Menu Deletion** *Updated 2026-05-16*
+
+  The client currently prevents users from accidentally terminating the main program by forcefully calling `DeleteMenu(sysMenu, SC_CLOSE, MF_BYCOMMAND)` on the debug console to remove the close button from the system menu and forcing the user to manually type the same chat command again to trigger `FreeConsole()`.
+    * **Risk:**
+      * Disabling standard OS window controls breaks native UX expectations (users can't click X to close).
+      * Areas: [./client/Utils/NativeMethods.cs](./client/Utils/NativeMethods.cs), [./client/ChatForm/ChatForm.Client.cs](./client/ChatForm/ChatForm.Client.cs) (`HandleDebugConsole()`)[^stm]
+
+    **Goal:** Restore the native close button and properly intercept `if (ctrlType == CTRL_CLOSE_EVENT)` to invoke `FreeConsole()` on the console window.
 
 ## ❤️ Out of Scope
 
@@ -80,3 +89,5 @@ The following items are recognized issues that severely impact the project but c
       * Areas: [./render.yaml](./render.yaml) (infrastructure)
 
     These infrastructural bottlenecks cannot be resolved under our current development model until dependable funding, a billing partner, or other external sponsorship is secured.
+
+[^stm]: Please note that the caller, callee, handler, file or otherwise's location is subject to and likely to move during a refactor or migration to WPF.
