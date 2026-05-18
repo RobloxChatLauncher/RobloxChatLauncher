@@ -1,0 +1,77 @@
+name: Deploy Servers
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/**'
+
+  workflow_dispatch:
+    inputs:
+      deploy_server_1:
+        description: "Deploy US (Oregon)"
+        type: boolean
+        required: false
+        default: false
+
+      deploy_server_2:
+        description: "Deploy DE (Frankfurt)"
+        type: boolean
+        required: false
+        default: false
+
+      deploy_server_3:
+        description: "Deploy SG (Singapore)"
+        type: boolean
+        required: false
+        default: false
+
+      deploy_all:
+        description: "Deploy All Servers"
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-slim
+
+    steps:
+      - name: Determine deployment targets
+        id: targets
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "server1=true" >> $GITHUB_OUTPUT
+            echo "server2=true" >> $GITHUB_OUTPUT
+            echo "server3=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          DEPLOY_ALL="${{ inputs.deploy_all }}"
+
+          if [ "$DEPLOY_ALL" = "true" ]; then
+            echo "server1=true" >> $GITHUB_OUTPUT
+            echo "server2=true" >> $GITHUB_OUTPUT
+            echo "server3=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "server1=${{ inputs.deploy_server_1 }}" >> $GITHUB_OUTPUT
+          echo "server2=${{ inputs.deploy_server_2 }}" >> $GITHUB_OUTPUT
+          echo "server3=${{ inputs.deploy_server_3 }}" >> $GITHUB_OUTPUT
+
+      - name: Deploy US (Oregon)
+        if: steps.targets.outputs.server1 == 'true'
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+
+      - name: Deploy DE (Frankfurt)
+        if: steps.targets.outputs.server2 == 'true'
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_DE }}"
+
+      - name: Deploy SG (Singapore)
+        if: steps.targets.outputs.server3 == 'true'
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_SG }}"
