@@ -25,7 +25,7 @@ The following is a list of known and documented technical debts.
     * **Technical Constraints:**
       * Fonts are currently loaded by allocating fresh memory for every single attempt and font weight due to GDI+ merging fonts. The current system frees the memory and allocates a new block to try again if it
         adds the font to the wrong one and retries up to 20 times per font. Note that for all intents and purposes assignment is random and there is no way to make it deterministic due to GDI+ being fundamentally flawed.
-      * Areas: [./client/Utils/RichChatBox.cs](./client/Utils/RichChatBox.cs) (tbrem)
+      * Areas: [./client/Utils/RichChatBox.cs](./client/Utils/RichChatBox.cs) (tbr)
 
     **Goal:** Completely migrate to WPF to utilize native `AllowsTransparency`, robust Hit-Testing, native font loading, hardware acceleration, DPI awareness, etc.
 
@@ -33,7 +33,7 @@ The following is a list of known and documented technical debts.
 
   The server currently hits Roblox API limits periodically due to user volume.
     * **Risk:** Frequent 429 (Too Many Requests) errors from the Roblox API lead to intermittent feature failure for end-users and potential temporary IP blacklisting from Roblox services.
-    * Areas: [./server/services/verification.js](./server/services/verification.js), [./server/services/apiKeySelfService.cs](./server/services/apiKeySelfService.js)
+    * Areas: [./server/services/verification.js](./server/services/verification.js), [./server/services/apiKeySelfService.js](./server/services/apiKeySelfService.js)
 
   **Goal:** Implement load balancing across our existing **regional servers** or deploy new single-responsibility **proxy servers** to distribute outbound API calls across a wider pool of IP addresses and provide a fallback if one server is rate-limited.
     * Project Lead's Recommendation: Outsource a proxy provider to forward Roblox API requests through.
@@ -48,6 +48,14 @@ The following is a list of known and documented technical debts.
 
   **Goal:** Move shared state to the existing **PostgreSQL** instance or deploy a **Valkey** instance to act as high-speed shared memory.
     * Project Lead's Recommendation: Outsource a Valkey provider for cache storage and initialize a pool in [./server/db/](./server/db/).
+
+* [ ] **Server: Monolithic server.js** *Updated 2026-05-16*
+
+  The central `server.js` file has become a God Object, handling 90% of all application routes, WebSocket connections, and echo streaming routines.
+    * **Risk:** Jamming disparate logic into a single file causes severe merge conflicts during team collaboration, drastically increases cognitive load for future maintenance, and becomes hard to navigate and find logic.
+    * Areas: [./server/server.js](./server/server.js)
+
+  **Goal:** Move all HTTP endpoints into the existing [./server/routes/](./server/routes/) directory and cleanly mount them in [./server/server.js](./server/server.js), and extract WebSocket connections, event listeners, and echo broadcasting logic out of the main file and encapsulate them into isolated helper classes or services.
 
 ## 💚 Low Priority
 
@@ -66,6 +74,22 @@ The following is a list of known and documented technical debts.
     * Areas: [./client/Utils/NativeMethods.cs](./client/Utils/NativeMethods.cs), [./client/ChatForm/ChatForm.Client.cs](./client/ChatForm/ChatForm.Client.cs) (`HandleDebugConsole()`)[^stm]
 
     **Goal:** Restore the native close button and properly intercept `if (ctrlType == CTRL_CLOSE_EVENT)` to invoke `FreeConsole()` on the console window.
+
+* [ ] **Server: Production Reliance on JsDelivr CDN for Tailwind** *Updated 2026-05-16*
+
+  The server-rendered HTML pages currently load Tailwind CSS directly in the browser via a development script tag (`<script src="...jsdelivr.net/npm/@tailwindcss/browser@4.3.0"...></script>`).
+    * **Risk:** Frontend performance degradation; the browser is forced to download a massive JavaScript engine and dynamically compile utility classes on the fly every time a page loads. While more optimized than the old `cdn.tailwindcss.com` script, this may begin to cause noticeable layout shifts (FOUC) on low-end devices or as pages become more complex.
+    * Areas: [./server/public/index.html](./server/public/index.html), [./server/public/creators/index.html](./server/public/creators/index.html), [./server/public/creators/api-access/index.html](./server/public/creators/api-access/index.html)
+
+  **Goal:** Migrate from the browser-based runtime compiler to a proper GitHub Actions workflow to synchronize and compile CSS, push to a `prod` branch, and replace the `<script>` bundle with a static, minified CSS stylesheet generated during a build step.
+
+* [ ] **Installer: DRY Code Violation in Flag Checks** *Updated 2026-05-16*
+
+  The installer isolates command-line argument checks into individual single-purpose script files, creating a repetitive and hard-to-maintain structure.
+    * **Risk:** The codebase contains identical logic duplicated across multiple distinct files just to parse different string constants. Any future updates to the argument-parsing engine or error-handling routines will require modifying all five files simultaneously, increasing the likelihood of human error and divergence.
+    * Areas: [./installer/Include/Flags/IsCleanInstallFlagPresent.pas](./installer/Include/Flags/IsCleanInstallFlagPresent.pas), [./installer/Include/Flags/IsClearAppDataFlagPresent.pas](./installer/Include/Flags/IsClearAppDataFlagPresent.pas), [./installer/Include/Flags/IsForcePurgeFlagPresent.pas](./installer/Include/Flags/IsForcePurgeFlagPresent.pas), [./installer/Include/Flags/IsForceRunFlagPresent.pas](./installer/Include/Flags/IsForceRunFlagPresent.pas), [./installer/Include/Flags/IsNoRestoreFlagPresent.pas](./installer/Include/Flags/IsNoRestoreFlagPresent.pas)
+
+  **Goal:** Consolidate the duplicated Pascal scripts into a single, reusable parameterized helper service (e.g., `HasCommandLineFlag(FlagName: String): Boolean`) to dynamically evaluate flags against incoming parameters.
 
 ## ❤️ Out of Scope
 
@@ -88,4 +112,4 @@ The following items are recognized issues that severely impact the project but c
 
     These infrastructural bottlenecks cannot be resolved under our current development model until dependable funding, a billing partner, or other external sponsorship is secured.
 
-[^stm]: Please note that the caller, callee, handler, file or otherwise's location is subject to and likely to move during a refactor or migration to WPF.
+[^stm]: Please note that the location of the caller, callee, handler, file or otherwise is subject to and likely to move during a refactor or migration to WPF.
