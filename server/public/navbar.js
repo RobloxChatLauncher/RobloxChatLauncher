@@ -19,14 +19,49 @@ function renderNavbar(config) {
               </div>
             </a>
 
-            <div class="flex items-center gap-6">
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-6">
               ${buttonsHtml}
             </div>
 
+            <!-- Hamburger -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 text-slate-400 hover:text-white focus:outline-none" aria-label="Toggle Menu">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-slate-950/95 px-6 py-4 space-y-4">
+          <div class="flex flex-col gap-4">
+            ${buttonsHtml}
           </div>
         </div>
       </header>
     `);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIconPath = document.getElementById('menu-icon-path');
+
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                const isHidden = mobileMenu.classList.contains('hidden');
+
+                if (isHidden) {
+                    mobileMenu.classList.remove('hidden');
+                    menuIconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                } else {
+                    mobileMenu.classList.add('hidden');
+                    menuIconPath.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+                }
+            });
+        }
+    });
 }
 
 function renderFooter() {
