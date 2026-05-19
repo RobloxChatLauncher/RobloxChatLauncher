@@ -36,6 +36,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-slim
+    environment: deploy
 
     steps:
       - name: Determine deployment targets
