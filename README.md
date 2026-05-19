@@ -9,8 +9,11 @@
 > Roblox Chat Launcher is seeking a long-term billing partner to cover hosting costs and API costs.
 
 <p align="center">
-    <img src="https://RobloxChatLauncher.onrender.com/api/v1/logo/dark#gh-dark-mode-only" width="580">
-    <img src="https://RobloxChatLauncher.onrender.com/api/v1/logo/light#gh-light-mode-only" width="580">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://RobloxChatLauncher.onrender.com/api/v1/logo/dark">
+      <source media="(prefers-color-scheme: light)" srcset="https://RobloxChatLauncher.onrender.com/api/v1/logo/light">
+      <img alt="Logo" src="https://RobloxChatLauncher.onrender.com/api/v1/logo/light" width="580">
+    </picture>
 </p>
 
 <!--
