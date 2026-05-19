@@ -1,5 +1,3 @@
-// services/logoCache.js
-
 const path = require("path");
 
 const RAW_BASE =
@@ -27,6 +25,24 @@ const EVENTS = [
         logos: {
             dark: "rcl_logo_tdov_dark.webp",
             light: "rcl_logo_tdov_light.webp"
+        }
+    },
+    {
+        id: "pride",
+
+        start: {
+            month: 6,
+            day: 1
+        },
+
+        end: {
+            month: 6,
+            day: 30
+        },
+
+        logos: {
+            dark: "rcl_logo_pride_dark.webp",
+            light: "rcl_logo_pride_light.webp"
         }
     }
 ];
