@@ -49,7 +49,8 @@ const swaggerOptions = {
             { name: "Creators" },
             { name: "Universe" },
             { name: "Verified"},
-            { name: "Public" }
+            { name: "Public" },
+            { name: "Assets" }
         ]
     },
     apis: ['./server.js', './routes/*.js'],
@@ -73,6 +74,7 @@ app.use(express.text({ limit: Constants.TEXT_LIMIT_BYTES }));
 // ----- Routes -----
 app.use(express.static("public"));
 app.use("/api/v1/integrations", require("./routes/integrations"));
+app.use("/api/v1/logo", require("./routes/logo"));
 app.use("/api/v1/creators", require("./routes/creators"));
 
 // ----- Swagger Setup -----

@@ -11,7 +11,7 @@ const {
  *   get:
  *     summary: Retrieve available integrations
  *     description: Fetches a list of Lua integration files from the GitHub repository. Results are cached server-side for 1 hour.
- *     tags: [Public]
+ *     tags: [Public, Assets]
  *     responses:
  *       200:
  *         description: A JSON object containing an array of integration files.
