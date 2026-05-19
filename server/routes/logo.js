@@ -15,10 +15,10 @@ const {
  *     parameters:
  *       - in: path
  *         name: theme
- *         required: false
+ *         required: true
  *         schema:
  *           type: string
- *         description: The name of the theme to retrieve the logo for ('light' or 'dark'). Defaults to 'dark'.
+ *         description: The name of the theme to retrieve the logo for ('light' or 'dark'). Retrieves logo for 'dark' if invalid.
  *     responses:
  *       302:
  *         description: Redirects to the logo asset URL.
@@ -33,11 +33,11 @@ const {
  *                   type: string
  *                   example: "Failed to load logo."
  */
-router.get("/:theme?", async (req, res) => {
+router.get("/:theme", async (req, res) => {
 
     try {
 
-        const theme = req.params.theme || 'dark';
+        const theme = req.params.theme;
 
         const logo =
             await getLogo(theme);
