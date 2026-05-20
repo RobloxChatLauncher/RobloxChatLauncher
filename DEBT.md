@@ -91,6 +91,14 @@ The following is a list of known and documented technical debts.
 
   **Goal:** Consolidate the duplicated Pascal scripts into a single, reusable parameterized helper service (e.g., `HasCommandLineFlag(FlagName: String): Boolean`) to dynamically evaluate flags against incoming parameters.
 
+* [ ] **Server: DRY Code Violation in Web Code** *Updated 2026-05-20*
+
+  The web code duplicates JavaScript logic across multiple index.html files, leading to maintenance overhead when updating shared frontend scripts.
+    * **Risk:** Human error can lead to inconsistent behavior across different pages (e.g., mismatched auth handling or UI initialization). Any feature change or bug fix requires manual synchronization across every file, increasing the probability of regression and technical drift.
+    * **Areas:** [./server/public/index.html](./server/public/index.html), [./server/public/creators/index.html](./server/public/creators/index.html), [./server/public/creators/api-access/index.html](./server/public/creators/api-access/index.html)
+ 
+  **Goal:** Abstract common JavaScript functionality (e.g., common utility functions, API wrappers, or UI event listeners) into a standalone `client-common.js` file. Serve this file as a static asset to all pages to ensure a single source of truth for frontend logic.
+
 ## ❤️ Out of Scope
 
 The following items are recognized issues that severely impact the project but cannot be resolved under current operational or financial limitations. They are considered hard constraints until external conditions change.
