@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const crypto = require("crypto");
 
+const { hashKey } = require('../utils/hashKey');
 const { pool } = require('../db/postgresPool');
 const pow = require("../utils/pow");
 
@@ -172,6 +173,7 @@ router.post("/confirm", async (req, res) => {
     if (ok) {
         // 64 characters sha256 hex (32 bytes)
         const apiKey = `rcl_${crypto.randomBytes(32).toString('hex')}`;
+        const hashedKey = hashKey(apiKey);
 
         try {
             const query = `
@@ -186,7 +188,7 @@ router.post("/confirm", async (req, res) => {
             `;
 
             // If groupId is undefined/null, it will insert as NULL in Postgres
-            const values = [universeId, robloxId, groupId, apiKey];
+            const values = [universeId, robloxId, groupId, hashedKey];
             await pool.query(query, values);
 
             return res.json({
