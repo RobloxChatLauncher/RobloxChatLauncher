@@ -29,14 +29,7 @@ Integrate these scripts into your Roblox Experience to enable Roblox Chat Launch
 
 ## 🛠 Installation
 
-### Option 1: Rojo (Recommended)
-
-Sync this directory to your Roblox project using your preferred Rojo workflow.
-
-### Option 2: Manual Setup
-
-1. Copy the `.lua` scripts from this directory into your game.
-2. Create a **RemoteEvent** in `ReplicatedStorage` named `RCL_Event`.
+Download the latest `RobloxChatLauncherIntegrations.rbxmx` from GitHub Releases and import it directly into Roblox Studio. The package automatically includes ReplicatedStorage, ServerScriptService, StarterPlayerScripts, and RCL_Event.
 
 ## 🔐 Getting Your API Key
 
