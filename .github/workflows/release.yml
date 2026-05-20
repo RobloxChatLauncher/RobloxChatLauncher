@@ -83,8 +83,29 @@ jobs:
           fetch-depth: 0
 
       # ---------------------------
-      # Normalize tag & update Installer.iss (only if needed)
+      # Set up build tools and deps
       # ---------------------------
+      # .NET SDK 10.0
+      - name: Install .NET SDK 10.0.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+          cache: false
+
+      # Rojo
+      - name: Install Rojo
+        shell: pwsh
+        run: |
+          cargo install rojo --version 7.6.1
+
+      # Cosign
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v4.1.2
+
+      # ---------------------------
+      # Build & validate installer
+      # ---------------------------
+      # Normalize tag & update Installer.iss
       - name: Update version in Installer.iss if needed
         working-directory: ./installer
         shell: pwsh
@@ -107,18 +128,7 @@ jobs:
           
           Write-Host "Successfully updated AppVersion to $tag in $path."
 
-      # ---------------------------
-      # Setup .NET SDK 10.0
-      # ---------------------------
-      - name: Setup .NET SDK 10.0.x
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: "10.0.x"
-          cache: false
-
-      # ---------------------------
-      # Build & validate app
-      # ---------------------------
+      # Set up dotnet environment
       - name: Clear NuGet cache
         working-directory: ./client
         run: dotnet nuget locals all --clear
@@ -127,19 +137,15 @@ jobs:
         working-directory: ./client
         run: dotnet publish -c Release --no-cache --disable-build-servers --force /p:ContinuousIntegrationBuild=true
 
-      # ---------------------------
-      # Build installer
-      # ---------------------------
+      # Compile Inno Setup
       - name: Build installer with Inno Setup
         working-directory: ./installer
         shell: cmd
         run: |
           iscc Installer.iss
 
-      # ---------------------------
       # Generate SHA-256
-      # ---------------------------
-      - name: Generate SHA-256 hash
+      - name: Generate SHA-256 hash for installer
         working-directory: ./installer
         shell: pwsh
         run: |
@@ -154,12 +160,7 @@ jobs:
 
           Set-Content -Encoding ASCII -Path RobloxChatLauncherInstaller.exe.sha256 -Value $hash
 
-      # ---------------------------
       # Sign and attest the installer with Cosign
-      # ---------------------------
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v4.1.2
-
       - name: Sign the installer (Blob)
         run: |
           cosign sign-blob ./installer/RobloxChatLauncherInstaller.exe `
@@ -168,26 +169,67 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # ---------------------------
       # Sign and attest the installer with GitHub Attestation
-      # ---------------------------
-      - name: Attest Build Provenance
+      - name: Attest Installer Build Provenance
         uses: actions/attest-build-provenance@v4
         with:
           subject-path: 'installer/RobloxChatLauncherInstaller.exe'
 
       # ---------------------------
-      # Generate Conventional Commit Notes
+      # Build & validate integrations
       # ---------------------------
+      - name: Build Integrations with Rojo
+        working-directory: ./integrations
+        shell: pwsh
+        run: |
+          rojo build RobloxChatLauncher.project.json `
+            --output RobloxChatLauncherIntegrations.rbxmx
+
+          if (-not (Test-Path RobloxChatLauncherIntegrations.rbxmx)) {
+            Write-Error ".rbxmx build failed."
+            exit 1
+          }
+
+      # Generate SHA-256
+      - name: Generate SHA-256 hash for integrations
+        working-directory: ./integrations
+        shell: pwsh
+        run: |
+          $hash = Get-FileHash RobloxChatLauncherIntegrations.rbxmx -Algorithm SHA256 |
+            Select-Object -ExpandProperty Hash
+
+          Set-Content `
+            -Encoding ASCII `
+            -Path RobloxChatLauncherIntegrations.rbxmx.sha256 `
+            -Value $hash
+
+      # Sign and attest the integrations with Cosign
+      - name: Sign the integrations (Blob)
+        shell: pwsh
+        run: |
+          cosign sign-blob ./integrations/RobloxChatLauncherIntegrations.rbxmx `
+            --bundle ./integrations/RobloxChatLauncherIntegrations.rbxmx.cosign.bundle `
+            --yes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Sign and attest the integrations with GitHub Attestation
+      - name: Attest Integrations Build Provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: 'integrations/RobloxChatLauncherIntegrations.rbxmx'
+
+      # ---------------------------
+      # Generate and compose release notes
+      # ---------------------------
+      # Generate Conventional Commit Notes
       - name: Generate Conventional Commit Notes
         shell: pwsh
         run: |
          # conventional-changelog writes to CHANGELOG.md by default
          npx --yes -p conventional-changelog@7.2.0 -p conventional-changelog-conventionalcommits conventional-changelog -p conventionalcommits -r 1
 
-      # ---------------------------
       # Generate GitHub Release Notes
-      # ---------------------------
       - name: Generate GitHub Release Notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -202,9 +244,7 @@ jobs:
           $releaseBody = $responseJson.body
           $releaseBody | Out-File -FilePath "GITHUB_NOTES.md" -Encoding utf8
 
-      # ---------------------------
       # Compose final release notes
-      # ---------------------------
       - name: Compose final release notes
         shell: pwsh
         run: |
@@ -261,5 +301,9 @@ jobs:
             installer/RobloxChatLauncherInstaller*.exe
             installer/RobloxChatLauncherInstaller.exe.sha256
             installer/RobloxChatLauncherInstaller.exe.cosign.bundle
+
+            integrations/RobloxChatLauncherIntegrations.rbxmx
+            integrations/RobloxChatLauncherIntegrations.rbxmx.sha256
+            integrations/RobloxChatLauncherIntegrations.rbxmx.cosign.bundle
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
