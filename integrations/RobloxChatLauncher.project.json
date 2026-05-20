@@ -1,18 +1,22 @@
 {
     "name": "RobloxChatLauncher",
     "tree": {
-        "$className": "DataModel",
+        "$className": "Folder",
 
         "ReplicatedStorage": {
+            "$className": "Folder",
             "$path": "src/ReplicatedStorage"
         },
 
         "ServerScriptService": {
+            "$className": "Folder",
             "$path": "src/ServerScriptService"
         },
 
         "StarterPlayer": {
+            "$className": "Folder",
             "StarterPlayerScripts": {
+                "$className": "Folder",
                 "$path": "src/StarterPlayerScripts"
             }
         }
