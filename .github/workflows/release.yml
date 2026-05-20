@@ -183,11 +183,10 @@ jobs:
         shell: pwsh
         run: |
           rojo build RobloxChatLauncher.project.json `
-            --output RobloxChatLauncherIntegrations.rbxm `
-            --verbose
+            --output RobloxChatLauncherIntegrations.rbxmx
 
-          if (-not (Test-Path RobloxChatLauncherIntegrations.rbxm)) {
-            Write-Error ".rbxm build failed."
+          if (-not (Test-Path RobloxChatLauncherIntegrations.rbxmx)) {
+            Write-Error ".rbxmx build failed."
             exit 1
           }
 
@@ -196,20 +195,20 @@ jobs:
         working-directory: ./integrations
         shell: pwsh
         run: |
-          $hash = Get-FileHash RobloxChatLauncherIntegrations.rbxm -Algorithm SHA256 |
+          $hash = Get-FileHash RobloxChatLauncherIntegrations.rbxmx -Algorithm SHA256 |
             Select-Object -ExpandProperty Hash
 
           Set-Content `
             -Encoding ASCII `
-            -Path RobloxChatLauncherIntegrations.rbxm.sha256 `
+            -Path RobloxChatLauncherIntegrations.rbxmx.sha256 `
             -Value $hash
 
       # Sign and attest the integrations with Cosign
       - name: Sign the integrations (Blob)
         shell: pwsh
         run: |
-          cosign sign-blob ./integrations/RobloxChatLauncherIntegrations.rbxm `
-            --bundle ./integrations/RobloxChatLauncherIntegrations.rbxm.cosign.bundle `
+          cosign sign-blob ./integrations/RobloxChatLauncherIntegrations.rbxmx `
+            --bundle ./integrations/RobloxChatLauncherIntegrations.rbxmx.cosign.bundle `
             --yes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -218,7 +217,7 @@ jobs:
       - name: Attest Integrations Build Provenance
         uses: actions/attest-build-provenance@v4
         with:
-          subject-path: 'integrations/RobloxChatLauncherIntegrations.rbxm'
+          subject-path: 'integrations/RobloxChatLauncherIntegrations.rbxmx'
 
       # ---------------------------
       # Generate and compose release notes
@@ -303,8 +302,8 @@ jobs:
             installer/RobloxChatLauncherInstaller.exe.sha256
             installer/RobloxChatLauncherInstaller.exe.cosign.bundle
 
-            integrations/RobloxChatLauncherIntegrations.rbxm
-            integrations/RobloxChatLauncherIntegrations.rbxm.sha256
-            integrations/RobloxChatLauncherIntegrations.rbxm.cosign.bundle
+            integrations/RobloxChatLauncherIntegrations.rbxmx
+            integrations/RobloxChatLauncherIntegrations.rbxmx.sha256
+            integrations/RobloxChatLauncherIntegrations.rbxmx.cosign.bundle
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
