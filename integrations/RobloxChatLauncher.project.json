@@ -1,7 +1,7 @@
 {
     "name": "RobloxChatLauncher",
     "tree": {
-        "$className": "DataModel",
+        "$className": "Folder",
 
         "ReplicatedStorage": {
             "$path": "src/ReplicatedStorage"
