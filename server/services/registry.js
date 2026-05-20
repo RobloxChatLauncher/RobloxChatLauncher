@@ -26,7 +26,7 @@ async function authenticateGameServer(universeId, apiKey) {
 
         if (result.rowCount === 0) {
             // Fake compare to prevent oracle
-            const fake = 'rcl_' + '0'.repeat(64); // 64 hex chars (sha256 hex)
+            const fake = '0'.repeat(64); // 64 hex chars (sha256 hex)
             safeCompare(hashedInput, fake);
             return false;
         }
