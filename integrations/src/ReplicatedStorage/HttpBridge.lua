@@ -1,6 +1,6 @@
 --!language luau
 --[=[
-    Copyright (c) 2026 Riri <https://github.com/RobloxChatLauncher>
+    Copyright (c) 2026 Roblox Chat Launcher Developers & Contributors <https://github.com/RobloxChatLauncher>
 
     Source: https://github.com/RobloxChatLauncher/RobloxChatLauncher/blob/main/integrations/
     
