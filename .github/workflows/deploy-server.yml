@@ -66,17 +66,42 @@ jobs:
           echo "server2=${{ inputs.deploy_server_2 }}" >> $GITHUB_OUTPUT
           echo "server3=${{ inputs.deploy_server_3 }}" >> $GITHUB_OUTPUT
 
+      - name: Broadcast restart warning
+        continue-on-error: true
+        run: |
+          SERVERS=(
+            "https://RobloxChatLauncher.onrender.com/api/v1/admin/broadcast"
+            "https://RobloxChatLauncher-de.onrender.com/api/v1/admin/broadcast"
+            "https://RobloxChatLauncher-sg.onrender.com/api/v1/admin/broadcast"
+          )
+
+          for SERVER in "${SERVERS[@]}"; do
+            echo "Broadcasting restart warning to $SERVER"
+
+            curl --fail --show-error --silent \
+              --connect-timeout 5 \
+              --max-time 10 \
+              -X POST "$SERVER" \
+              -H "Authorization: Bearer ${{ secrets.RCL_WRITE_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "text":"Server is restarting for update. Please use the command '\''/rc'\'' after you disconnect.",
+                "sender":"Global Broadcast",
+                "color":"FFFFFF"
+              }' || true
+          done
+
       - name: Deploy US (Oregon)
         if: steps.targets.outputs.server1 == 'true'
         run: |
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+          curl --connect-timeout 5 --max-time 30 -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
 
       - name: Deploy DE (Frankfurt)
         if: steps.targets.outputs.server2 == 'true'
         run: |
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_DE }}"
+          curl --connect-timeout 5 --max-time 30 -X POST "${{ secrets.RENDER_DEPLOY_HOOK_DE }}"
 
       - name: Deploy SG (Singapore)
         if: steps.targets.outputs.server3 == 'true'
         run: |
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_SG }}"
+          curl --connect-timeout 5 --max-time 30 -X POST "${{ secrets.RENDER_DEPLOY_HOOK_SG }}"
