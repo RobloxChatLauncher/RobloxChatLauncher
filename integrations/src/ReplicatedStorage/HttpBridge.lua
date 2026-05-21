@@ -1,6 +1,6 @@
 --!language luau
 --[=[
-    Copyright (c) 2026 Riri <https://github.com/RobloxChatLauncher>
+    Copyright (c) 2026 Roblox Chat Launcher Developers & Contributors <https://github.com/RobloxChatLauncher>
 
     Source: https://github.com/RobloxChatLauncher/RobloxChatLauncher/blob/main/integrations/
     
@@ -61,55 +61,81 @@ end
 -------------------------------
 local handlers = {} 
 local isPolling = false
-local DEFAULT_POLL_INTERVAL = 1.0
 
 function HttpBridge.registerHandler(handler: (any) -> ())
     table.insert(handlers, handler)
     
     if not isPolling then
         isPolling = true
-        HttpBridge._startCentralLoop("/api/v1/commands", DEFAULT_POLL_INTERVAL)
+        HttpBridge._startCentralLoop("/api/v1/commands")
     end
 end
 
-function HttpBridge._startCentralLoop(endpoint: string, interval: number)
+function HttpBridge._startCentralLoop(endpoint: string)
     local fullUrl = formatUrl(endpoint)
-    
-    -- Request Headers for Authentication
+
+    -- attach headers for auth
     local headers = {
         ["x-api-key"] = API_KEY,
         ["x-universe-id"] = UNIVERSE_ID,
         ["x-job-id"] = game.JobId
     }
 
+    local MIN_RECONNECT_DELAY = 1 -- seconds
+    local LONG_POLL_TIMEOUT = 65 -- must be higher than server timeout (55 seconds)
+
     task.spawn(function()
         while true do
-            local success, response = pcall(function() 
-                -- We use RequestAsync to send custom headers with a GET request
+            local requestStartedAt = os.clock()
+
+            local success, response = pcall(function()
                 return HttpService:RequestAsync({
                     Url = fullUrl,
                     Method = "GET",
-                    Headers = headers
+                    Headers = headers,
+                    Timeout = LONG_POLL_TIMEOUT
                 })
             end)
-            
+
+            local elapsed = os.clock() - requestStartedAt
+
             if success and response.Success then
                 local body = response.Body
+
                 if #body > 2 then
-                    local ok, decodedData = pcall(HttpService.JSONDecode, HttpService, body)
+                    local ok, decodedData = pcall(
+                        HttpService.JSONDecode,
+                        HttpService,
+                        body
+                    )
+
                     if ok then
                         for _, handlerFunc in ipairs(handlers) do
                             task.spawn(handlerFunc, decodedData)
                         end
+                    else
+                        warn("[RCL::Ingress] Failed to decode JSON")
                     end
                 end
+
             elseif not success then
                 warn("[RCL::Ingress] Connection error:", response)
+
             elseif response.StatusCode == 403 then
                 warn("[RCL::Ingress] Auth Failed: Check API Key and UniverseID")
+
+            elseif response.StatusCode ~= 200 then
+                warn(
+                    "[RCL::Ingress] HTTP Error:",
+                    response.StatusCode,
+                    response.StatusMessage
+                )
             end
-            
-            task.wait(interval)
+
+            -- Guard against using too much HTTP quota if server always responds instantly
+            if elapsed < MIN_RECONNECT_DELAY then
+                task.wait(MIN_RECONNECT_DELAY - elapsed)
+            end
         end
     end)
 end

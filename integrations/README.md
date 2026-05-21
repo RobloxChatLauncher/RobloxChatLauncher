@@ -61,7 +61,7 @@ You can generate an API key instantly by verifying ownership of your game. For g
 To ensure stability and prevent script errors, keep the following limits in mind:
 
 * **Roblox HttpService Limits:** By default, each server instance can make up to 500 HTTP requests per minute.
-* **Ingress Bridge Polling:** The default Ingress script polls the mailbox at a rate of 1 request per second (60 requests/min). The polling loop runs once per server.
+* **Ingress Bridge Polling:** The default Ingress script long polls the mailbox at a minimum rate of 1 request every 65 seconds (0.92 requests/min), up to a maximum of 1 request per second (60 requests/min) depending on server activity. The polling loop runs once per server.
 * **Egress Scripts:** Egress scripts may send POST requests independently when triggered by in-game events (e.g., a player joining). Please be mindful that the combined total requests from all scripts do not exceed Roblox's limits.
 
 ## Terms of Service

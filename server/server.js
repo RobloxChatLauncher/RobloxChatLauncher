@@ -797,9 +797,10 @@ app.patch(
  *   get:
  *     summary: Retrieve pending commands/messages for a universe job
  *     description: >
- *       Returns all queued mail for a specific universe/job combination.
- *       Only messages that have not expired will be returned. After retrieval, the mailbox
- *       for this universe/job pair is cleared automatically.
+ *       Retrieves queued mail for a specific universe/job combination using long polling.
+ *       If no mail is currently available, the request will remain open until new mail arrives
+ *       or the long-poll timeout is reached.
+ *       Only non-expired messages are returned. After delivery, the mailbox is cleared automatically.
  *     tags: [Universe]
  *     security:
  *       - ApiKeyAuth: []
@@ -846,15 +847,15 @@ app.patch(
  *                     example:
  *                       name: "Dance"
  *       400:
- *       description: Missing required Job ID
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               error:
- *                 type: string
- *                 example: "x-job-id header is required for this endpoint."
+ *         description: Missing required Job ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "x-job-id header is required for this endpoint."
  *       401:
  *         description: Missing identity headers
  *         content:
@@ -887,26 +888,78 @@ app.patch(
  *                   example: Server error while retrieving mailbox.
  */
 app.get('/api/v1/commands', validateRegistry, (req, res) => {
-    // Extract universeId and jobId from the request (attached by validateRegistry)
     const { universeId, jobId } = req;
 
     if (!jobId) {
-        return res.status(400).json({ error: "x-job-id header is required for this endpoint." });
+        return res.status(400).json({
+            error: "x-job-id header is required for this endpoint."
+        });
     }
 
-    // Construct the private storage key
     const storageKey = `${universeId}:${jobId}`;
 
-    // 1. Get mail specifically for THIS universe + jobId combo
     const messages = mailboxStore.get(storageKey) || [];
 
-    const validMessages = messages.filter(msg => msg.expiresAt > Date.now());
+    const validMessages = messages.filter(
+        msg => msg.expiresAt > Date.now()
+    );
 
-    // 2. Clear ONLY this specific mailbox
-    mailboxStore.delete(storageKey);
+    // If mail already exists, return immediately
+    if (validMessages.length > 0) {
+        mailboxStore.delete(storageKey);
 
-    const payloads = validMessages.map(m => m.payload);
-    res.json(payloads);
+        return res.json(
+            validMessages.map(m => m.payload)
+        );
+    }
+
+    // Otherwise hold request open
+    if (!waitingRequests.has(storageKey)) {
+        waitingRequests.set(storageKey, []);
+    }
+
+    waitingRequests.get(storageKey).push(res);
+
+    // Prevent hanging forever
+    res.longPollTimeout = setTimeout(() => {
+        const waiters = waitingRequests.get(storageKey);
+
+        if (waiters) {
+            const index = waiters.indexOf(res);
+
+            if (index !== -1) {
+                waiters.splice(index, 1);
+            }
+
+            if (waiters.length === 0) {
+                waitingRequests.delete(storageKey);
+            }
+        }
+
+        // Return empty after timeout
+        if (!res.headersSent) {
+            res.json([]);
+        }
+    }, 55_000);
+
+    // Handle disconnects
+    req.on('close', () => {
+        clearTimeout(res.longPollTimeout);
+
+        const waiters = waitingRequests.get(storageKey);
+
+        if (!waiters) return;
+
+        const index = waiters.indexOf(res);
+
+        if (index !== -1) {
+            waiters.splice(index, 1);
+        }
+
+        if (waiters.length === 0) {
+            waitingRequests.delete(storageKey);
+        }
+    });
 });
 
 // ----- Verified User Middleware -----
