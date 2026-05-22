@@ -23,6 +23,11 @@ on:
         required: false
         default: false
         type: boolean
+      dry_run:
+        description: "Build everything but do not create a GitHub release"
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   validate-tag:
@@ -92,11 +97,21 @@ jobs:
           dotnet-version: "10.0.x"
           cache: false
 
+      # Cache Rust
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "cargo-install-rojo-7.6.1"
+
       # Rojo
       - name: Install Rojo
         shell: pwsh
         run: |
-          cargo install rojo --version 7.6.1
+          if (-not (Get-Command rojo -ErrorAction SilentlyContinue)) {
+            cargo install rojo --version 7.6.1 --locked
+          }
+
+          rojo --version
 
       # Cosign
       - name: Install Cosign
@@ -133,6 +148,7 @@ jobs:
         working-directory: ./client
         run: dotnet nuget locals all --clear
 
+      # Build C# app
       - name: Publish app (Release)
         working-directory: ./client
         run: dotnet publish -c Release --no-cache --disable-build-servers --force /p:ContinuousIntegrationBuild=true
@@ -286,9 +302,10 @@ jobs:
           # <GitHub's auto-generated release notes>
 
       # ---------------------------
-      # Create GitHub Release
+      # Create GitHub Release if !dry run
       # ---------------------------
       - name: Create GitHub Release and upload artifacts
+        if: ${{ !github.event.inputs.dry_run }}
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.validate-tag.outputs.clean_tag }}
@@ -307,3 +324,25 @@ jobs:
             integrations/RobloxChatLauncherIntegrations.rbxmx.cosign.bundle
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ---------------------------
+      # Upload Artifacts for inspection if dry run
+      # ---------------------------
+      - name: Upload dry-run artifacts
+        if: ${{ github.event.inputs.dry_run == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-dry-run-${{ needs.validate-tag.outputs.clean_tag }}-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 7
+          path: |
+            client/bin/Release/net10.0-windows/publish/**
+
+            installer/RobloxChatLauncherInstaller*.exe
+            installer/RobloxChatLauncherInstaller.exe.sha256
+            installer/RobloxChatLauncherInstaller.exe.cosign.bundle
+
+            integrations/RobloxChatLauncherIntegrations.rbxmx
+            integrations/RobloxChatLauncherIntegrations.rbxmx.sha256
+            integrations/RobloxChatLauncherIntegrations.rbxmx.cosign.bundle
+
+            RELEASE_BODY.md
