@@ -24,6 +24,16 @@
 
 <div align="center">
 
+[![Build & Release Installer](https://github.com/RobloxChatLauncher/RobloxChatLauncher/actions/workflows/release.yml/badge.svg)](https://github.com/RobloxChatLauncher/RobloxChatLauncher/actions/workflows/release.yml)
+[![Deploy Servers](https://github.com/RobloxChatLauncher/RobloxChatLauncher/actions/workflows/deploy-server.yml/badge.svg)](https://github.com/RobloxChatLauncher/RobloxChatLauncher/actions/workflows/deploy-server.yml)
+[![Auto-generate Command Docs](https://github.com/RobloxChatLauncher/RobloxChatLauncher/actions/workflows/docs.yml/badge.svg)](https://github.com/RobloxChatLauncher/RobloxChatLauncher/actions/workflows/docs.yml)
+[![Auto-generate Localization Status](https://github.com/RobloxChatLauncher/RobloxChatLauncher/actions/workflows/loc-status.yml/badge.svg)](https://github.com/RobloxChatLauncher/RobloxChatLauncher/actions/workflows/loc-status.yml)
+[![Check Build](https://github.com/RobloxChatLauncher/RobloxChatLauncher/actions/workflows/check-build.yml/badge.svg)](https://github.com/RobloxChatLauncher/RobloxChatLauncher/actions/workflows/check-build.yml)
+
+</div>
+
+<div align="center">
+
 [![Swagger UI](https://img.shields.io/badge/Swagger_UI-Documentation-85EA2D?style=for-the-badge&logo=openapi-initiative&logoColor=white)](https://RobloxChatLauncher.onrender.com/api-docs)
 
 </div>
