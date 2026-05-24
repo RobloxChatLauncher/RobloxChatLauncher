@@ -1,0 +1,61 @@
+name: Bump Integrations Submodule 
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Integrations Submodule
+        uses: actions/checkout@v6 
+        with:
+          submodules: true
+
+      - name: Get current submodule SHA
+        id: current
+        run: |
+          echo "sha=$(git rev-parse --short HEAD:integrations)" >> $GITHUB_OUTPUT
+      
+      - name: Pull Latest Submodule Commit
+        id: check
+        run: |
+          git submodule update --init --recursive
+          git submodule update --remote integrations
+      
+          cd integrations
+          NEW_SHA=$(git rev-parse --short HEAD)
+          cd ..
+      
+          OLD_SHA=$(git rev-parse --short HEAD:integrations)
+      
+          if [ "$NEW_SHA" != "$OLD_SHA" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+      
+          echo "new_sha=$NEW_SHA" >> $GITHUB_OUTPUT
+      
+      - name: Get new submodule SHA
+        if: steps.check.outputs.changed == 'true'
+        id: latest
+        run: |
+          echo "sha=${{ steps.check.outputs.new_sha }}" >> $GITHUB_OUTPUT
+          
+      - name: Create Pull Request
+        if: steps.check.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(integrations): bump integrations submodule from ${{ steps.current.outputs.sha }} to ${{ steps.latest.outputs.sha }}" 
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          signoff: true
+          title: "chore(integrations): bump integrations submodule from ${{ steps.current.outputs.sha }} to ${{ steps.latest.outputs.sha }}" 
+          body: |
+            Bumps the integrations submodule reference from commit ${{ steps.current.outputs.sha }} to ${{ steps.latest.outputs.sha }}. 
+          labels: |
+            integrations 
+            github_actions
+          branch: chore/bump-integrations-submodule
