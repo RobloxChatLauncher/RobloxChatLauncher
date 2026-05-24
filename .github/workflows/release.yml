@@ -97,22 +97,6 @@ jobs:
           dotnet-version: "10.0.x"
           cache: false
 
-      # Cache Rust
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: "cargo-install-rojo-7.6.1"
-
-      # Rojo
-      - name: Install Rojo
-        shell: pwsh
-        run: |
-          if (-not (Get-Command rojo -ErrorAction SilentlyContinue)) {
-            cargo install rojo --version 7.6.1 --locked
-          }
-
-          rojo --version
-
       # Cosign
       - name: Install Cosign
         uses: sigstore/cosign-installer@v4.1.2
@@ -190,50 +174,6 @@ jobs:
         uses: actions/attest-build-provenance@v4
         with:
           subject-path: 'installer/RobloxChatLauncherInstaller.exe'
-
-      # ---------------------------
-      # Build & validate integrations
-      # ---------------------------
-      - name: Build Integrations with Rojo
-        working-directory: ./integrations
-        shell: pwsh
-        run: |
-          rojo build RobloxChatLauncher.project.json `
-            --output RobloxChatLauncherIntegrations.rbxmx
-
-          if (-not (Test-Path RobloxChatLauncherIntegrations.rbxmx)) {
-            Write-Error ".rbxmx build failed."
-            exit 1
-          }
-
-      # Generate SHA-256
-      - name: Generate SHA-256 hash for integrations
-        working-directory: ./integrations
-        shell: pwsh
-        run: |
-          $hash = Get-FileHash RobloxChatLauncherIntegrations.rbxmx -Algorithm SHA256 |
-            Select-Object -ExpandProperty Hash
-
-          Set-Content `
-            -Encoding ASCII `
-            -Path RobloxChatLauncherIntegrations.rbxmx.sha256 `
-            -Value $hash
-
-      # Sign and attest the integrations with Cosign
-      - name: Sign the integrations (Blob)
-        shell: pwsh
-        run: |
-          cosign sign-blob ./integrations/RobloxChatLauncherIntegrations.rbxmx `
-            --bundle ./integrations/RobloxChatLauncherIntegrations.rbxmx.cosign.bundle `
-            --yes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Sign and attest the integrations with GitHub Attestation
-      - name: Attest Integrations Build Provenance
-        uses: actions/attest-build-provenance@v4
-        with:
-          subject-path: 'integrations/RobloxChatLauncherIntegrations.rbxmx'
 
       # ---------------------------
       # Generate and compose release notes
@@ -318,10 +258,6 @@ jobs:
             installer/RobloxChatLauncherInstaller*.exe
             installer/RobloxChatLauncherInstaller.exe.sha256
             installer/RobloxChatLauncherInstaller.exe.cosign.bundle
-
-            integrations/RobloxChatLauncherIntegrations.rbxmx
-            integrations/RobloxChatLauncherIntegrations.rbxmx.sha256
-            integrations/RobloxChatLauncherIntegrations.rbxmx.cosign.bundle
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -340,9 +276,5 @@ jobs:
             installer/RobloxChatLauncherInstaller*.exe
             installer/RobloxChatLauncherInstaller.exe.sha256
             installer/RobloxChatLauncherInstaller.exe.cosign.bundle
-
-            integrations/RobloxChatLauncherIntegrations.rbxmx
-            integrations/RobloxChatLauncherIntegrations.rbxmx.sha256
-            integrations/RobloxChatLauncherIntegrations.rbxmx.cosign.bundle
 
             RELEASE_BODY.md
