@@ -1,5 +1,9 @@
 name: Bump Integrations Submodule 
 
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   workflow_dispatch:
 
@@ -7,55 +11,41 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Integrations Submodule
-        uses: actions/checkout@v6 
-        with:
-          submodules: true
+      - name: Checkout Repository
+        uses: actions/checkout@v6
 
-      - name: Get current submodule SHA
-        id: current
-        run: |
-          echo "sha=$(git rev-parse --short HEAD:integrations)" >> $GITHUB_OUTPUT
-      
       - name: Pull Latest Submodule Commit
         id: check
         run: |
           git submodule update --init --recursive
+          OLD_SHA=$(git rev-parse --short HEAD:integrations) # Current tracked SHA
+          
+          # Pull the latest remote updates for integrations
           git submodule update --remote integrations
-      
-          cd integrations
-          NEW_SHA=$(git rev-parse --short HEAD)
-          cd ..
-      
-          OLD_SHA=$(git rev-parse --short HEAD:integrations)
-      
+          NEW_SHA=$(git -C integrations rev-parse --short HEAD)
+
           if [ "$NEW_SHA" != "$OLD_SHA" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
+            echo "old_sha=$OLD_SHA" >> $GITHUB_OUTPUT
+            echo "new_sha=$NEW_SHA" >> $GITHUB_OUTPUT
           else
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
-      
-          echo "new_sha=$NEW_SHA" >> $GITHUB_OUTPUT
-      
-      - name: Get new submodule SHA
-        if: steps.check.outputs.changed == 'true'
-        id: latest
-        run: |
-          echo "sha=${{ steps.check.outputs.new_sha }}" >> $GITHUB_OUTPUT
-          
+
       - name: Create Pull Request
         if: steps.check.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(integrations): bump integrations submodule from ${{ steps.current.outputs.sha }} to ${{ steps.latest.outputs.sha }}" 
+          commit-message: "chore(integrations): bump integrations submodule from ${{ steps.check.outputs.old_sha }} to ${{ steps.check.outputs.new_sha }}" 
           committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
           signoff: true
-          title: "chore(integrations): bump integrations submodule from ${{ steps.current.outputs.sha }} to ${{ steps.latest.outputs.sha }}" 
+          title: "chore(integrations): bump integrations submodule from ${{ steps.check.outputs.old_sha }} to ${{ steps.check.outputs.new_sha }}" 
           body: |
-            Bumps the integrations submodule reference from commit ${{ steps.current.outputs.sha }} to ${{ steps.latest.outputs.sha }}. 
+            Bumps the integrations submodule reference from commit ${{ steps.check.outputs.old_sha }} to ${{ steps.check.outputs.new_sha }}. 
           labels: |
             integrations 
             github_actions
           branch: chore/bump-integrations-submodule
+          delete-branch: true
