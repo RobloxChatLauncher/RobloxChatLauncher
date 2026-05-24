@@ -65,7 +65,8 @@ The following is a list of known and documented technical debts.
     * **Risk:** The background update check passes a hardcoded `true` argument to include prereleases. This needs to be toggled back to `false` once the first stable build is shipped to prevent production clients from accidentally pulling unstable development builds.
     * Areas: [./client/ChatForm/ChatForm.UI.cs](./client/ChatForm/ChatForm.UI.cs) (caller)[^stm], [./client/Services/UpdateService.cs](./client/Services/UpdateService.cs)
 
-    **Goal:** Update the automatic `CheckAndDownloadUpdate()` startup call to target stable releases by default by changing the argument to `false` once version `1.0.0` or a stable equivalent is published.
+  **Goal:** Update the automatic `CheckAndDownloadUpdate()` startup call to target stable releases by default by changing the argument to `false` once version `1.0.0` or a stable equivalent is published.
+    * Remarks: This will likely not be relevant until the WinForms to WPF migration is complete and large features such as team chat is implemented.
 
 * [ ] **Client: Console Lifecycle Hack via Menu Deletion** *Updated 2026-05-16*
 
@@ -73,7 +74,7 @@ The following is a list of known and documented technical debts.
     * **Risk:** Disabling standard OS window controls breaks native UX expectations (users can't click X to close).
     * Areas: [./client/Utils/NativeMethods.cs](./client/Utils/NativeMethods.cs), [./client/ChatForm/ChatForm.Client.cs](./client/ChatForm/ChatForm.Client.cs) (`HandleDebugConsole()`)[^stm]
 
-    **Goal:** Restore the native close button and properly intercept `if (ctrlType == CTRL_CLOSE_EVENT)` to invoke `FreeConsole()` on the console window.
+  **Goal:** Restore the native close button and properly intercept `if (ctrlType == CTRL_CLOSE_EVENT)` to invoke `FreeConsole()` on the console window.
 
 * [ ] **Server: Production Reliance on JsDelivr CDN for Tailwind** *Updated 2026-05-16*
 
@@ -110,7 +111,7 @@ The following items are recognized issues that severely impact the project but c
       * The system relies entirely on the free tier of Google's Perspective API for content moderation, which imposes severe functional and existential constraints on the project.
       * Outbound moderation requests are bottlenecked by a strict global rate limit of 1 QPS (1 message/echo per second) shared across all servers, causing long message queues during peak traffic.
       * Google is sunsetting the Perspective API on December 31, 2026. Because all viable alternative moderation services require paid subscriptions, the server will completely cease to function after this date without funding.
-      * Areas: [./server/services/moderationService.js](./server/services/moderationService.js), [./server/server.js](./server/server.js), [./server/config/env.js](./server/config/env.js)
+      * Areas: [./server/services/moderationService.js](./server/services/moderationService.js) (server), [./server/server.js](./server/server.js), [./server/config/env.js](./server/config/env.js), [./client/Services/MessageFilterService.cs](./client/Services/MessageFilterService.cs) (local)
 
     * **Hosting Constraints:**
       * The backend is deployed on the Render Free Tier, which imposes a strict global limit of 750 instance hours per month across all services under the account.
@@ -119,5 +120,16 @@ The following items are recognized issues that severely impact the project but c
       * Areas: [./render.yaml](./render.yaml) (infrastructure)
 
     These infrastructural bottlenecks cannot be resolved under our current development model until dependable funding, a billing partner, or other external sponsorship is secured.
+
+## 💝 Accomplished
+
+* [X] ~~**Project: Monorepo Versioning Strategy**~~ *Accomplished 2026-05-23 in #162*
+
+  Integrations are versioned locally, but the monorepo’s global Git tagging forces a single, linear versioning sequence. This forces the global tag to increment for integration-only updates, creating a version mismatch.
+    * **Risk:** The tag naming deviates from the client's actual state whenever an integration is released without accompanying client changes. Furthermore, these tags entirely do not correspond to the integration's own versioning, creating a scenario where the version identifier overtime fails to represent neither the client nor the integration.
+    * **Areas:** [./client/Services/UpdateService.cs](./client/Services/UpdateService.cs), [./.github/workflows/release.yml](./.github/workflows/release.yml)
+
+  **Goal:** Decouple release versioning by implementing either path-based versioning (e.g., `client/v0.7.0-beta.2` and `integrations/v0.2.0`) or moving the integrations directory to an entirely separate repository and adding back the folder only as a Git submodule.
+    * Project Lead's Recommendation: Move the integrations folder to a separate repository with its own tag/releases namespace, update links to the integrations package where necessary, and move the integrations build steps out of [./.github/workflows/release.yml](./.github/workflows/release.yml) to a workflow in the new repository.
 
 [^stm]: Please note that the location of the caller, callee, handler, file or otherwise is subject to and likely to move during a refactor or migration to WPF.
