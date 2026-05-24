@@ -1,4 +1,10 @@
 > [!CAUTION]
+> **Temporary Service Outage (Until June 1st):**
+> Due to an overwhelming volume of users, we have maxed out our Render free-tier hosting limits. The live server will be temporarily down until our quota resets on June 1st.
+
+---
+
+> [!CAUTION]
 > The only official place to download Roblox Chat Launcher is [this GitHub repository](https://github.com/RobloxChatLauncher/RobloxChatLauncher). Any other websites offering downloads or claiming to be us are not owned by us.
 
 > [!WARNING]
@@ -68,8 +74,12 @@
 | Server | Status |
 | :---: | :---: |
 | US (Oregon) | ![Status](https://img.shields.io/website?url=https%3A%2F%2Frobloxchatlauncher.onrender.com%2Fhealth&up_message=Operational&down_message=Outage&up_color=brightgreen&down_color=red&label=) |
+| DE Pilot (Frankfurt) | ![Status](https://img.shields.io/badge/Pilot%20Concluded-inactive) |
+| SG Pilot (Singapore) | ![Status](https://img.shields.io/badge/Pilot%20Concluded-inactive) |
+<!--
 | DE Pilot (Frankfurt) | ![Status](https://img.shields.io/website?url=https%3A%2F%2Frobloxchatlauncher-de.onrender.com%2Fhealth&up_message=Operational&down_message=Outage&up_color=brightgreen&down_color=red&label=) |
 | SG Pilot (Singapore) | ![Status](https://img.shields.io/website?url=https%3A%2F%2Frobloxchatlauncher-sg.onrender.com%2Fhealth&up_message=Operational&down_message=Outage&up_color=brightgreen&down_color=red&label=) |
+-->
 
 </td>
 </tr>
