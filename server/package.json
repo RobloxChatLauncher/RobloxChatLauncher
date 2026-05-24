@@ -10,10 +10,10 @@
         "axios": "^1.16.1",
         "express": "^5.2.1",
         "express-rate-limit": "^8.5.2",
-        "marked": "^18.0.3",
-        "pg": "^8.20.0",
-        "swagger-jsdoc": "^6.2.8",
+        "marked": "^18.0.4",
+        "pg": "^8.21.0",
+        "swagger-jsdoc": "^6.3.0",
         "swagger-ui-express": "^5.0.1",
-        "ws": "^8.20.1"
+        "ws": "^8.21.0"
     }
 }
