@@ -45,7 +45,7 @@ jobs:
           body: |
             Bumps the integrations submodule reference from commit ${{ steps.check.outputs.old_sha }} to ${{ steps.check.outputs.new_sha }}. 
           labels: |
-            integrations 
+            area:integrations 
             github_actions
           branch: chore/bump-integrations-submodule
           delete-branch: true
