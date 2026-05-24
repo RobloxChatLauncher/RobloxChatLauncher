@@ -1,10 +1,10 @@
 const axios = require("axios");
 
 const GITHUB_API =
-    "https://api.github.com/repos/RobloxChatLauncher/RobloxChatLauncher/git/trees/main?recursive=1";
+    "https://api.github.com/repos/RobloxChatLauncher/RobloxChatLauncher-Integrations/git/trees/main?recursive=1";
 
 const RAW_BASE =
-    "https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher/main/";
+    "https://raw.githubusercontent.com/RobloxChatLauncher/RobloxChatLauncher-Integrations/main/";
 
 const CACHE_TTL = 1000 * 60 * 60; // 1 hour
 const STALE_TTL = 1000 * 60 * 60; // serve stale for another hour if GitHub fails
@@ -33,7 +33,7 @@ async function buildCache() {
 
     const luaFiles = treeRes.data.tree.filter(file =>
         file.type === "blob" &&
-        file.path.startsWith("integrations/src/")
+        file.path.startsWith("src/")
     );
 
     const files = await Promise.all(

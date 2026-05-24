@@ -1,0 +1,3 @@
+[submodule "integrations"]
+	path = integrations
+	url = https://github.com/RobloxChatLauncher/RobloxChatLauncher-Integrations.git
