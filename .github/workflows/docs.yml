@@ -2,6 +2,7 @@ name: Auto-generate Command Docs
 
 permissions:
   contents: write
+  pull-requests: write
 
 on:
   push:
@@ -22,8 +23,27 @@ jobs:
       - name: Generate MD
         run: dotnet run .github/scripts/GenerateDocs.cs
 
-      - name: Commit and Push
-        uses: stefanzweifel/git-auto-commit-action@v7
+      - name: Check for changes
+        id: check
+        run: |
+          git diff --quiet assets/docs/COMMANDS.md || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.check.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v8
         with:
-          commit_message: "docs(client): Auto-generate command list [skip ci]"
-          file_pattern: 'assets/docs/COMMANDS.md'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "docs(client): auto-generate command list" 
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          signoff: true
+          title: "docs(client): auto-generate command list" 
+          body: |
+            Auto-generated command documentation update. 
+          labels: |
+            documentation
+            github_actions
+          branch: docs/auto-generate-command-list
+          delete-branch: true
+          add-paths: |
+            assets/docs/COMMANDS.md
