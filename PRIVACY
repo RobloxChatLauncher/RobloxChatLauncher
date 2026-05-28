@@ -1,12 +1,20 @@
 Privacy Policy
 --------------
 
-Last Updated: May 14, 2026
+Last Updated: May 28, 2026
 
-This Privacy Policy explains how this service processes information when users send messages through the application.
-The service is designed with privacy-by-design principles and minimizes the collection and retention of personal data.
+This Privacy Policy explains how this Service processes information when users send messages through the Application.
+The Service is designed with privacy-by-design principles and minimizes the collection and retention of personal data.
 
-i. TL;DR
+i. Definitions
+    For the purposes of this Agreement, the following terms shall have the meanings ascribed to them:
+        - "Service" or "Application" refers to any part of the Roblox Chat Launcher client software, server Application, and associated endpoints.
+        - "Guest User" or "Unverified User" refers to an individual who uses the Roblox Chat Launcher Service without linking a Roblox User ID.
+        - "Verified User" refers to an individual who has voluntarily chosen to link their Roblox User ID with their Machine GUID.
+        - "Creator" refers to an individual who has voluntarily chosen to register their Roblox Experience.
+        - "Machine GUID" or "Hardware ID" refers to the unique registry key generated during a Windows installation.
+
+ii. TL;DR
     We take steps to limit the data we can see, and aim to ensure only the minimum amount of data required for standard operations is collected.
     We CAN see the following information in our logs:
         - ✓ Your messages, which are never stored outside of logs and are automatically deleted after 7 days.
@@ -15,26 +23,32 @@ i. TL;DR
         - ✓ (Creators) If you generate an API key with us, your Roblox User ID, Universe ID, and Group ID (if applicable) in our database tables.
     We CANNOT see the following information in our logs:
         - ✗ Your public IP address or physical location.
-        - ✗ Any permanent identifiers associated with messages, even if you are verified.
+        - ✗ Any permanent identifiers associated with messages, even if you are verified (if verified, your Roblox Username is only associated
+             with your messages in the broadcasted message to other users in the same channel, which the server does not log).
         - ✗ Your Machine GUID, Roblox User ID, or Roblox Username associated with your messages, even if you are verified.
     Our hosting providers may have their own privacy policies, which you are encouraged to read.
     This section is not exhaustive. Please read below for the full Policy.
 
 1. Data Transmission & IP Addresses
     To facilitate standard internet communication, your IP address is visible to our hosting provider (Render) to route messages back to your device.
-        Application Invisibility: Our server application is designed so that it does not see, log, or store your public IP address, even in a hashed
-                                  or pseudonymized format.
-        No Permanent Identifiers (Standard Mode): For unverified users, we do not use cookies or permanent tokens. The server identifies you using a 
-                                  temporary guest label derived from your current WebSocket connection port.
-        Transient Identity: For guest users, this label is strictly temporary; it changes every time you reconnect to the server. Users can manually 
-                            trigger a reconnection and rotate their label at any time by using the '/rc' command within the client.
+        Data Minimization: Our server Application is designed so that it does not see, log, or store your public IP address, even in a hashed
+                          or pseudonymized format.
+        No Permanent Identifiers: We do not associate permanent identifiers, Roblox User IDs, or Roblox Usernames to messages in logs. The server handles
+                                  routing by attaching a property to your in-memory WebSocket connection object (the temporary label derived from your
+                                  current WebSocket connection port for Guest Users or Roblox Username for Verified Users).
+        Client Visibility: Although the server does not associate identifiers to messages in logs, to facilitate standard chat functionality, the property
+                           attached to your in-memory WebSocket connection object is broadcasted to other clients actively connected to the same channel.
+                           This allows other users to see which speaker sent a specific message.
+        Transient Identity: The server only sees the WebSocket connection port for both Guest Users and Verified Users in logs. This label is strictly
+                            temporary; it changes every time you reconnect to the server. Users can manually trigger a reconnection and rotate their label
+                            at any time by using the '/rc' command within the client.
         Open Source: Users may review the code to see exactly what data is processed and how it is handled at https://github.com/RobloxChatLauncher/RobloxChatLauncher.
 
 2. Optional Roblox Account Verification
     Verification is a completely optional feature. We aim to ensure that users do not have to verify to access features that do not 
     fundamentally require identity confirmation.
-        Hardware Identifiers: If you choose to verify your Roblox account via the profile blurb method, the application generates a Machine 
-                              GUID (Hardware ID) on your local device. This ID is used to link your local installation to your Roblox 
+        Hardware Identifiers: If you choose to verify your Roblox account via the profile blurb method, the Application reads the Machine 
+                              GUID ("Hardware ID") on your local device. This ID is used to link your local installation to your Roblox 
                               User ID in our database.
         Storage & Persistence: If verified, your Hardware ID and associated Roblox User ID are stored in a persistent PostgreSQL database
                                (hosted on Neon) to recognize your account across sessions.
@@ -48,62 +62,64 @@ i. TL;DR
 
 3. Creator API Access & Game Registry
     To facilitate the self-serve API system, we collect specific data required to authenticate your Roblox Experience.
-        Data Collected: When you verify a game, we store your Roblox User ID (as the creator), the Roblox Universe ID, the Roblox Group ID (if applicable) and a hashed API Key.
+        Data Collected: When you verify a game, we store your Roblox User ID (as the Creator), the Roblox Universe ID, the Roblox Group ID (if applicable) and a hashed API Key.
         Purpose: This data is strictly used to validate that incoming requests from Roblox servers are authorized to interact with the Roblox Chat Launcher API.
         Visibility Settings: By default, registered Universe IDs are marked as "Unlisted." If you choose to opt-in to public listings
                              (via the /settings endpoint), your Universe ID will be visible in our public API directory.
         Data Retention: This information is stored persistently in our PostgreSQL database (Neon) until you request deletion.
 
 4. Message Content & Content Moderation
-    Messages submitted to the service are processed for the purpose of maintaining a safe and abuse-free environment. To assist with
-    content moderation, message text is analyzed using the Perspective API. The service enables Google's doNotStore option, which
+    Messages submitted to the Service are processed for the purpose of maintaining a safe and abuse-free environment. To assist with
+    content moderation, message text is analyzed using the Perspective API. The Service enables Google's doNotStore option, which
     instructs Google not to retain submitted message text or use it for model training after analysis.
     Users are encouraged to review Google's Privacy Policy at https://policies.google.com/privacy.
 
 5. Hosting & Infrastructure
-    This service is hosted on Render, and persistent data is stored on Neon. As hosting providers, Render and Neon may automatically collect
+    This Service is hosted on Render, and persistent data is stored on Neon. As hosting providers, Render and Neon may automatically collect
     technical metadata and retain access logs (such as IP addresses, timestamps, and database tables) for security and operational monitoring.
-    In addition, message content may appear transiently within the application logs as part of normal request handling.
-        Retention: Render automatically deletes the application logs after approximately 7 days. The application itself does not persist or store
-                   message content, chat history, or user-submitted messages outside of Render’s standard logging systems. The service does not have the
+    In addition, message content may appear transiently within the Application logs as part of normal request handling.
+        Retention: Render automatically deletes the Application logs after approximately 7 days. The Application itself does not persist or store
+                   message content, chat history, or user-submitted messages outside of Render’s standard logging systems. The Service does not have the
                    ability to access, retrieve, or restore message content once Render’s logs are deleted.
     Users should avoid including personally identifiable or sensitive information in messages, as message content is user-submitted
     and cannot be guaranteed to remain private once transmitted.
     Users are encouraged to review Render's Privacy Policy at https://render.com/privacy and Neon's Privacy Policy at https://neon.com/privacy-policy.
 
 6. Limited Personal Data Processing
-    The service is built on a "zero-account" model. We do not collect names, emails, or credentials.
+    The Service is built on a "zero-account" model. We do not collect names, emails, or credentials.
         What the Server Sees: Your submitted message content, the specific channel/instance it is routed to, and (if verified) your Roblox User ID.
-        Temporary Metadata: For guest users, the server tracks active connections via ephemeral port numbers. Because these ports are reused by 
-                            the operating system across different users over time, they cannot be used as a reliable or permanent identifier 
-                            for any specific individual.
-        Verification: For verified users, we maintain a link between your Hardware ID and Roblox ID. For unverified users, we generally cannot 
-                      link a specific message to a specific person once the connection is closed.
-    All processing is limited to what is necessary for service operation, security, and abuse prevention.
+        Data Broadcast: To facilitate real-time chat functionality, the Server broadcasts your message content along with your associated user
+                        identification (the temporary label for Guest Users, or the Roblox Username for Verified Users) to other connected clients
+                        in the same channel. This data is transmitted dynamically and is not saved to any permanent database during the broadcast.
+        Temporary Metadata: The server tracks active connections via ephemeral port numbers. Because these ports are reused by the operating system
+                            across different users over time, they cannot be used as a reliable or permanent identifier for any specific individual.
+        Verification: For Verified Users, we maintain a link between your Hardware ID and Roblox ID. Due to logs only being associated with transient
+                      WebSocket ports, we generally cannot link a specific message to a specific person once the connection is closed.
+    All processing is limited to what is necessary for Service operation, security, and abuse prevention.
 
 7. Legal Basis & Consent
     GDPR / UK GDPR
-        Where applicable, personal data is processed under Article 6(1)(f) (legitimate interests) for ensuring service security, preventing abuse,
+        Where applicable, personal data is processed under Article 6(1)(f) (legitimate interests) for ensuring Service security, preventing abuse,
         and maintaining system integrity. Pursuant to Article 11 GDPR, we do not require, and do not collect, additional information to identify 
         users who choose not to use the optional verification feature.
-            Rights Limitations: We process only messages and transient logs for guest users, and are generally not in a position to identify 
-                                specific data subjects. Therefore, the rights of access, rectification, erasure, and portability (Articles 15–20) 
-                                do not apply unless you are a verified user or provide additional information that enables your identification.
+            Rights Limitations: It is technically impossible to link a historical message to a specific individual once the connection is terminated.
+                                Therefore, the rights of access, rectification, erasure, and portability (Articles 15–20) do not apply to historical message
+                                data unless you provide additional identifying information that reasonably substantiates that a specific message was sent by you.
             Right to Complain: Regardless of identification, you maintain the right to lodge a complaint with a supervisory authority.
     PIPEDA (Canada)
-        Personal data is processed with implied consent for the limited purpose of service security. In accordance with PIPEDA's principle of limited
+        Personal data is processed with implied consent for the limited purpose of Service security. In accordance with PIPEDA's principle of limited
         collection, we do not associate technical identifiers with specific individuals unless verification is voluntarily initiated. We reserve the 
         right to refuse access requests where the information cannot be reasonably associated with the requester without the collection of 
         additional personal data.
     CCPA / CPRA (California)
-        The service does not sell, rent, or share personal information as defined by the CCPA/CPRA. Personal information is processed solely to operate
-        and secure the service. We do not sell or share your personal information for cross-contextual behavioral advertising.
-            Notice at Collection: We collect message content and (optionally) hardware identifiers for security purposes. We do not sell or share this information.
+        The Service does not sell, rent, or share personal information as defined by the CCPA/CPRA. Personal information is processed solely to operate
+        and secure the Service. We do not sell or share your personal information for cross-contextual behavioral advertising.
+            Notice at Collection: We collect message content and (optionally) Hardware IDentifiers for security purposes. We do not sell or share this information.
             Verifiable Requests: California residents have the right to request deletion or access. However, we can only fulfill requests that are Verifiable.
-                                 As we do not maintain traditional accounts, we may not be able to verify requests from unverified users. 
+                                 As we do not maintain traditional accounts, we may not be able to verify requests from Unverified Users. 
 
 8. International Data Transfers
-    This service is hosted on servers located in the United States (via Render and Neon). When you use the service, your data is transferred to and processed in the
+    This Service is hosted on servers located in the United States (via Render and Neon). When you use the Service, your data is transferred to and processed in the
     U.S. We ensure a similar degree of protection is afforded to it by ensuring that our sub-processors (Render, Neon, and Google) utilize standard contractual
     clauses (SCCs) or other legally recognized transfer mechanisms approved by the European Commission.
 
@@ -114,12 +130,12 @@ i. TL;DR
         - Access, correction, and deletion of personal information, subject to technical and legal limitations
     Non-Discrimination: We will not discriminate against you for exercising any of your CCPA rights. To exercise your rights, please contact us at the
                         email provided in the Contact & Privacy Inquiries section.
-    The service does not engage in targeted advertising, profiling, or data sales, and therefore does not offer opt-out mechanisms for sale or
-    sharing of personal data. Deletion requests apply to data under the service’s direct control. Certain technical logs managed by infrastructure
+    The Service does not engage in targeted advertising, profiling, or data sales, and therefore does not offer opt-out mechanisms for sale or
+    sharing of personal data. Deletion requests apply to data under the Service’s direct control. Certain technical logs managed by infrastructure
     providers may be retained for a limited period and deleted automatically in accordance with their retention policies.
 
 10. Contact & Privacy Inquiries
-    The Data Controller for this service is the operator of the RobloxChatLauncher project. For the purposes of PIPEDA, the operator also serves as
+    The Data Controller for this Service is the operator of the RobloxChatLauncher project. For the purposes of PIPEDA, the operator also serves as
     the Privacy Officer. If you have questions or wish to challenge our compliance with these principles, please contact:
         Email: RobloxChatLauncher@proton.me
 
