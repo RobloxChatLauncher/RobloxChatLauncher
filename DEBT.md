@@ -4,25 +4,25 @@ The following is a list of known and documented technical debts.
 
 ## 🧡 High Priority
 
-* [ ] **Client: WinForms to WPF Migration** *Updated 2026-05-13*
+* [ ] **Client: WinForms to WPF Migration**
 
   The current UI relies on WinForms hacks and non-intuitive workarounds which block critical interactions and break standard UX patterns.
-    * **Interaction Blockers:**
+    * [ ] **Interaction Blockers:** *Updated 2026-05-13*
       * Toggling visibility via clicking the window toggle button is disabled due to buggy/high-latency click-detection. Currently only the hotkey is used to toggle visibility.
       * The chat bar is non-clickable; currently no way to detect clicks to focus the field. Only the `/` key is used to enter input state.
       * Areas: [./client/ChatForm/ChatForm.UI.cs](./client/ChatForm/ChatForm.UI.cs), [./client/UI/ChatInputBox.cs](./client/UI/ChatInputBox.cs), [./client/UI/ResizeGrip.cs](./client/UI/ResizeGrip.cs)
 
-    * **Text & Input Issues:**
+    * [ ] **Text & Input Issues:** *Updated 2026-05-13*
       * No `Ctrl+A` or click-and-drag selection support; requires cursor-to-text position mapping and manually drawing highlighting over text which is unsupported in the current rendering mode. This is
         in large part due to how the system is designed for unfocused typing which is needed to allow input while the window is not focused, although WPF would make implementing the workaround significantly easier
       * Areas: [./client/ChatForm/ChatForm.UI.cs](./client/ChatForm/ChatForm.UI.cs), [./client/Services/ChatKeyboardHandler.cs](./client/Services/ChatKeyboardHandler.cs)
 
-    * **Visual Constraints:**
+    * [ ] **Visual Constraints:** *Updated 2026-05-13*
       * Scrolling within the chat window is disabled because WinForms forces a legacy white scrollbar that breaks the overlay aesthetic when scrolling is enabled at all. The only way to scroll up is by selection-dragging existing
         text in the chat window and dragging the cursor above it.
       * Areas: [./client/ChatForm/ChatForm.UI.cs](./client/ChatForm/ChatForm.UI.cs)
 
-    * **Technical Constraints:**
+    * [ ] **Technical Constraints:** *Updated 2026-05-13*
       * Fonts are currently loaded by allocating fresh memory for every single attempt and font weight due to GDI+ merging fonts. The current system frees the memory and allocates a new block to try again if it
         adds the font to the wrong one and retries up to 20 times per font. Note that for all intents and purposes assignment is random and there is no way to make it deterministic due to GDI+ being fundamentally flawed.
       * Areas: [./client/Utils/RichChatBox.cs](./client/Utils/RichChatBox.cs) (tbr)
@@ -104,20 +104,27 @@ The following is a list of known and documented technical debts.
 
 The following items are recognized issues that severely impact the project but cannot be resolved under current operational or financial limitations. They are considered hard constraints until external conditions change.
 
-* [ ] **Project: Budget Infrastructural Constraints** *Updated 2026-05-15*
+* [ ] **Project: Budget Infrastructural Constraints**
 
   The project is severely bottlenecked by a $0 operational budget, forcing reliance on free-tier infrastructure and APIs that introduce strict rate limits, service-ending deadlines, and monthly downtime risks.
-    * **Moderation Constraints:**
+    * [ ] **Moderation Constraints:** *Updated 2026-05-15*
       * The system relies entirely on the free tier of Google's Perspective API for content moderation, which imposes severe functional and existential constraints on the project.
       * Outbound moderation requests are bottlenecked by a strict global rate limit of 1 QPS (1 message/echo per second) shared across all servers, causing long message queues during peak traffic.
       * Google is sunsetting the Perspective API on December 31, 2026. Because all viable alternative moderation services require paid subscriptions, the server will completely cease to function after this date without funding.
       * Areas: [./server/services/moderationService.js](./server/services/moderationService.js) (server), [./server/server.js](./server/server.js), [./server/config/env.js](./server/config/env.js), [./client/Services/MessageFilterService.cs](./client/Services/MessageFilterService.cs) (local)
 
-    * **Hosting Constraints:**
+    * [ ] **Hosting Constraints:** *Updated 2026-05-15*
       * The backend is deployed on the Render Free Tier, which imposes a strict global limit of 750 instance hours per month across all services under the account.
       * While Render allows free services to spin down and sleep during periods of inactivity, our current user volume keeps the server active nearly 24/7.
       * Once the 750-hour cap is breached, Render suspends all services under the account. The server will become completely unreachable for the remainder of that calendar month.
       * Areas: [./render.yaml](./render.yaml) (infrastructure)
+
+    * [ ] **Database Constraints** *Updated 2026-05-30*
+      * The application's data persistence layer relies entirely on a free-tier Neon PostgreSQL instance, which imposes rigid compute and capacity thresholds that are rapidly becoming unsustainable.
+      * Project active compute hours are bound to a monthly quota of 100 CU-hours. Due to an expanding active user base keeping the database connections alive, our margin is shrinking month-over-month.
+      * The project risks hitting this hard cap mid-month, triggering immediate cluster suspension and complete downtime of the database for the remainder of the month.
+      * While total database storage volume is currently within acceptable limits, any sudden, large influx of unique users will cause the database size to rapidly scale and exceed storage quota.
+      * Areas: [./server/db/postgresPool.js](./server/db/postgresPool.js) (infrastructure)
 
     These infrastructural bottlenecks cannot be resolved under our current development model until dependable funding, a billing partner, or other external sponsorship is secured.
 
