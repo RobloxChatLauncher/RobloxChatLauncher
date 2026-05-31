@@ -124,7 +124,7 @@ The following items are recognized issues that severely impact the project but c
       * Project active compute hours are bound to a monthly quota of 100 CU-hours. Due to an expanding active user base keeping the database connections alive, our margin is shrinking month-over-month.
       * The project risks hitting this hard cap mid-month, triggering immediate cluster suspension and complete downtime of the database for the remainder of the month.
       * While total database storage volume is currently within acceptable limits, any sudden, large influx of unique users will cause the database size to rapidly scale and exceed storage quota.
-      * Areas: [./server/db/postgresPool.js](./server/db/postgresPool.js) (infrastructure)
+      * Areas: [./server/db/postgresPool.js](./server/db/postgresPool.js), [./server/config/env.js](./server/config/env.js) (infrastructure)
 
     These infrastructural bottlenecks cannot be resolved under our current development model until dependable funding, a billing partner, or other external sponsorship is secured.
 
