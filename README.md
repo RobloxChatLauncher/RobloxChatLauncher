@@ -1,10 +1,4 @@
 > [!CAUTION]
-> **Temporary Service Outage (Until June 1st):**
-> Due to an overwhelming volume of users, we have maxed out our Render free-tier hosting limits. The live server will be temporarily down until our quota resets on June 1st.
-
----
-
-> [!CAUTION]
 > The only official place to download Roblox Chat Launcher is [this GitHub repository](https://github.com/RobloxChatLauncher/RobloxChatLauncher). Any other websites offering downloads or claiming to be us are not owned by us.
 
 > [!WARNING]
