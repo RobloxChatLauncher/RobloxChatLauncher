@@ -42,6 +42,15 @@ The following is a list of known and documented technical debts.
 
 ## 💛 Medium Priority
 
+<a id="31701673-12d3-4f39-a2bf-ebd60edddfec"></a>
+* [ ] **Server: Synchronous document.write() in Component Utilities** *Updated 2026-06-19*
+
+  The dynamic layout utilities `renderNavbar` and `renderFooter` use synchronous `document.write()` statements to parse navigation headers and page feet.
+    * **Risk:** Using `document.write()` on an active stream disrupts the standard asynchronous loading state of the DOM tree. This creates a severe race condition with the browser-compiled `@tailwindcss/browser` engine, intermittently freezing utility class parsing on hard-refreshes and resulting in random layout collapses.
+    * Areas: [./server/public/navbar.js](./server/public/navbar.js)
+
+  **Goal:** Eliminate `document.write()` references completely. Refactor both component hooks to systematically generate layout items utilizing programmatic `document.createElement()` blocks and insert them structurally into the layout tree using explicit node boundaries like `insertBefore(element, document.currentScript)`.
+
 <a id="6611251a-42b3-4a16-97a2-26d7db748487"></a>
 * [ ] **Server: Externalize State Management** *Updated 2026-05-13*
 
@@ -69,7 +78,7 @@ The following is a list of known and documented technical debts.
     * Areas: [./server/public/creators/api-access/index.html](./server/public/creators/api-access/index.html)
 
   **Goal:** Move the Web Worker execution logic entirely out of the inline context and abstract it into a standalone, reusable `.js` asset file. Serve this file statically from the server to maintain strict alignment with standard, uncompromised `worker-src 'self'` CSP directives.
-    * Remarks: Also see: [Server: DRY Code Violation in Web Code](#49bead59-e15a-443d-9365-e5015f76ffc6)
+    * Also see: [Server: DRY Code Violation in Web Code](#49bead59-e15a-443d-9365-e5015f76ffc6)
 
 ## 💚 Low Priority
 
@@ -118,7 +127,7 @@ The following is a list of known and documented technical debts.
     * **Areas:** [./server/public/index.html](./server/public/index.html), [./server/public/creators/index.html](./server/public/creators/index.html), [./server/public/creators/api-access/index.html](./server/public/creators/api-access/index.html)
  
   **Goal:** Abstract common JavaScript functionality (e.g., common utility functions, API wrappers, or UI event listeners) into a standalone `client-common.js` file. Serve this file as a static asset to all pages to ensure a single source of truth for frontend logic.
-    * Remarks: Also see: [Server: CSP Compliance Violation via Inline Worker Blobs](#903a497c-009d-4ed6-989d-aa85b402e6b4)
+    * Also see: [Server: CSP Compliance Violation via Inline Worker Blobs](#903a497c-009d-4ed6-989d-aa85b402e6b4)
 
 ## ❤️ Out of Scope
 
