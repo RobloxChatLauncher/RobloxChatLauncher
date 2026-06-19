@@ -4,6 +4,7 @@ The following is a list of known and documented technical debts.
 
 ## 🧡 High Priority
 
+<a id="5f85329c-bf77-43ac-a786-8b3f1ed15c46"></a>
 * [ ] **Client: WinForms to WPF Migration**
 
   The current UI relies on WinForms hacks and non-intuitive workarounds which block critical interactions and break standard UX patterns.
@@ -29,6 +30,7 @@ The following is a list of known and documented technical debts.
 
     **Goal:** Completely migrate to WPF to utilize native `AllowsTransparency`, robust Hit-Testing, native font loading, hardware acceleration, DPI awareness, etc.
 
+<a id="90dcc0cb-956f-4766-95cc-bc87635763e9"></a>
 * [ ] **Server: Roblox API Rate-Limit Mitigation** *Updated 2026-05-14*
 
   The server currently hits Roblox API limits periodically due to user volume.
@@ -40,6 +42,7 @@ The following is a list of known and documented technical debts.
 
 ## 💛 Medium Priority
 
+<a id="6611251a-42b3-4a16-97a2-26d7db748487"></a>
 * [ ] **Server: Externalize State Management** *Updated 2026-05-13*
 
   Most pending checks and codes are stored in local in-memory `Maps`.
@@ -49,6 +52,7 @@ The following is a list of known and documented technical debts.
   **Goal:** Move shared state to the existing **PostgreSQL** instance or deploy a **Valkey** instance to act as high-speed shared memory.
     * Project Lead's Recommendation: Outsource a Valkey provider for cache storage and initialize a pool in [./server/db/](./server/db/).
 
+<a id="c44f007d-0668-42d4-b32a-7dd466e96339"></a>
 * [ ] **Server: Monolithic server.js** *Updated 2026-05-16*
 
   The central `server.js` file has become a God Object, handling 90% of all application routes, WebSocket connections, and echo streaming routines.
@@ -57,8 +61,19 @@ The following is a list of known and documented technical debts.
 
   **Goal:** Move all HTTP endpoints into the existing [./server/routes/](./server/routes/) directory and cleanly mount them in [./server/server.js](./server/server.js), and extract WebSocket connections, event listeners, and echo broadcasting logic out of the main file and encapsulate them into isolated helper classes or services.
 
+<a id="903a497c-009d-4ed6-989d-aa85b402e6b4"></a>
+* [ ] **Server: CSP Compliance Violation via Inline Worker Blobs** *Updated 2026-06-18*
+
+  The Proof-of-Work (PoW) client script in the api-access page HTML dynamically generates a Web Worker from a localized inline script block utilizing a `blob:` URL payload.
+    * **Risk:** This implementation triggers explicit Content Security Policy (CSP) violations under standard, secure environments. Bypassing this requires exposing `blob:` within `worker-src` or `script-src` directives, which expands the application's attack surface by allowing potential XSS payloads to execute arbitrary scripts via generated blobs.
+    * Areas: [./server/public/creators/api-access/index.html](./server/public/creators/api-access/index.html)
+
+  **Goal:** Move the Web Worker execution logic entirely out of the inline context and abstract it into a standalone, reusable `.js` asset file. Serve this file statically from the server to maintain strict alignment with standard, uncompromised `worker-src 'self'` CSP directives.
+    * Remarks: Also see: [Server: DRY Code Violation in Web Code](#49bead59-e15a-443d-9365-e5015f76ffc6)
+
 ## 💚 Low Priority
 
+<a id="579d2ca6-da7a-4996-9a18-313c3130b45f"></a>
 * [ ] **Client: Hardcoded Prerelease Flag in Update Service** *Updated 2026-05-15*
 
   The automatic update routine is currently forced to check for prereleases because the project has not yet published a formal, stable release.
@@ -68,6 +83,7 @@ The following is a list of known and documented technical debts.
   **Goal:** Update the automatic `CheckAndDownloadUpdate()` startup call to target stable releases by default by changing the argument to `false` once version `1.0.0` or a stable equivalent is published.
     * Remarks: This will likely not be relevant until the WinForms to WPF migration is complete and large features such as team chat is implemented.
 
+<a id="e4028bbb-b326-4336-b9fb-7d098157bb67"></a>
 * [ ] **Client: Console Lifecycle Hack via Menu Deletion** *Updated 2026-05-16*
 
   The client currently prevents users from accidentally terminating the main program by forcefully calling `DeleteMenu(sysMenu, SC_CLOSE, MF_BYCOMMAND)` on the debug console to remove the close button from the system menu and forcing the user to manually type the same chat command again to trigger `FreeConsole()`.
@@ -76,6 +92,7 @@ The following is a list of known and documented technical debts.
 
   **Goal:** Restore the native close button and properly intercept `if (ctrlType == CTRL_CLOSE_EVENT)` to invoke `FreeConsole()` on the console window.
 
+<a id="8c038655-9d3d-443b-9e3b-0da889f7cba3"></a>
 * [ ] **Server: Production Reliance on JsDelivr CDN for Tailwind** *Updated 2026-05-16*
 
   The server-rendered HTML pages currently load Tailwind CSS directly in the browser via a development script tag (`<script src="...jsdelivr.net/npm/@tailwindcss/browser@4.3.0"...></script>`).
@@ -84,6 +101,7 @@ The following is a list of known and documented technical debts.
 
   **Goal:** Migrate from the browser-based runtime compiler to a proper GitHub Actions workflow to synchronize and compile CSS, push to a `prod` branch, and replace the `<script>` bundle with a static, minified CSS stylesheet generated during a build step.
 
+<a id="3c6cf9d6-d910-492b-af6d-2eb619fe505e"></a>
 * [ ] **Installer: DRY Code Violation in Flag Checks** *Updated 2026-05-16*
 
   The installer isolates command-line argument checks into individual single-purpose script files, creating a repetitive and hard-to-maintain structure.
@@ -92,6 +110,7 @@ The following is a list of known and documented technical debts.
 
   **Goal:** Consolidate the duplicated Pascal scripts into a single, reusable parameterized helper service (e.g., `HasCommandLineFlag(FlagName: String): Boolean`) to dynamically evaluate flags against incoming parameters.
 
+<a id="49bead59-e15a-443d-9365-e5015f76ffc6"></a>
 * [ ] **Server: DRY Code Violation in Web Code** *Updated 2026-05-20*
 
   The web code duplicates JavaScript logic across multiple index.html files, leading to maintenance overhead when updating shared frontend scripts.
@@ -99,11 +118,13 @@ The following is a list of known and documented technical debts.
     * **Areas:** [./server/public/index.html](./server/public/index.html), [./server/public/creators/index.html](./server/public/creators/index.html), [./server/public/creators/api-access/index.html](./server/public/creators/api-access/index.html)
  
   **Goal:** Abstract common JavaScript functionality (e.g., common utility functions, API wrappers, or UI event listeners) into a standalone `client-common.js` file. Serve this file as a static asset to all pages to ensure a single source of truth for frontend logic.
+    * Remarks: Also see: [Server: CSP Compliance Violation via Inline Worker Blobs](#903a497c-009d-4ed6-989d-aa85b402e6b4)
 
 ## ❤️ Out of Scope
 
 The following items are recognized issues that severely impact the project but cannot be resolved under current operational or financial limitations. They are considered hard constraints until external conditions change.
 
+<a id="576e5e80-3e0b-4a19-97b9-502fe94ce233"></a>
 * [ ] **Project: Budget Infrastructural Constraints**
 
   The project is severely bottlenecked by a $0 operational budget, forcing reliance on free-tier infrastructure and APIs that introduce strict rate limits, service-ending deadlines, and monthly downtime risks.
@@ -130,6 +151,7 @@ The following items are recognized issues that severely impact the project but c
 
 ## 💝 Accomplished
 
+<a id="a611c77a-8666-43b0-8ff8-c114e484564e"></a>
 * [X] ~~**Project: Monorepo Versioning Strategy**~~ *Accomplished 2026-05-23 in #162*
 
   Integrations are versioned locally, but the monorepo’s global Git tagging forces a single, linear versioning sequence. This forces the global tag to increment for integration-only updates, creating a version mismatch.
