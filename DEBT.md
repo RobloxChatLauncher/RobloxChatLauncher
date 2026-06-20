@@ -70,6 +70,17 @@ The following is a list of known and documented technical debts.
 
   **Goal:** Move all HTTP endpoints into the existing [./server/routes/](./server/routes/) directory and cleanly mount them in [./server/server.js](./server/server.js), and extract WebSocket connections, event listeners, and echo broadcasting logic out of the main file and encapsulate them into isolated helper classes or services.
 
+<a id="3c5d3634-a5b7-4489-bfd2-2d2c1f13d9cd"></a>
+* [ ] **Client: ChatForm Class God Object** *Updated 2026-06-20*
+
+  The `ChatForm` class is a God Object split across 3 partial classes which handles major UI components, client requests, and local command handlers.
+    * **Risk:** Jamming disparate logic into a single class causes severe merge conflicts during team collaboration, drastically increases cognitive load for future maintenance, and becomes hard to navigate and find logic.
+    * Areas: [./client/ChatForm/ChatForm.UI.cs](./client/ChatForm/ChatForm.UI.cs)[^stm], [./client/ChatForm/ChatForm.Client.cs](./client/ChatForm/ChatForm.Client.cs)[^stm], [./client/ChatForm/ChatForm.Commands.cs](./client/ChatForm/ChatForm.Commands.cs)[^stm]
+
+  **Goal:** Cleanly separate logic for UI components, client handling, and command handling into their respective subareas.
+    * Remarks: This will likely be addressed during the WinForms to WPF migration as the UI logic and ChatForm class as a whole will be entirely scrapped in favor of modern MVVM patterns.
+    * Also see: [Client: WinForms to WPF Migration](#5f85329c-bf77-43ac-a786-8b3f1ed15c46)
+
 <a id="903a497c-009d-4ed6-989d-aa85b402e6b4"></a>
 * [ ] **Server: CSP Compliance Violation via Inline Worker Blobs** *Updated 2026-06-18*
 
