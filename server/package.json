@@ -11,7 +11,7 @@
         "express": "^5.2.1",
         "express-rate-limit": "^8.5.2",
         "marked": "^18.0.5",
-        "pg": "^8.21.0",
+        "pg": "^8.22.0",
         "swagger-jsdoc": "^6.3.0",
         "swagger-ui-express": "^5.0.1",
         "ws": "^8.21.0"
