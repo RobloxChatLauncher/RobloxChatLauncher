@@ -5,12 +5,12 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0" />
 
-    <title>Roblox Chat Launcher</title>
+    <title>Roblox Chat Launcher - Thank You</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.0" integrity="sha384-AIH1kL7JmmReCxSwiSyaRNwzSFO7h4Ir4F/PO28EKezqFza1LwIMgEPLd83KwmZ4" crossorigin="anonymous"></script>
     <script src="/navbar.js"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@600&display=swap"
           rel="stylesheet" />
 
     <style>
@@ -38,6 +38,10 @@
 
         .mono {
             font-family: 'JetBrains Mono', monospace;
+        }
+
+        .handwritten {
+            font-family: 'Caveat', cursive, serif;
         }
 
         .glass {
@@ -108,15 +112,6 @@
                 border-color: rgba(96,165,250,0.32);
             }
 
-        .feature-image {
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-
-            .feature-image:hover {
-                transform: scale(1.02);
-                box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 25px 80px rgba(59,130,246,0.22);
-            }
-
         .button-primary {
             position: relative;
             overflow: hidden;
@@ -158,15 +153,37 @@
                 background: linear-gradient( 90deg, transparent, rgba(255,255,255,0.1), transparent );
             }
 
-        @media (max-width: 1024px) {
+        /* Rough paper styling */
+        .paper-letter {
+            background-color: #fcfbf7;
+            color: #1e293b;
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0,0,0,0.05);
+            transform: rotate(-0.5deg);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
 
-            .feature-row {
-                grid-template-columns: 1fr !important;
+            .paper-letter:hover {
+                transform: rotate(0deg) scale(1.005);
+                box-shadow: 0 30px 60px -12px rgba(59, 130, 246, 0.25), 0 0 0 1px rgba(0,0,0,0.05);
             }
 
-            .feature-image {
-                order: -1 !important;
+        /* Letter entrance animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) rotate(-0.5deg);
             }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) rotate(-0.5deg);
+            }
+        }
+
+        .animate-paper {
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
@@ -181,16 +198,11 @@
         renderNavbar({
             subtitle: "Desktop Communication Platform",
             buttons: `
-              <nav class="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8 text-sm text-slate-400">
-                <a href="#features" class="hover:text-white transition-colors">Features</a>
-                <a href="/creators" class="hover:text-white transition-colors">For Creators</a>
-                <a href="#privacy" class="hover:text-white transition-colors">Privacy</a>
-              </nav>
-              <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher/releases"
-                 class="button-primary inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-blue-500/20">
-                Download
-              </a>
-            `
+                      <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher"
+                         class="button-primary inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-blue-500/20">
+                        View Source Code
+                      </a>
+                    `
         });
     </script>
 
@@ -205,9 +217,9 @@
 
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-xs uppercase tracking-[0.22em] text-blue-300 mb-8">
 
-                    <div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
+                    <div class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></div>
 
-                    Desktop Companion for Roblox
+                    Service Sunset Notice
 
                 </div>
 
@@ -217,296 +229,286 @@
 
                 <h1 class="mt-10 text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.05]">
 
-                    Bring Back
+                    Thank You for
                     <span class="gradient-text">
-                        Co-Op Gameplay
+                        The Journey
                     </span>
 
                 </h1>
 
                 <p class="mt-8 text-lg md:text-xl text-slate-400 leading-relaxed max-w-3xl mx-auto">
 
-                    Real-time Roblox communication without invasive telemetry.
-                    Roblox Chat Launcher restores classic multiplayer interaction
-                    with a native-feeling desktop experience.
+                    Roblox Chat Launcher will officially sunset its hosted services after <strong>December 31st, 2026</strong>.
+                    We want to express our deepest gratitude to everyone who used, supported, and contributed to the platform.
 
                 </p>
+
+                <div class="mt-8 inline-flex flex-col items-center glass rounded-2xl px-6 py-4 border border-amber-500/10">
+                    <span class="text-xs uppercase tracking-[0.2em] text-amber-300">
+                        Hosted services sunset
+                    </span>
+
+                    <span class="mt-2 text-2xl md:text-3xl font-extrabold text-white mono">
+                        December 31, 2026
+                    </span>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+
+                    <div class="hover-card glass rounded-3xl p-8 border border-white/5">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs uppercase tracking-[0.2em] mb-4">
+                            Open Source
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Source Code Remains Free</h3>
+                        <p class="mt-3 text-slate-400 text-sm leading-relaxed">
+                            The source code will remain open and free for all to view, use, modify, and deploy under the <strong>GPL-3.0 license</strong>. You can freely inspect and self-host the project anytime.
+                        </p>
+                    </div>
+
+                    <div class="hover-card glass rounded-3xl p-8 border border-white/5">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs uppercase tracking-[0.2em] mb-4">
+                            Data Privacy
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Permanent Data Removal</h3>
+                        <p class="mt-3 text-slate-400 text-sm leading-relaxed">
+                            You can type <code class="mono text-blue-300 bg-white/5 px-1.5 py-0.5 rounded">/unverify</code> in the client at any time <strong>before December 31, 2026</strong> to permanently and irreversibly wipe your data from our database. Additionally, all remaining database tables will be permanently dropped within <strong>30 days</strong> of the sunset date.
+                        </p>
+                    </div>
+
+                    <div class="hover-card glass rounded-3xl p-8 border border-white/5 md:col-span-2">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs uppercase tracking-[0.2em] mb-4">
+                            Uninstallation
+                        </div>
+                        <h3 class="text-xl font-bold text-white">How to Uninstall</h3>
+                        <p class="mt-3 text-slate-400 text-sm leading-relaxed">
+                            You can easily remove the application anytime through your system's <strong>Add or Remove Programs</strong> menu. Doing so will automatically restore your original Roblox client or bootstrapper as your default application.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- What Happens Next -->
+                <div class="mt-12">
+                    <div class="text-left mb-6">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs uppercase tracking-[0.2em] mb-2">
+                            The Road Ahead
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-white">
+                            What Happens Next?
+                        </h3>
+
+                        <p class="mt-2 text-slate-400 text-sm max-w-2xl">
+                            Here's what the sunset means for Roblox Chat Launcher and its users.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+
+                        <div class="hover-card glass rounded-3xl p-6 border border-white/5">
+                            <div class="text-2xl mb-4">01</div>
+
+                            <h4 class="text-lg font-bold text-white">
+                                Until December 31
+                            </h4>
+
+                            <p class="mt-2 text-sm text-slate-400 leading-relaxed">
+                                Hosted Roblox Chat Launcher services will continue operating
+                                while the project approaches its sunset date.
+                            </p>
+                        </div>
+
+                        <div class="hover-card glass rounded-3xl p-6 border border-white/5">
+                            <div class="text-2xl mb-4">02</div>
+
+                            <h4 class="text-lg font-bold text-white">
+                                December 31, 2026
+                            </h4>
+
+                            <p class="mt-2 text-sm text-slate-400 leading-relaxed">
+                                Hosted services will be discontinued. The hosted platform
+                                should no longer be relied upon after this date.
+                            </p>
+                        </div>
+
+                        <div class="hover-card glass rounded-3xl p-6 border border-white/5">
+                            <div class="text-2xl mb-4">03</div>
+
+                            <h4 class="text-lg font-bold text-white">
+                                After the Sunset
+                            </h4>
+
+                            <p class="mt-2 text-sm text-slate-400 leading-relaxed">
+                                The source code will remain available under the GPL-3.0
+                                license for anyone who wants to inspect, modify, or self-host it.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="mt-12">
+                    <div class="text-left mb-6">
+                        <div class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs uppercase tracking-[0.2em] mb-2">
+                            Milestones
+                        </div>
+                        <h3 class="text-2xl font-bold text-white">Our Journey in Numbers</h3>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+
+                        <div class="hover-card glass rounded-3xl p-6 border border-white/5">
+                            <div class="text-3xl font-extrabold text-blue-400 mono">1,700+</div>
+                            <div class="text-sm font-semibold text-white mt-1">Downloads</div>
+                            <p class="text-slate-400 text-xs mt-1">Total client downloads across releases.</p>
+                        </div>
+
+                        <div class="hover-card glass rounded-3xl p-6 border border-white/5">
+                            <div class="text-3xl font-extrabold text-indigo-400 mono">100+</div>
+                            <div class="text-sm font-semibold text-white mt-1">Verified Users</div>
+                            <p class="text-slate-400 text-xs mt-1">With many more active guest users.</p>
+                        </div>
+
+                        <div class="hover-card glass rounded-3xl p-6 border border-white/5">
+                            <div class="text-3xl font-extrabold text-purple-400 mono">Thousands</div>
+                            <div class="text-sm font-semibold text-white mt-1">Messages Sent</div>
+                            <p class="text-slate-400 text-xs mt-1">Exchanged seamlessly through the platform.</p>
+                        </div>
+
+                        <div class="hover-card glass rounded-3xl p-6 border border-white/5">
+                            <div class="text-3xl font-extrabold text-pink-400 mono">3</div>
+                            <div class="text-sm font-semibold text-white mt-1">Regional Servers</div>
+                            <p class="text-slate-400 text-xs mt-1">Operating at peak infrastructure capacity.</p>
+                        </div>
+
+                        <div class="hover-card glass rounded-3xl p-6 border border-white/5">
+                            <div class="text-3xl font-extrabold text-amber-400 mono">30+</div>
+                            <div class="text-sm font-semibold text-white mt-1">Discord Members</div>
+                            <p class="text-slate-400 text-xs mt-1">Engaged community members in our server.</p>
+                        </div>
+
+                        <div class="hover-card glass rounded-3xl p-6 border border-white/5">
+                            <div id="star-count" class="text-3xl font-extrabold text-emerald-400 mono">24</div>
+                            <div class="text-sm font-semibold text-white mt-1">GitHub Stars</div>
+                            <p class="text-slate-400 text-xs mt-1">Showing appreciation from developers.</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Self Hosting -->
+                <div class="mt-12">
+                    <div class="hover-card glass rounded-3xl p-8 border border-white/5 text-left">
+
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+
+                            <div class="max-w-2xl">
+
+                                <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs uppercase tracking-[0.2em] mb-4">
+                                    Open Source
+                                </div>
+
+                                <h3 class="text-2xl font-bold text-white">
+                                    Want to Keep It Running?
+                                </h3>
+
+                                <p class="mt-3 text-slate-400 leading-relaxed">
+                                    Roblox Chat Launcher will remain open source under the
+                                    GPL-3.0 license. If you have the technical ability and
+                                    infrastructure, you can continue the project independently
+                                    by self-hosting it. You will also need to swap out the server-side
+                                    moderation service and local-side message filter.
+                                </p>
+
+                                <p class="mt-3 text-slate-500 text-sm">
+                                    Please note that self-hosting is not operated or supported
+                                    by the Roblox Chat Launcher hosted service.
+                                </p>
+
+                            </div>
+
+                            <div class="shrink-0">
+                                <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher"
+                                   class="button-primary inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-blue-500/20">
+                                    View Source Code
+                                </a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Letter from Project Lead -->
+                <div class="mt-12 animate-paper">
+                    <div class="paper-letter p-8 md:p-12 text-left relative overflow-hidden">
+
+                        <!-- Paper Header with Profile Icon -->
+                        <div class="flex items-center justify-between border-b border-slate-300/60 pb-6 mb-6">
+                            <div class="flex items-center gap-4">
+                                <img src="https://avatars.githubusercontent.com/u/209641948?v=4"
+                                     alt="Profile Icon"
+                                     class="w-14 h-14 rounded-full border-2 border-slate-300 shadow-md object-cover" />
+                                <div>
+                                    <h4 class="text-lg font-bold text-slate-900">Riri, Project Lead</h4>
+                                    <p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Roblox Chat Launcher Team</p>
+                                </div>
+                            </div>
+                            <div class="hidden sm:block text-right text-xs text-slate-500 font-mono">
+                                <span>August 2026</span>
+                            </div>
+                        </div>
+
+                        <!-- Letter Content -->
+                        <div class="space-y-4 text-slate-700 text-base md:text-lg leading-relaxed font-normal">
+                            <p class="font-semibold text-slate-900">Dear Community,</p>
+
+                            <p>
+                                When I first set out to build Roblox Chat Launcher, my goal was simple: to bring back the secure communication that Roblox took away from us, without requiring your facial data or government ID just to communicate with teammates.
+                            </p>
+
+                            <p>
+                                At first, the project was just a fun hobby that I never thought anyone would use. Looking back at how far the project has come, words cannot express how proud and grateful I am to the users who helped make this service possible. The fact that I can't even say a concrete number of guest users who've used Roblox Chat Launcher goes to show that we've achieved our core mission of privacy.
+                            </p>
+
+                            <p>
+                                Thank you for every bug report, every pull request, every kind message, and for trusting us along the way. You made this journey truly unforgettable.
+                            </p>
+
+                            <div class="pt-4 mt-6 border-t border-slate-300/60 flex items-center justify-between">
+                                <div>
+                                    <p class="text-slate-600 text-sm">With gratitude,</p>
+                                    <p class="font-bold text-slate-900 handwritten text-3xl mt-1">Riri, Project Lead</p>
+                                </div>
+                                <div class="text-right text-xs text-slate-400 font-mono">
+                                    [RCL Team]
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="mt-10 hover-card glass rounded-3xl p-8 border border-white/5 text-center">
+                    <h3 class="text-xl font-bold text-white">Inquiries & Data Requests</h3>
+                    <p class="mt-2 text-slate-400 text-sm">
+                        For any questions, general inquiries, or specific data requests, please reach out to us via email at:
+                    </p>
+                    <div class="mt-4">
+                        <a href="mailto:RobloxChatLauncher@proton.me" class="mono text-blue-400 hover:text-blue-300 text-base md:text-lg font-semibold transition-colors">
+                            RobloxChatLauncher@proton.me
+                        </a>
+                    </div>
+                </div>
 
                 <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
 
-                    <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher/releases"
+                    <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher"
                        class="button-primary w-full sm:w-auto text-center bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-4 rounded-2xl shadow-2xl shadow-blue-500/20">
 
-                        Download for Windows
+                        View Repository on GitHub
 
                     </a>
-
-                    <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher"
-                       class="w-full sm:w-auto text-center glass hover:bg-white/5 transition-all text-white font-semibold px-8 py-4 rounded-2xl">
-
-                        View on GitHub
-
-                    </a>
-
-                </div>
-
-                <p class="mt-6 text-sm text-slate-500">
-
-                    Requires
-                    <a href="https://aka.ms/dotnet-core-applaunch?missing_runtime=true&arch=x64&rid=win11-x64&apphost_version=10.0.0&gui=true"
-                       class="text-blue-400 hover:text-blue-300 transition-colors">
-                        .NET 10 Desktop Runtime
-                    </a>
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- Feature 1 -->
-    <section id="features"
-             class="section-fade py-28">
-
-        <div class="max-w-7xl mx-auto px-6">
-
-            <div class="feature-row grid grid-cols-2 gap-16 items-center">
-
-                <div class="hover-card glass rounded-3xl p-10">
-
-                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs uppercase tracking-[0.2em] mb-6">
-
-                        Messaging
-
-                    </div>
-
-                    <h2 class="text-4xl font-bold tracking-tight text-white">
-
-                        Real-Time Chat
-
-                    </h2>
-
-                    <p class="mt-6 text-slate-400 leading-relaxed text-lg">
-
-                        Communicate with players in your Roblox server using a
-                        seamlessly integrated chat interface that feels native
-                        to the platform.
-
-                    </p>
-
-                    <div class="mt-8 grid gap-4">
-
-                        <div class="glass rounded-2xl p-4 border border-white/5">
-
-                            <div class="font-medium text-white">
-                                Native Input Flow
-                            </div>
-
-                            <div class="text-sm text-slate-500 mt-1">
-                                Press / and Enter exactly like Roblox chat.
-                            </div>
-
-                        </div>
-
-                        <div class="glass rounded-2xl p-4 border border-white/5">
-
-                            <div class="font-medium text-white">
-                                Low Latency Sync
-                            </div>
-
-                            <div class="text-sm text-slate-500 mt-1">
-                                Messages synchronize instantly with your session.
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div>
-
-                    <img src="https://github.com/RobloxChatLauncher/.github/raw/main/assets/readme/feature_one.webp"
-                         class="feature-image rounded-3xl border border-white/10 shadow-2xl shadow-black/50 w-full" />
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- Feature 2 -->
-    <section class="section-fade py-28">
-
-        <div class="max-w-7xl mx-auto px-6">
-
-            <div class="feature-row grid grid-cols-2 gap-16 items-center">
-
-                <div>
-
-                    <img src="https://github.com/RobloxChatLauncher/.github/raw/main/assets/readme/feature_two.webp"
-                         class="feature-image rounded-3xl border border-white/10 shadow-2xl shadow-black/50 w-full" />
-
-                </div>
-
-                <div class="hover-card glass rounded-3xl p-10">
-
-                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs uppercase tracking-[0.2em] mb-6">
-
-                        Emotes
-
-                    </div>
-
-                    <h2 class="text-4xl font-bold tracking-tight text-white">
-
-                        Bring Back /emote
-
-                    </h2>
-
-                    <p class="mt-6 text-slate-400 leading-relaxed text-lg">
-
-                        Use the classic /e command in supported Roblox experiences
-                        and trigger synchronized in-game emotes directly from chat.
-
-                    </p>
-
-                    <div class="mt-8 glass rounded-2xl p-5 border border-white/5">
-
-                        <div class="flex items-center gap-3">
-
-                            <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
-
-                            <div class="text-white font-medium">
-                                Integrations Enabled
-                            </div>
-
-                        </div>
-
-                        <p class="mt-3 text-sm text-slate-500 leading-relaxed">
-
-                            Look for the integrations enabled message when joining
-                            compatible Roblox games.
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- Feature 3 -->
-    <section id="compatibility"
-             class="section-fade py-28">
-
-        <div class="max-w-7xl mx-auto px-6">
-
-            <div class="feature-row grid grid-cols-2 gap-16 items-center">
-
-                <div class="hover-card glass rounded-3xl p-10">
-
-                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs uppercase tracking-[0.2em] mb-6">
-
-                        Compatibility
-
-                    </div>
-
-                    <h2 class="text-4xl font-bold tracking-tight text-white">
-
-                        Bootstrapper Compatible
-
-                    </h2>
-
-                    <p class="mt-6 text-slate-400 leading-relaxed text-lg">
-
-                        Fully compatible with your favorite Roblox bootstrappers,
-                        including Bloxstrap, Fishstrap, Voidstrap, and more.
-
-                    </p>
-
-                    <div class="mt-8 flex flex-wrap gap-3">
-
-                        <div class="glass px-4 py-2 rounded-xl text-sm text-slate-300">
-                            Bloxstrap
-                        </div>
-
-                        <div class="glass px-4 py-2 rounded-xl text-sm text-slate-300">
-                            Fishstrap
-                        </div>
-
-                        <div class="glass px-4 py-2 rounded-xl text-sm text-slate-300">
-                            Voidstrap
-                        </div>
-
-                        <div class="glass px-4 py-2 rounded-xl text-sm text-slate-300">
-                            & More
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div>
-
-                    <img src="https://github.com/RobloxChatLauncher/.github/raw/main/assets/readme/feature_three.webp"
-                         class="feature-image rounded-3xl border border-white/10 shadow-2xl shadow-black/50 w-full" />
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- CTA -->
-    <section class="py-28">
-
-        <div class="max-w-5xl mx-auto px-6">
-
-            <div class="hover-card glass rounded-[2rem] p-12 md:p-16 relative overflow-hidden">
-
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-indigo-500/10"></div>
-
-                <div class="relative z-10 text-center">
-
-                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs uppercase tracking-[0.25em] text-slate-300 mb-8">
-
-                        Ready to Install
-
-                    </div>
-
-                    <h2 class="text-5xl font-bold tracking-tight text-white">
-
-                        Start Playing Together Again
-
-                    </h2>
-
-                    <p class="mt-6 text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-
-                        Experience modern Roblox communication with privacy-first
-                        design and seamless integration.
-
-                    </p>
-
-                    <div class="mt-10">
-
-                        <a href="https://github.com/RobloxChatLauncher/RobloxChatLauncher/releases"
-                           class="button-primary inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white font-semibold px-10 py-4 rounded-2xl shadow-2xl shadow-blue-500/20">
-
-                            Download Latest Release
-
-                        </a>
-
-                    </div>
 
                 </div>
 
@@ -560,6 +562,17 @@
                 );
             });
         });
+
+        fetch('https://api.github.com/repos/RobloxChatLauncher/RobloxChatLauncher')
+            .then(response => response.json())
+            .then(data => {
+                if (data.stargazers_count !== undefined) {
+                    document.getElementById('star-count').textContent = data.stargazers_count;
+                }
+            })
+            .catch(error => {
+                console.error('Failed to fetch GitHub stars:', error);
+            });
 
     </script>
 

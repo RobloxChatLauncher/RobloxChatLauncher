@@ -56,6 +56,37 @@ const swaggerOptions = {
     apis: ['./server.js', './routes/*.js'],
 };
 
+// ===== START SUNSET =====
+const SUNSET_DATE = new Date("2027-01-01T00:00:00Z");
+
+const SUNSET_ALLOWED_PATHS = new Set([
+    "/",
+    "/index.html",
+    "/navbar.js",
+    "/robots.txt",
+    "/health",
+    "/api/v1/logo/light",
+    "/api/v1/logo/dark"
+]);
+
+function sunsetGuard(req, res, next) {
+    if (new Date() < SUNSET_DATE) {
+        return next();
+    }
+
+    if (SUNSET_ALLOWED_PATHS.has(req.path)) {
+        return next();
+    }
+
+    return res.status(410).json({
+        error: "Roblox Chat Launcher hosted services have ended.",
+        sunsetDate: "2027-01-01T00:00:00Z"
+    });
+}
+
+app.use(sunsetGuard);
+// ===== END SUNSET =====
+
 // Allowed mail types for the mail push endpoint
 const ALLOWED_MAIL_TYPES = new Set([
     "Emote",

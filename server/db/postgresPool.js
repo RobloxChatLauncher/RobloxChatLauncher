@@ -3,12 +3,44 @@ const { Pool } = require('pg');
 
 const Env = require('../config/env');
 
-const pool = new Pool({
-    connectionString: Env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-});
+// ===== START SUNSET =====
+const SUNSET_DATE = new Date("2027-01-01T00:00:00Z");
+
+let pool = null;
+
+function isBeforeSunset() {
+    return new Date() < SUNSET_DATE;
+}
+
+if (isBeforeSunset()) {
+    pool = new Pool({
+        connectionString: Env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+    });
+
+    const delay = SUNSET_DATE.getTime() - Date.now();
+
+    setTimeout(async () => {
+        console.log("Sunset reached. Closing PostgreSQL pool...");
+
+        try {
+            await pool.end();
+            console.log("PostgreSQL pool closed.");
+        } catch (err) {
+            console.error("Failed to close PostgreSQL pool:", err);
+        }
+    }, delay);
+}
+// ===== END SUNSET =====
 
 async function initDatabase() {
+    // ===== START SUNSET =====
+    if (!pool || !isBeforeSunset()) {
+        console.log("Database initialization skipped: service has reached sunset.");
+        return;
+    }
+    // ===== END SUNSET =====
+
     await pool.query(`
         CREATE TABLE IF NOT EXISTS verified_users (
             hwid TEXT PRIMARY KEY,

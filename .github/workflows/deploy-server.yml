@@ -69,6 +69,15 @@ jobs:
       - name: Broadcast restart warning
         continue-on-error: true
         run: |
+          SUNSET_DATE="2027-01-01T00:00:00Z"
+          CURRENT_DATE=$(date -u +%s)
+          SUNSET_TIMESTAMP=$(date -u -d "$SUNSET_DATE" +%s)
+
+          if [ "$CURRENT_DATE" -ge "$SUNSET_TIMESTAMP" ]; then
+            echo "Service has reached its sunset date. Skipping restart broadcast."
+            exit 0
+          fi
+
           SERVERS=(
             "https://RobloxChatLauncher.onrender.com/api/v1/admin/broadcast"
             # "https://RobloxChatLauncher-de.onrender.com/api/v1/admin/broadcast"

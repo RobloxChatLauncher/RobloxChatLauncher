@@ -15,6 +15,9 @@ class Program
     static ChatForm? chatForm;
     static ChatKeyboardHandler? keyboardHandler;
     static RegistryMonitor? registryMonitor;
+    // ===== START SUNSET =====
+    private static readonly DateTime SUNSET_DATE = new DateTime(2027, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+    // ===== END SUNSET =====
 
     static void Main(string[] args)
     {
@@ -44,6 +47,39 @@ class Program
             RobloxRegistryUtil.Restore();
             return; // Exit immediately
         }
+
+        // ===== START SUNSET =====
+        // check after the uninstall flag check
+        if (DateTime.UtcNow >= SUNSET_DATE)
+        {
+            DialogResult result = MessageBox.Show(
+                "Roblox Chat Launcher has reached the end of its service period and is no longer available.\n\n" +
+                "Thank you for using Roblox Chat Launcher!\n\n" +
+                "Would you like to visit the project page for more information?",
+                "Roblox Chat Launcher",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Information
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "https://RobloxChatLauncher.onrender.com",
+                        UseShellExecute = true
+                    });
+                }
+                catch
+                {
+                    // Browser couldn't be opened
+                }
+            }
+
+            return;
+        }
+        // ===== END SUNSET =====
 
         // Mutex (newer replaces older)
         if (!isAllowMultiple)
