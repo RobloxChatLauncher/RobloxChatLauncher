@@ -9,7 +9,37 @@ const SUNSET_DATE = new Date("2027-01-01T00:00:00Z");
 let pool = null;
 
 function isBeforeSunset() {
-    return new Date() < SUNSET_DATE;
+    return Date.now() < SUNSET_DATE.getTime();
+}
+
+async function closePoolAtSunset() {
+    const remaining = SUNSET_DATE.getTime() - Date.now();
+
+    // Sunset has been reached.
+    if (remaining <= 0) {
+        console.log("Sunset reached. Closing PostgreSQL pool...");
+
+        if (!pool) {
+            return;
+        }
+
+        try {
+            await pool.end();
+            pool = null;
+            console.log("PostgreSQL pool closed.");
+        } catch (err) {
+            console.error("Failed to close PostgreSQL pool:", err);
+        }
+
+        return;
+    }
+
+    // workaround for integer overflow
+    const MAX_TIMEOUT = 2_147_483_647;
+
+    setTimeout(() => {
+        closePoolAtSunset();
+    }, Math.min(remaining, MAX_TIMEOUT));
 }
 
 if (isBeforeSunset()) {
@@ -18,18 +48,7 @@ if (isBeforeSunset()) {
         ssl: { rejectUnauthorized: false }
     });
 
-    const delay = SUNSET_DATE.getTime() - Date.now();
-
-    setTimeout(async () => {
-        console.log("Sunset reached. Closing PostgreSQL pool...");
-
-        try {
-            await pool.end();
-            console.log("PostgreSQL pool closed.");
-        } catch (err) {
-            console.error("Failed to close PostgreSQL pool:", err);
-        }
-    }, delay);
+    closePoolAtSunset();
 }
 // ===== END SUNSET =====
 
