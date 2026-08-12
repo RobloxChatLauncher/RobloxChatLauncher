@@ -127,10 +127,16 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // ----- WebSocket Setup -----
 const server = http.createServer(app);
-const wss = new WebSocket.Server({
-    server,
-    maxPayload: Constants.WEBSOCKET_LIMIT_BYTES
-});
+// ===== START SUNSET =====
+let wss = null;
+
+if (new Date() < SUNSET_DATE) {
+    wss = new WebSocket.Server({
+        server,
+        maxPayload: Constants.WEBSOCKET_LIMIT_BYTES
+    });
+}
+// ===== END SUNSET =====
 // Memory-efficient storage for dynamic channels
 // Key: channelId (string), Value: Set of socket objects
 const channels = new Map();
@@ -1544,172 +1550,198 @@ app.post('/echo', async (req, res) => {
 // channelId is the ID found using the RobloxAreaService class (a.k.a. JobId)
 // Chat: {"type": "message", "text": "Hello world!"}
 // --------------------------------------
-// Heatbeat mechanism to detect dead connections (e.g., due to network issues or Render spinning down)
-const interval = setInterval(() => {
-    wss.clients.forEach((ws) => {
-        if (ws.isAlive === false) {
-            // No pong received since last ping → dead connection
-            // console.log(`Terminating dead client: ${userKey}`);
-            return ws.terminate();
-        }
+// ===== START SUNSET =====
+if (new Date() < SUNSET_DATE) {
+    const interval = setInterval(() => {
+        wss.clients.forEach((ws) => {
+            if (ws.isAlive === false) {
+                // No pong received since last ping → dead connection
+                // console.log(`Terminating dead client: ${userKey}`);
+                return ws.terminate();
+            }
 
-        ws.isAlive = false;
-        ws.ping(); // send ping frame
-    });
-}, Constants.HEARTBEAT_INTERVAL);
+            ws.isAlive = false;
+            ws.ping(); // send ping frame
+        });
+    }, Constants.HEARTBEAT_INTERVAL);
 
-wss.on('close', () => clearInterval(interval));
+    // workaround for integer overflow
+    const MAX_TIMEOUT = 2_147_483_647;
 
-wss.on('connection', (ws, req) => {
-    const trustedIp = getTrustedIp(req, ws); // Get the 127.0.0.1:x IP address from the WebSocket connection
-    const connectionPort = trustedIp.split(':')[1] || '0'; // Extract the port to return to use as the guest number
+    const scheduleSunset = () => {
+        const sunsetDelay = SUNSET_DATE.getTime() - Date.now();
 
-    // Identify this socket so we can find it by name later
-    ws.senderName = `Guest ${connectionPort}`;
+        if (sunsetDelay <= 0) {
+            console.log('Sunset date reached; closing WebSocket connections.');
 
-    const userKey = hashIp(getTrustedIp(req, ws));
-    let currentChannel = null;
+            for (const ws of wss.clients) {
+                ws.close(1001, 'Roblox Chat Launcher hosted services have ended.');
+            }
 
-    ws.isAlive = true;
-    ws.on('pong', () => { ws.isAlive = true; });
-
-    // Handle oversized messages so the server doesn't crash
-    ws.on('error', (err) => {
-        if (err.code === 'WS_ERR_UNSUPPORTED_MESSAGE_LENGTH') {
-            console.warn('Oversized message dropped');
+            wss.close();
         } else {
-            console.error('WS error:', err);
+            setTimeout(scheduleSunset, Math.min(sunsetDelay, MAX_TIMEOUT));
         }
-    });
+    };
 
-    // --- Begin WS message handling ---
-    ws.on('message', async (data) => {
-        try {
-            const payload = JSON.parse(data);
+    scheduleSunset();
 
-            // 1. JOIN LOGIC: Creates channel on the fly if it doesn't exist
-            if (payload.type === 'join') {
-                const { channelId, hwid } = payload;
+    wss.on('close', () => clearInterval(interval));
 
-                // Only attempt database lookup if hwid was actually provided
-                let robloxId = null;
-                if (hwid) {
-                    robloxId = await getRobloxIdByHwid(hwid);
-                }
+    wss.on('connection', (ws, req) => {
+        const trustedIp = getTrustedIp(req, ws); // Get the 127.0.0.1:x IP address from the WebSocket connection
+        const connectionPort = trustedIp.split(':')[1] || '0'; // Extract the port to return to use as the guest number
 
-                if (robloxId) {
-                    const username = await getRobloxUsername(robloxId);
-                    ws.senderName = username;
-                    ws.isVerified = true;
-                } else {
-                    // Fallback for users who aren't verified or didn't send an HWID
-                    ws.senderName = `Guest ${connectionPort}`;
-                    ws.isVerified = false;
-                }
+        // Identify this socket so we can find it by name later
+        ws.senderName = `Guest ${connectionPort}`;
 
-                // If user is already in another channel, remove them
-                const previousChannel = userChannelMap.get(userKey);
-                if (previousChannel && previousChannel !== channelId) {
-                    const prevClients = channels.get(previousChannel);
-                    if (prevClients) {
-                        prevClients.delete(ws);
-                        if (prevClients.size === 0) {
-                            channels.delete(previousChannel);
+        const userKey = hashIp(getTrustedIp(req, ws));
+        let currentChannel = null;
+
+        ws.isAlive = true;
+        ws.on('pong', () => { ws.isAlive = true; });
+
+        // Handle oversized messages so the server doesn't crash
+        ws.on('error', (err) => {
+            if (err.code === 'WS_ERR_UNSUPPORTED_MESSAGE_LENGTH') {
+                console.warn('Oversized message dropped');
+            } else {
+                console.error('WS error:', err);
+            }
+        });
+
+        // --- Begin WS message handling ---
+        ws.on('message', async (data) => {
+            try {
+                const payload = JSON.parse(data);
+
+                // 1. JOIN LOGIC: Creates channel on the fly if it doesn't exist
+                if (payload.type === 'join') {
+                    const { channelId, hwid } = payload;
+
+                    // Only attempt database lookup if hwid was actually provided
+                    let robloxId = null;
+                    if (hwid) {
+                        robloxId = await getRobloxIdByHwid(hwid);
+                    }
+
+                    if (robloxId) {
+                        const username = await getRobloxUsername(robloxId);
+                        ws.senderName = username;
+                        ws.isVerified = true;
+                    } else {
+                        // Fallback for users who aren't verified or didn't send an HWID
+                        ws.senderName = `Guest ${connectionPort}`;
+                        ws.isVerified = false;
+                    }
+
+                    // If user is already in another channel, remove them
+                    const previousChannel = userChannelMap.get(userKey);
+                    if (previousChannel && previousChannel !== channelId) {
+                        const prevClients = channels.get(previousChannel);
+                        if (prevClients) {
+                            prevClients.delete(ws);
+                            if (prevClients.size === 0) {
+                                channels.delete(previousChannel);
+                            }
                         }
                     }
+
+                    // Join new channel
+                    if (!channels.has(channelId)) {
+                        channels.set(channelId, new Set());
+                    }
+
+                    channels.get(channelId).add(ws);
+                    userChannelMap.set(userKey, channelId);
+                    currentChannel = channelId;
                 }
 
-                // Join new channel
-                if (!channels.has(channelId)) {
-                    channels.set(channelId, new Set());
-                }
+                // 2. CHAT LOGIC: Moderates then broadcasts
+                if (payload.type === 'message' && currentChannel) {
+                    const moderation = await enqueueMessage(payload.text);
 
-                channels.get(channelId).add(ws);
-                userChannelMap.set(userKey, channelId);
-                currentChannel = channelId;
-            }
-
-            // 2. CHAT LOGIC: Moderates then broadcasts
-            if (payload.type === 'message' && currentChannel) {
-                const moderation = await enqueueMessage(payload.text);
-
-                if (moderation.allowed) {
-                    console.log(`Message received from ${getTrustedIp(req, ws)} on channel ${currentChannel}: ${payload.text}`);
-                    broadcastToChannel(currentChannel, {
-                        type: 'message',
-                        text: payload.text,
-                        sender: ws.senderName, // This will now be "RobloxUser:123" or "Guest 456"
-                                               // Note that guest numbers are temporary and change on every reconnect, so they cannot be used to track users across sessions.
-                                               //They are only for display purposes within a single session.
-                        verified: ws.isVerified,
-                        attributeScores: moderation.attributeScores
-                    });
-                } else {
-                    // IMPORTANT: do NOT log message contents if rejected
-                    console.log(`Message rejected from ${getTrustedIp(req, ws)} on channel ${currentChannel} (reason: ${moderation.reason})`);
-                    ws.send(JSON.stringify({
-                        status: 'rejected',
-                        reason: moderation.reason,
-                        message: "Message not sent due to community guidelines or server limits."
-                    }));
-                }
-            }
-
-            // 3. WHISPER LOGIC
-            if (payload.type === 'whisper' && currentChannel) {
-                const moderation = await enqueueMessage(payload.text);
-                if (moderation.allowed) {
-                    const targetName = payload.target;
-                    const clients = channels.get(currentChannel);
-                    let found = false;
-
-                    const whisperPayload = {
-                        type: 'whisper',
-                        text: payload.text,
-                        sender: ws.senderName,
-                        target: targetName,
-                        attributeScores: moderation.attributeScores
-                    };
-
-                    // 1. Send to the Recipient (isTo = false)
-                    clients.forEach(client => {
-                        if (client.senderName === targetName) {
-                            client.send(JSON.stringify({ ...whisperPayload, isTo: false }));
-                            found = true;
-                        }
-                    });
-
-                    // 2. Send back to the Sender (isTo = true)
-                    ws.send(JSON.stringify({ ...whisperPayload, isTo: true }));
-
-                    if (!found) {
+                    if (moderation.allowed) {
+                        console.log(`Message received from ${getTrustedIp(req, ws)} on channel ${currentChannel}: ${payload.text}`);
+                        broadcastToChannel(currentChannel, {
+                            type: 'message',
+                            text: payload.text,
+                            sender: ws.senderName, // This will now be "RobloxUser:123" or "Guest 456"
+                            // Note that guest numbers are temporary and change on every reconnect, so they cannot be used to track users across sessions.
+                            //They are only for display purposes within a single session.
+                            verified: ws.isVerified,
+                            attributeScores: moderation.attributeScores
+                        });
+                    } else {
+                        // IMPORTANT: do NOT log message contents if rejected
+                        console.log(`Message rejected from ${getTrustedIp(req, ws)} on channel ${currentChannel} (reason: ${moderation.reason})`);
                         ws.send(JSON.stringify({
                             status: 'rejected',
-                            reason: 'not_found',
-                            target: targetName
+                            reason: moderation.reason,
+                            message: "Message not sent due to community guidelines or server limits."
                         }));
                     }
                 }
-            }
-        } catch (e) {
-            console.error("WS Message Error:", e);
-        }
-    });
-    // --- End WS message handling ---
 
-    // Remove the user mapping on disconnect
-    ws.on('close', () => {
-        const channelId = userChannelMap.get(userKey);
-        if (channelId && channels.has(channelId)) {
-            const clients = channels.get(channelId);
-            clients.delete(ws);
-            if (clients.size === 0) {
-                channels.delete(channelId);
+                // 3. WHISPER LOGIC
+                if (payload.type === 'whisper' && currentChannel) {
+                    const moderation = await enqueueMessage(payload.text);
+                    if (moderation.allowed) {
+                        const targetName = payload.target;
+                        const clients = channels.get(currentChannel);
+                        let found = false;
+
+                        const whisperPayload = {
+                            type: 'whisper',
+                            text: payload.text,
+                            sender: ws.senderName,
+                            target: targetName,
+                            attributeScores: moderation.attributeScores
+                        };
+
+                        // 1. Send to the Recipient (isTo = false)
+                        clients.forEach(client => {
+                            if (client.senderName === targetName) {
+                                client.send(JSON.stringify({ ...whisperPayload, isTo: false }));
+                                found = true;
+                            }
+                        });
+
+                        // 2. Send back to the Sender (isTo = true)
+                        ws.send(JSON.stringify({ ...whisperPayload, isTo: true }));
+
+                        if (!found) {
+                            ws.send(JSON.stringify({
+                                status: 'rejected',
+                                reason: 'not_found',
+                                target: targetName
+                            }));
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("WS Message Error:", e);
             }
-        }
-        userChannelMap.delete(userKey);
+        });
+        // --- End WS message handling ---
+
+        // Remove the user mapping on disconnect
+        ws.on('close', () => {
+            const channelId = userChannelMap.get(userKey);
+            if (channelId && channels.has(channelId)) {
+                const clients = channels.get(channelId);
+                clients.delete(ws);
+                if (clients.size === 0) {
+                    channels.delete(channelId);
+                }
+            }
+            userChannelMap.delete(userKey);
+        });
     });
-});
+} else {
+    console.log('Sunset date reached; WebSocket server disabled.');
+}
+// ===== END SUNSET =====
 
 // Helper to send to everyone in a specific channel
 function broadcastToChannel(channelId, data) {
