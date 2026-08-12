@@ -83,8 +83,6 @@ function sunsetGuard(req, res, next) {
         sunsetDate: "2027-01-01T00:00:00Z"
     });
 }
-
-app.use(sunsetGuard);
 // ===== END SUNSET =====
 
 // Allowed mail types for the mail push endpoint
@@ -101,6 +99,10 @@ app.set('trust proxy', 1); // trust only the first proxy hop (Render)
 // Middleware to parse plain text bodies (sent by C# client)
 // Limit messages to 1kb (more than enough for a chat message)
 app.use(express.text({ limit: Constants.TEXT_LIMIT_BYTES }));
+
+// ===== START SUNSET =====
+app.use(sunsetGuard);
+// ===== END SUNSET =====
 
 // ----- Routes -----
 app.use(express.static("public"));
