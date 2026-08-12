@@ -1,12 +1,10 @@
 > [!CAUTION]
+> **SERVICE SUNSET NOTICE:** Roblox Chat Launcher will officially sunset its hosted services after **December 31st, 2026**. The source code remains available under the GPL-3.0 license for self-hosting.
+>
+> Visit our [official website](https://RobloxChatLauncher.onrender.com/) for more information.
+
+> [!CAUTION]
 > The only official place to download Roblox Chat Launcher is [this GitHub repository](https://github.com/RobloxChatLauncher/RobloxChatLauncher). Any other websites offering downloads or claiming to be us are not owned by us.
-
-> [!WARNING]
-> **Contributors Needed:** Roblox Chat Launcher is looking for developers experienced with **WPF** to lead our framework migration from WinForms.
-> Urgent help is requested in [#81](https://github.com/RobloxChatLauncher/RobloxChatLauncher/issues/81).
-
-> [!WARNING]
-> Roblox Chat Launcher is seeking a long-term billing partner to cover hosting costs and API costs.
 
 <p align="center">
     <a href="https://RobloxChatLauncher.onrender.com/">
