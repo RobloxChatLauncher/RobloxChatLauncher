@@ -7,13 +7,13 @@
         "start": "node server.js"
     },
     "dependencies": {
-        "axios": "^1.19.0",
+        "axios": "^1.20.0",
         "express": "^5.2.1",
-        "express-rate-limit": "^8.6.1",
-        "marked": "^18.0.7",
-        "pg": "^8.22.0",
+        "express-rate-limit": "^8.6.2",
+        "marked": "^18.0.11",
+        "pg": "^8.23.0",
         "swagger-jsdoc": "^6.3.0",
         "swagger-ui-express": "^5.0.1",
-        "ws": "^8.21.1"
+        "ws": "^8.21.3"
     }
 }
